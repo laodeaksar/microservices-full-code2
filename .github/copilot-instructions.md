@@ -102,7 +102,7 @@ turbo dev --filter=product-service    # Single service
 pnpm --filter=@repo/product-db db:generate  # Regenerate Prisma
 pnpm --filter=@repo/product-db db:migrate   # Run migrations
 pnpm lint                             # Lint all packages
-pnpm check-types                      # Type-check all packages
+pnpm typecheck                      # Type-check all packages
 ```
 
 **Important**: Use `pnpm --filter=<package-name>` for workspace-specific commands.

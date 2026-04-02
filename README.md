@@ -128,7 +128,7 @@ Admin UI entry point is in [apps/admin/src/components/ExternalProductSearch.tsx]
 
 ```bash
 pnpm lint
-pnpm check-types
+pnpm typecheck
 ```
 
 Build a single app or package:

@@ -8,7 +8,7 @@
     "dev": "tsx --env-file=.env --watch src/index.ts",
     "build": "echo 'No build needed for order-service'",
     "start": "tsx src/index.ts",
-    "check-types": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
