@@ -21,12 +21,13 @@ fastify.get("/health", (request, reply) => {
 
 fastify.get("/my-ip", async (request, reply) => {
   try {
-    const ipResponse = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipResponse.json() as { ip: string };
-    return reply.send({ 
+    const ipResponse = await fetch("https://api.ipify.org?format=json");
+    const ipData = (await ipResponse.json()) as { ip: string };
+    return reply.send({
       ip: ipData.ip,
       message: "Add this IP to MongoDB Atlas Network Access whitelist",
-      instructions: "https://cloud.mongodb.com/ → Network Access → Add IP Address"
+      instructions:
+        "https://cloud.mongodb.com/ → Network Access → Add IP Address",
     });
   } catch (error) {
     return reply.status(500).send({ error: "Could not fetch IP" });
@@ -47,20 +48,22 @@ const PORT = Number(process.env.PORT) || 8001;
 const start = async () => {
   try {
     console.log("Starting order service...");
-    
+
     // Log outgoing IP for MongoDB whitelist setup (useful for Render deployment)
     try {
-      const ipResponse = await fetch('https://api.ipify.org?format=json');
-      const ipData = await ipResponse.json() as { ip: string };
+      const ipResponse = await fetch("https://api.ipify.org?format=json");
+      const ipData = (await ipResponse.json()) as { ip: string };
       console.log(`🌐 Outgoing IP Address: ${ipData.ip}`);
-      console.log(`   ⚠️  Add this IP to MongoDB Atlas Network Access if connection fails`);
+      console.log(
+        `   ⚠️  Add this IP to MongoDB Atlas Network Access if connection fails`,
+      );
     } catch (ipErr) {
-      console.log('Could not fetch outgoing IP (non-critical)');
+      console.log("Could not fetch outgoing IP (non-critical)");
     }
-    
+
     await connectOrderDB();
     console.log("Database connection established");
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    await fastify.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`Order service is running on port ${PORT}`);
   } catch (err) {
     console.error("Failed to start order service:", err);

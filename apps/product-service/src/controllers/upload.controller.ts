@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import cloudinary from '../utils/cloudinary.js';
-import { Readable } from 'stream';
+import { Request, Response } from "express";
+import cloudinary from "../utils/cloudinary.js";
+import { Readable } from "stream";
 
 /**
  * Upload single image to Cloudinary
@@ -9,7 +9,7 @@ export const uploadImage = async (req: Request, res: Response) => {
   try {
     const file = req.file as Express.Multer.File | undefined;
     if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
     // Convert buffer to stream
@@ -19,18 +19,18 @@ export const uploadImage = async (req: Request, res: Response) => {
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'products',
-          resource_type: 'image',
+          folder: "products",
+          resource_type: "image",
           transformation: [
-            { width: 1000, height: 1000, crop: 'limit' },
-            { quality: 'auto' },
-            { fetch_format: 'auto' },
+            { width: 1000, height: 1000, crop: "limit" },
+            { quality: "auto" },
+            { fetch_format: "auto" },
           ],
         },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
       stream.pipe(uploadStream);
     });
@@ -44,8 +44,8 @@ export const uploadImage = async (req: Request, res: Response) => {
       height: uploadResult.height,
     });
   } catch (error) {
-    console.error('Upload error:', error);
-    return res.status(500).json({ error: 'Failed to upload image' });
+    console.error("Upload error:", error);
+    return res.status(500).json({ error: "Failed to upload image" });
   }
 };
 
@@ -56,7 +56,7 @@ export const uploadImages = async (req: Request, res: Response) => {
   try {
     const files = req.files as Express.Multer.File[] | undefined;
     if (!files || !Array.isArray(files) || files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+      return res.status(400).json({ error: "No files uploaded" });
     }
 
     const uploadPromises = files.map(async (file: Express.Multer.File) => {
@@ -65,18 +65,18 @@ export const uploadImages = async (req: Request, res: Response) => {
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            folder: 'products',
-            resource_type: 'image',
+            folder: "products",
+            resource_type: "image",
             transformation: [
-              { width: 1000, height: 1000, crop: 'limit' },
-              { quality: 'auto' },
-              { fetch_format: 'auto' },
+              { width: 1000, height: 1000, crop: "limit" },
+              { quality: "auto" },
+              { fetch_format: "auto" },
             ],
           },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
-          }
+          },
         );
         stream.pipe(uploadStream);
       });
@@ -93,8 +93,8 @@ export const uploadImages = async (req: Request, res: Response) => {
 
     return res.status(200).json({ images: uploadedImages });
   } catch (error) {
-    console.error('Upload error:', error);
-    return res.status(500).json({ error: 'Failed to upload images' });
+    console.error("Upload error:", error);
+    return res.status(500).json({ error: "Failed to upload images" });
   }
 };
 
@@ -106,19 +106,19 @@ export const deleteImage = async (req: Request, res: Response) => {
     const { publicId } = req.body;
 
     if (!publicId) {
-      return res.status(400).json({ error: 'Public ID is required' });
+      return res.status(400).json({ error: "Public ID is required" });
     }
 
     const result = await cloudinary.uploader.destroy(publicId);
 
-    if (result.result === 'ok') {
-      return res.status(200).json({ message: 'Image deleted successfully' });
+    if (result.result === "ok") {
+      return res.status(200).json({ message: "Image deleted successfully" });
     } else {
-      return res.status(404).json({ error: 'Image not found' });
+      return res.status(404).json({ error: "Image not found" });
     }
   } catch (error) {
-    console.error('Delete error:', error);
-    return res.status(500).json({ error: 'Failed to delete image' });
+    console.error("Delete error:", error);
+    return res.status(500).json({ error: "Failed to delete image" });
   }
 };
 
@@ -130,17 +130,17 @@ export const deleteImages = async (req: Request, res: Response) => {
     const { publicIds } = req.body;
 
     if (!publicIds || !Array.isArray(publicIds) || publicIds.length === 0) {
-      return res.status(400).json({ error: 'Public IDs array is required' });
+      return res.status(400).json({ error: "Public IDs array is required" });
     }
 
     const result = await cloudinary.api.delete_resources(publicIds);
 
     return res.status(200).json({
-      message: 'Images deletion process completed',
+      message: "Images deletion process completed",
       deleted: result.deleted,
     });
   } catch (error) {
-    console.error('Delete error:', error);
-    return res.status(500).json({ error: 'Failed to delete images' });
+    console.error("Delete error:", error);
+    return res.status(500).json({ error: "Failed to delete images" });
   }
 };

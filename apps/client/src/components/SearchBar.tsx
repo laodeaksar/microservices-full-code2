@@ -19,7 +19,7 @@ const SearchBarContent = () => {
 
   const handleSearch = (searchValue: string) => {
     if (!searchValue.trim()) return;
-    
+
     const params = new URLSearchParams(searchParams);
     params.set("search", searchValue.trim());
     router.push(`/products?${params.toString()}`, { scroll: false });
@@ -29,7 +29,9 @@ const SearchBarContent = () => {
     setValue("");
     const params = new URLSearchParams(searchParams);
     params.delete("search");
-    const newUrl = params.toString() ? `/products?${params.toString()}` : '/products';
+    const newUrl = params.toString()
+      ? `/products?${params.toString()}`
+      : "/products";
     router.push(newUrl, { scroll: false });
   };
 

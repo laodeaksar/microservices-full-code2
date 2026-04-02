@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     default: "Neuraltale Admin Dashboard - Manage Products, Users & Orders",
     template: "%s | Neuraltale Admin",
   },
-  description: "Admin dashboard for Neuraltale Tanzania tech store. Manage products, categories, users, orders, and inventory. Track sales analytics and user data.",
-  keywords: "admin dashboard, e-commerce management, product management, inventory system, order management, user management, sales analytics, neuraltale admin",
+  description:
+    "Admin dashboard for Neuraltale Tanzania tech store. Manage products, categories, users, orders, and inventory. Track sales analytics and user data.",
+  keywords:
+    "admin dashboard, e-commerce management, product management, inventory system, order management, user management, sales analytics, neuraltale admin",
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
+      { url: "/logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo.png", sizes: "any", type: "image/svg+xml" },
     ],
-    apple: [
-      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
-    ],
-    shortcut: '/logo.png',
+    apple: [{ url: "/logo.png", sizes: "any", type: "image/svg+xml" }],
+    shortcut: "/logo.png",
   },
   robots: {
     index: false,
@@ -36,9 +36,11 @@ export const metadata: Metadata = {
     noarchive: true,
     nosnippet: true,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://admin.neuraltale.com'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://admin.neuraltale.com",
+  ),
   alternates: {
-    canonical: '/',
+    canonical: "/",
   },
 };
 
@@ -47,7 +49,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>

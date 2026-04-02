@@ -1,8 +1,20 @@
 import { FastifyInstance } from "fastify";
 import { shouldBeAdmin, shouldBeUser } from "../middleware/authMiddleware";
 import { Order } from "@repo/order-db";
-import { startOfMonth, subMonths, subDays, format, startOfDay, endOfDay } from "date-fns";
-import { OrderChartType, OrderStatusDistribution, DailyOrderTrend, DashboardStats } from "@repo/types";
+import {
+  startOfMonth,
+  subMonths,
+  subDays,
+  format,
+  startOfDay,
+  endOfDay,
+} from "date-fns";
+import {
+  OrderChartType,
+  OrderStatusDistribution,
+  DailyOrderTrend,
+  DashboardStats,
+} from "@repo/types";
 import { createOrder } from "../utils/order";
 
 export const orderRoute = async (fastify: FastifyInstance) => {
@@ -25,7 +37,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const orders = await Order.find({ userId: request.userId });
       return reply.send(orders);
-    }
+    },
   );
   fastify.get(
     "/orders",
@@ -37,9 +49,11 @@ export const orderRoute = async (fastify: FastifyInstance) => {
         ? Math.min(Math.max(parsedLimit, 1), 200)
         : 50;
 
-      const orders = await Order.find().limit(safeLimit).sort({ createdAt: -1 });
+      const orders = await Order.find()
+        .limit(safeLimit)
+        .sort({ createdAt: -1 });
       return reply.send(orders);
-    }
+    },
   );
 
   // Dashboard stats endpoint
@@ -80,24 +94,30 @@ export const orderRoute = async (fastify: FastifyInstance) => {
         ]),
       ]);
 
-      const total = totalStats[0] || { totalOrders: 0, totalRevenue: 0, successfulOrders: 0 };
+      const total = totalStats[0] || {
+        totalOrders: 0,
+        totalRevenue: 0,
+        successfulOrders: 0,
+      };
       const today = todayStats[0] || { ordersToday: 0, revenueToday: 0 };
 
       const stats: DashboardStats = {
         totalOrders: total.totalOrders,
         totalRevenue: total.totalRevenue / 100, // Convert from cents
-        successRate: total.totalOrders > 0 
-          ? Math.round((total.successfulOrders / total.totalOrders) * 100) 
-          : 0,
-        averageOrderValue: total.totalOrders > 0 
-          ? Math.round(total.totalRevenue / total.totalOrders / 100) 
-          : 0,
+        successRate:
+          total.totalOrders > 0
+            ? Math.round((total.successfulOrders / total.totalOrders) * 100)
+            : 0,
+        averageOrderValue:
+          total.totalOrders > 0
+            ? Math.round(total.totalRevenue / total.totalOrders / 100)
+            : 0,
         ordersToday: today.ordersToday,
         revenueToday: today.revenueToday / 100,
       };
 
       return reply.send(stats);
-    }
+    },
   );
 
   // Order status distribution for pie chart
@@ -128,7 +148,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
       }));
 
       return reply.send(results);
-    }
+    },
   );
 
   // Daily order trends for area chart (last 30 days)
@@ -173,7 +193,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
           (item) =>
             item._id.year === year &&
             item._id.month === month &&
-            item._id.day === day
+            item._id.day === day,
         );
 
         results.push({
@@ -184,7 +204,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
       }
 
       return reply.send(results);
-    }
+    },
   );
 
   fastify.get(
@@ -259,7 +279,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
         const month = d.getMonth() + 1;
 
         const match = raw.find(
-          (item) => item.year === year && item.month === month
+          (item) => item.year === year && item.month === month,
         );
 
         results.push({
@@ -270,6 +290,6 @@ export const orderRoute = async (fastify: FastifyInstance) => {
       }
 
       return reply.send(results);
-    }
+    },
   );
 };

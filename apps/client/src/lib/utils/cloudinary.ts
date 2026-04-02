@@ -1,12 +1,12 @@
 /**
  * Cloudinary Image Utilities
- * 
+ *
  * Helper functions for working with Cloudinary images in the frontend
  */
 
 /**
  * Get optimized Cloudinary URL with transformations
- * 
+ *
  * @param url - Original Cloudinary URL
  * @param options - Transformation options
  * @returns Optimized URL with transformations
@@ -16,22 +16,22 @@ export function getCloudinaryUrl(
   options: {
     width?: number;
     height?: number;
-    quality?: 'auto' | number;
-    format?: 'auto' | 'webp' | 'jpg' | 'png';
-    crop?: 'fill' | 'fit' | 'scale' | 'limit';
-  } = {}
+    quality?: "auto" | number;
+    format?: "auto" | "webp" | "jpg" | "png";
+    crop?: "fill" | "fit" | "scale" | "limit";
+  } = {},
 ): string {
   // If not a Cloudinary URL, return as-is
-  if (!url.includes('cloudinary.com')) {
+  if (!url.includes("cloudinary.com")) {
     return url;
   }
 
   const {
     width,
     height,
-    quality = 'auto',
-    format = 'auto',
-    crop = 'limit',
+    quality = "auto",
+    format = "auto",
+    crop = "limit",
   } = options;
 
   // Build transformation string
@@ -43,7 +43,7 @@ export function getCloudinaryUrl(
   transformations.push(`q_${quality}`);
   transformations.push(`f_${format}`);
 
-  const transformString = transformations.join(',');
+  const transformString = transformations.join(",");
 
   // Support both /image/upload and /upload
   const uploadPattern = /\/(image\/upload|upload)\//;
@@ -57,15 +57,15 @@ export function getCloudinaryUrl(
     if (parts.length >= 3) {
       const before = parts[0];
       const upload = parts[1];
-      const after = parts.slice(2).join('/'); // In case there are more / (unlikely with this regex)
+      const after = parts.slice(2).join("/"); // In case there are more / (unlikely with this regex)
 
       // If 'after' starts with a version (v123) or doesn't have a transformation block,
       // we insert our transformations.
-      if (after.startsWith('v') && /v\d+\//.test(after)) {
+      if (after.startsWith("v") && /v\d+\//.test(after)) {
         return `${before}/${upload}/${transformString}/${after}`;
       }
 
-      // If there's already a transformation block (doesn't start with v+digit), 
+      // If there's already a transformation block (doesn't start with v+digit),
       // replace it or prepend to it. For simplicity, we'll replace or just insert.
       // Cloudinary allows chaining: /upload/w_100/v1/... or /upload/w_100,c_fill/v1/...
       return `${before}/${upload}/${transformString}/${after}`;
@@ -82,9 +82,9 @@ export function getThumbnail(url: string, size: number = 200): string {
   return getCloudinaryUrl(url, {
     width: size,
     height: size,
-    crop: 'fill',
-    quality: 'auto',
-    format: 'auto',
+    crop: "fill",
+    quality: "auto",
+    format: "auto",
   });
 }
 
@@ -98,17 +98,17 @@ export function getResponsiveUrls(url: string): {
   const widths = [320, 640, 768, 1024, 1280, 1536];
 
   const srcSet = widths
-    .map(width => {
+    .map((width) => {
       const optimizedUrl = getCloudinaryUrl(url, {
         width,
-        quality: 'auto',
-        format: 'auto',
+        quality: "auto",
+        format: "auto",
       });
       return `${optimizedUrl} ${width}w`;
     })
-    .join(', ');
+    .join(", ");
 
-  const sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
+  const sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
 
   return { srcSet, sizes };
 }
@@ -116,12 +116,15 @@ export function getResponsiveUrls(url: string): {
 /**
  * Preload critical images
  */
-export function preloadImage(url: string, options?: Parameters<typeof getCloudinaryUrl>[1]) {
+export function preloadImage(
+  url: string,
+  options?: Parameters<typeof getCloudinaryUrl>[1],
+) {
   const optimizedUrl = getCloudinaryUrl(url, options);
 
-  const link = document.createElement('link');
-  link.rel = 'preload';
-  link.as = 'image';
+  const link = document.createElement("link");
+  link.rel = "preload";
+  link.as = "image";
   link.href = optimizedUrl;
 
   document.head.appendChild(link);
@@ -133,7 +136,7 @@ export function preloadImage(url: string, options?: Parameters<typeof getCloudin
 export function getImageProps(
   url: string,
   alt: string,
-  options?: Parameters<typeof getCloudinaryUrl>[1]
+  options?: Parameters<typeof getCloudinaryUrl>[1],
 ) {
   const optimizedUrl = getCloudinaryUrl(url, options);
   const { srcSet, sizes } = getResponsiveUrls(url);
@@ -143,7 +146,7 @@ export function getImageProps(
     srcSet,
     sizes,
     alt,
-    loading: 'lazy' as const,
+    loading: "lazy" as const,
   };
 }
 

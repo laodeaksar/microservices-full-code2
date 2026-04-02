@@ -11,17 +11,20 @@ const FilterContent = () => {
 
   const currentSort = searchParams.get("sort") || "newest";
 
-  const handleFilter = useCallback((value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (value === "newest") {
-      params.delete("sort");
-    } else {
-      params.set("sort", value);
-    }
-    
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [searchParams, router, pathname]);
+  const handleFilter = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value === "newest") {
+        params.delete("sort");
+      } else {
+        params.set("sort", value);
+      }
+
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname],
+  );
 
   const clearSort = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -60,7 +63,10 @@ const FilterContent = () => {
   ];
 
   const getCurrentSortLabel = () => {
-    return sortOptions.find(opt => opt.value === currentSort)?.label || "Newest First";
+    return (
+      sortOptions.find((opt) => opt.value === currentSort)?.label ||
+      "Newest First"
+    );
   };
 
   return (
@@ -70,7 +76,10 @@ const FilterContent = () => {
         {activeFiltersCount > 0 && (
           <>
             <span className="text-sm text-gray-600">
-              <span className="font-medium text-gray-900">{activeFiltersCount}</span> filter{activeFiltersCount > 1 ? 's' : ''} active
+              <span className="font-medium text-gray-900">
+                {activeFiltersCount}
+              </span>{" "}
+              filter{activeFiltersCount > 1 ? "s" : ""} active
             </span>
             <button
               onClick={clearAllFilters}
@@ -81,7 +90,7 @@ const FilterContent = () => {
             </button>
           </>
         )}
-        
+
         {/* Show active filter tags */}
         {searchParams.get("category") && (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#FDB913]/20 text-[#001E3C] text-xs font-medium rounded-full">
@@ -111,7 +120,7 @@ const FilterContent = () => {
           <ArrowUpDown className="w-4 h-4" />
           <span className="hidden sm:inline">Sort by:</span>
         </div>
-        
+
         <div className="relative">
           <select
             name="sort"
@@ -145,12 +154,14 @@ const FilterContent = () => {
 
 const Filter = () => {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-between py-4 mb-4 border-b border-gray-200 animate-pulse">
-        <div className="h-5 bg-gray-200 rounded w-24"></div>
-        <div className="h-10 bg-gray-200 rounded w-40"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-between py-4 mb-4 border-b border-gray-200 animate-pulse">
+          <div className="h-5 bg-gray-200 rounded w-24"></div>
+          <div className="h-10 bg-gray-200 rounded w-40"></div>
+        </div>
+      }
+    >
       <FilterContent />
     </Suspense>
   );

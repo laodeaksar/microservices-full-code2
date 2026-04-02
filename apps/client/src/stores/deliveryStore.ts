@@ -22,8 +22,15 @@ type DeliveryStoreState = {
 
 type DeliveryStoreActions = {
   getSavedAddresses: (userId: string) => SavedDeliveryAddress[];
-  addSavedAddress: (userId: string, address: Omit<SavedDeliveryAddress, "id">) => void;
-  updateSavedAddress: (userId: string, addressId: string, address: Partial<SavedDeliveryAddress>) => void;
+  addSavedAddress: (
+    userId: string,
+    address: Omit<SavedDeliveryAddress, "id">,
+  ) => void;
+  updateSavedAddress: (
+    userId: string,
+    addressId: string,
+    address: Partial<SavedDeliveryAddress>,
+  ) => void;
   deleteSavedAddress: (userId: string, addressId: string) => void;
   setDefaultAddress: (userId: string, addressId: string) => void;
   getDefaultAddress: (userId: string) => SavedDeliveryAddress | undefined;
@@ -50,9 +57,9 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
 
       // Delivery method
       setDeliveryMethod: (method) => set({ deliveryMethod: method }),
-      
+
       getDeliveryMethod: () => get().deliveryMethod,
-      
+
       // Calculate shipping fee based on delivery method
       getShippingFee: () => {
         const method = get().deliveryMethod;
@@ -61,9 +68,9 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
 
       // Current delivery data methods
       setCurrentDeliveryData: (data) => set({ currentDeliveryData: data }),
-      
+
       getCurrentDeliveryData: () => get().currentDeliveryData,
-      
+
       clearCurrentDeliveryData: () => set({ currentDeliveryData: null }),
 
       getSavedAddresses: (userId) => {
@@ -75,12 +82,13 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
           ...address,
           id: `addr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         };
-        
+
         set((state) => {
           const userAddresses = state.savedAddresses[userId] || [];
           // If this is the first address or marked as default, make it default
-          const isFirstOrDefault = userAddresses.length === 0 || address.isDefault;
-          
+          const isFirstOrDefault =
+            userAddresses.length === 0 || address.isDefault;
+
           // If setting as default, unset others
           const updatedAddresses = isFirstOrDefault
             ? userAddresses.map((a) => ({ ...a, isDefault: false }))
@@ -89,7 +97,10 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
           return {
             savedAddresses: {
               ...state.savedAddresses,
-              [userId]: [...updatedAddresses, { ...newAddress, isDefault: isFirstOrDefault }],
+              [userId]: [
+                ...updatedAddresses,
+                { ...newAddress, isDefault: isFirstOrDefault },
+              ],
             },
           };
         });
@@ -102,7 +113,7 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
             savedAddresses: {
               ...state.savedAddresses,
               [userId]: userAddresses.map((addr) =>
-                addr.id === addressId ? { ...addr, ...updates } : addr
+                addr.id === addressId ? { ...addr, ...updates } : addr,
               ),
             },
           };
@@ -112,10 +123,15 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
       deleteSavedAddress: (userId, addressId) => {
         set((state) => {
           const userAddresses = state.savedAddresses[userId] || [];
-          const filteredAddresses = userAddresses.filter((addr) => addr.id !== addressId);
-          
+          const filteredAddresses = userAddresses.filter(
+            (addr) => addr.id !== addressId,
+          );
+
           // If we deleted the default, make the first one default
-          if (filteredAddresses.length > 0 && !filteredAddresses.some((a) => a.isDefault)) {
+          if (
+            filteredAddresses.length > 0 &&
+            !filteredAddresses.some((a) => a.isDefault)
+          ) {
             const firstAddress = filteredAddresses[0];
             if (firstAddress) {
               firstAddress.isDefault = true;
@@ -156,8 +172,8 @@ const useDeliveryStore = create<DeliveryStoreState & DeliveryStoreActions>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );
 
 export default useDeliveryStore;

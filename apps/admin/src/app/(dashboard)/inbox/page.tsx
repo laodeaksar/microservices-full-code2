@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -89,7 +95,7 @@ const mockNotifications: Notification[] = [
     id: "6",
     type: "product",
     title: "Product Review",
-    message: "MacBook Pro 16\" received a new 5-star review",
+    message: 'MacBook Pro 16" received a new 5-star review',
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
     read: true,
   },
@@ -157,19 +163,20 @@ const formatTimestamp = (date: Date) => {
 };
 
 export default function InboxPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [notifications, setNotifications] =
+    useState<Notification[]>(mockNotifications);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [filter, setFilter] = useState<NotificationType | "all">("all");
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const filteredNotifications = notifications.filter(
-    (n) => filter === "all" || n.type === filter
+    (n) => filter === "all" || n.type === filter,
   );
 
   const toggleRead = (id: string) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
+      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)),
     );
   };
 
@@ -189,7 +196,7 @@ export default function InboxPage() {
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -212,7 +219,9 @@ export default function InboxPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Inbox</h1>
-              <p className="text-gray-600">Manage your notifications and alerts</p>
+              <p className="text-gray-600">
+                Manage your notifications and alerts
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -229,11 +238,16 @@ export default function InboxPage() {
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
           <Checkbox
-            checked={selectedIds.length === filteredNotifications.length && filteredNotifications.length > 0}
+            checked={
+              selectedIds.length === filteredNotifications.length &&
+              filteredNotifications.length > 0
+            }
             onCheckedChange={selectAll}
           />
           <span className="text-sm text-muted-foreground">
-            {selectedIds.length > 0 ? `${selectedIds.length} selected` : "Select all"}
+            {selectedIds.length > 0
+              ? `${selectedIds.length} selected`
+              : "Select all"}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -255,11 +269,21 @@ export default function InboxPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setFilter("all")}>All</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("order")}>Orders</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("product")}>Products</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("user")}>Users</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("system")}>System</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("all")}>
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("order")}>
+                Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("product")}>
+                Products
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("user")}>
+                Users
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("system")}>
+                System
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -294,7 +318,9 @@ export default function InboxPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`font-medium ${!notification.read ? "text-gray-900" : "text-gray-600"}`}>
+                        <h3
+                          className={`font-medium ${!notification.read ? "text-gray-900" : "text-gray-600"}`}
+                        >
                           {notification.title}
                         </h3>
                         {!notification.read && (
@@ -316,7 +342,9 @@ export default function InboxPage() {
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => toggleRead(notification.id)}
-                        title={notification.read ? "Mark as unread" : "Mark as read"}
+                        title={
+                          notification.read ? "Mark as unread" : "Mark as read"
+                        }
                       >
                         {notification.read ? (
                           <Mail className="h-4 w-4" />
@@ -351,7 +379,9 @@ export default function InboxPage() {
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">{unreadCount}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {unreadCount}
+            </div>
             <p className="text-xs text-muted-foreground">Unread</p>
           </CardContent>
         </Card>

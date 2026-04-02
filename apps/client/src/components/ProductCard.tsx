@@ -18,7 +18,8 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   });
 
   const { addToCart } = useCartStore();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -74,11 +75,23 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     const threshold = product.lowStockThreshold || 10;
 
     // Client side: Display "Pre-Order" for out of stock items
-    if (stockStatus === "out_of_stock" || stockStatus === "pre_order" || stock === 0) {
-      return { status: "Pre-Order", color: "text-[#0A7EA4]", bg: "bg-[#0A7EA4]/10" };
+    if (
+      stockStatus === "out_of_stock" ||
+      stockStatus === "pre_order" ||
+      stock === 0
+    ) {
+      return {
+        status: "Pre-Order",
+        color: "text-[#0A7EA4]",
+        bg: "bg-[#0A7EA4]/10",
+      };
     }
     if (stockStatus === "limited_stock" || stock <= threshold) {
-      return { status: "Limited Stock", color: "text-[#FDB913]", bg: "bg-[#FDB913]/10" };
+      return {
+        status: "Limited Stock",
+        color: "text-[#FDB913]",
+        bg: "bg-[#FDB913]/10",
+      };
     }
     return { status: "In Stock", color: "text-green-600", bg: "bg-green-50" };
   };
@@ -91,10 +104,12 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     const colorImages = images?.[productTypes.color];
 
     // Handle both string and array formats
-    if (typeof colorImages === 'string' && colorImages.trim() !== '') {
+    if (typeof colorImages === "string" && colorImages.trim() !== "") {
       return colorImages;
     } else if (Array.isArray(colorImages)) {
-      const validImage = colorImages.find((url: string) => url && url.trim() !== '');
+      const validImage = colorImages.find(
+        (url: string) => url && url.trim() !== "",
+      );
       if (validImage) {
         return validImage; // Use first valid image
       }
@@ -104,10 +119,15 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     const firstColor = Object.keys(images || {})[0];
     if (firstColor) {
       const firstColorImages = images[firstColor];
-      if (typeof firstColorImages === 'string' && firstColorImages.trim() !== '') {
+      if (
+        typeof firstColorImages === "string" &&
+        firstColorImages.trim() !== ""
+      ) {
         return firstColorImages;
       } else if (Array.isArray(firstColorImages)) {
-        const validImage = firstColorImages.find((url: string) => url && url.trim() !== '');
+        const validImage = firstColorImages.find(
+          (url: string) => url && url.trim() !== "",
+        );
         if (validImage) {
           return validImage;
         }
@@ -122,9 +142,9 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   // Optimize Cloudinary images with transformations
   const optimizedImageUrl = getCloudinaryUrl(imageUrl, {
     width: 400,
-    quality: 'auto',
-    format: 'auto',
-    crop: 'limit'
+    quality: "auto",
+    format: "auto",
+    crop: "limit",
   });
 
   return (
@@ -147,18 +167,25 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               e.preventDefault();
               handleWishlist();
             }}
-            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${isWishlisted
+            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${
+              isWishlisted
                 ? "bg-red-500 text-white"
                 : "bg-white/80 text-gray-600 hover:bg-white hover:text-red-500"
-              }`}
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            }`}
+            aria-label={
+              isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+            }
             title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
-            <Heart className={`w-3 h-3 ${isWishlisted ? "fill-current" : ""}`} />
+            <Heart
+              className={`w-3 h-3 ${isWishlisted ? "fill-current" : ""}`}
+            />
           </button>
 
           {/* Availability Badge */}
-          <div className={`absolute top-2 left-2 px-1.5 py-0.5 rounded text-xs font-medium ${availability.bg} ${availability.color}`}>
+          <div
+            className={`absolute top-2 left-2 px-1.5 py-0.5 rounded text-xs font-medium ${availability.bg} ${availability.color}`}
+          >
             {availability.status}
           </div>
         </div>
@@ -178,19 +205,17 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3 h-3 ${i < Math.floor(rating)
+                  className={`w-3 h-3 ${
+                    i < Math.floor(rating)
                       ? "text-[#FDB913] fill-current"
                       : "text-gray-300"
-                    }`}
+                  }`}
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-600">
-              {rating.toFixed(1)}
-            </span>
+            <span className="text-xs text-gray-600">{rating.toFixed(1)}</span>
           </div>
         </div>
-
 
         {/* PRICE AND ACTIONS */}
         <div className="pt-2 border-t border-gray-100">
@@ -220,8 +245,6 @@ const ProductCard = ({ product }: { product: ProductType }) => {
             <ShoppingCart className="w-3 h-3" />
             <span className="text-xs sm:text-sm">Add to Cart</span>
           </button>
-
-
         </div>
       </div>
     </div>

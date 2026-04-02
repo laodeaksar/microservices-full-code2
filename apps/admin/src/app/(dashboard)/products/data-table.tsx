@@ -77,9 +77,9 @@ export function DataTable<TData, TValue>({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
     globalFilterFn: (row, columnId, filterValue) => {
       const product = row.original as ProductType;
       const searchValue = filterValue.toLowerCase();
-      
+
       return (
         product.name?.toLowerCase().includes(searchValue) ||
         product.shortDescription?.toLowerCase().includes(searchValue) ||
@@ -122,14 +122,20 @@ export function DataTable<TData, TValue>({
   });
 
   const selectedCount = Object.keys(rowSelection).length;
-  const categoryFilter = (columnFilters.find((f) => f.id === "categorySlug")?.value as string[]) || [];
-  const heroFilter = (columnFilters.find((f) => f.id === "isHeroProduct")?.value as boolean[]) || [];
-  
-  // Get unique categories from data
-  const categories = Array.from(new Set(data.map((item) => (item as ProductType).categorySlug))).filter(Boolean) as string[];
+  const categoryFilter =
+    (columnFilters.find((f) => f.id === "categorySlug")?.value as string[]) ||
+    [];
+  const heroFilter =
+    (columnFilters.find((f) => f.id === "isHeroProduct")?.value as boolean[]) ||
+    [];
 
-  return (  
-   <div className="space-y-4">
+  // Get unique categories from data
+  const categories = Array.from(
+    new Set(data.map((item) => (item as ProductType).categorySlug)),
+  ).filter(Boolean) as string[];
+
+  return (
+    <div className="space-y-4">
       {/* Search and Filters */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 flex-1">
@@ -177,7 +183,11 @@ export function DataTable<TData, TValue>({
                     const newFilter = checked
                       ? [...categoryFilter, category]
                       : categoryFilter.filter((c) => c !== category);
-                    table.getColumn("categorySlug")?.setFilterValue(newFilter.length > 0 ? newFilter : undefined);
+                    table
+                      .getColumn("categorySlug")
+                      ?.setFilterValue(
+                        newFilter.length > 0 ? newFilter : undefined,
+                      );
                   }}
                 >
                   {category}
@@ -208,7 +218,11 @@ export function DataTable<TData, TValue>({
                   const newFilter = checked
                     ? [...heroFilter, true]
                     : heroFilter.filter((h) => h !== true);
-                  table.getColumn("isHeroProduct")?.setFilterValue(newFilter.length > 0 ? newFilter : undefined);
+                  table
+                    .getColumn("isHeroProduct")
+                    ?.setFilterValue(
+                      newFilter.length > 0 ? newFilter : undefined,
+                    );
                 }}
               >
                 Hero Products
@@ -219,7 +233,11 @@ export function DataTable<TData, TValue>({
                   const newFilter = checked
                     ? [...heroFilter, false]
                     : heroFilter.filter((h) => h !== false);
-                  table.getColumn("isHeroProduct")?.setFilterValue(newFilter.length > 0 ? newFilter : undefined);
+                  table
+                    .getColumn("isHeroProduct")
+                    ?.setFilterValue(
+                      newFilter.length > 0 ? newFilter : undefined,
+                    );
                 }}
               >
                 Regular Products
@@ -230,16 +248,18 @@ export function DataTable<TData, TValue>({
 
         <Sheet open={addProductOpen} onOpenChange={setAddProductOpen}>
           <SheetTrigger asChild>
-            <Button onClick={() => setAddProductMode("api")}>Add Product</Button>
+            <Button onClick={() => setAddProductMode("api")}>
+              Add Product
+            </Button>
           </SheetTrigger>
           {addProductMode === "api" ? (
-            <AddProductApiFirst 
+            <AddProductApiFirst
               onOpenManualForm={() => setAddProductMode("manual")}
               onClose={() => {
                 setAddProductOpen(false);
                 setAddProductMode("api");
                 router.refresh();
-              }} 
+              }}
             />
           ) : (
             <AddProduct
@@ -262,11 +282,15 @@ export function DataTable<TData, TValue>({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               size="sm"
               onClick={() => {
-                if (confirm(`Are you sure you want to delete ${selectedCount} product${selectedCount > 1 ? "s" : ""}?`)) {
+                if (
+                  confirm(
+                    `Are you sure you want to delete ${selectedCount} product${selectedCount > 1 ? "s" : ""}?`,
+                  )
+                ) {
                   deleteMutation.mutate();
                 }
               }}
@@ -279,52 +303,57 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <DataTablePagination table={table} />
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <DataTablePagination table={table} />
+      </div>
     </div>
-  </div>
   );
-  
 }

@@ -5,7 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
 import HeroSkeleton from "./skeletons/HeroSkeleton";
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles, Tag } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Sparkles,
+  Tag,
+} from "lucide-react";
 import { getCloudinaryUrl } from "@/lib/utils/cloudinary";
 
 interface HeroProduct {
@@ -29,21 +35,52 @@ interface HeroSectionProps {
 // Helper function to get stock status badge info
 const getStockBadge = (status: string) => {
   switch (status) {
-    case 'in_stock':
-      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500', showOfferIcon: false };
-    case 'limited_stock':
-      return { label: 'Limited Stock', bgColor: 'bg-[#FDB913]/20', textColor: 'text-[#001E3C]', dotColor: 'bg-[#FDB913]', showOfferIcon: true };
-    case 'pre_order':
-      return { label: 'Pre-Order', bgColor: 'bg-[#0A7EA4]/20', textColor: 'text-[#0A7EA4]', dotColor: 'bg-[#0A7EA4]', showOfferIcon: false };
-    case 'out_of_stock':
-      return { label: 'Out of Stock', bgColor: 'bg-red-100', textColor: 'text-red-800', dotColor: 'bg-red-500', showOfferIcon: false };
+    case "in_stock":
+      return {
+        label: "In Stock",
+        bgColor: "bg-green-100",
+        textColor: "text-green-800",
+        dotColor: "bg-green-500",
+        showOfferIcon: false,
+      };
+    case "limited_stock":
+      return {
+        label: "Limited Stock",
+        bgColor: "bg-[#FDB913]/20",
+        textColor: "text-[#001E3C]",
+        dotColor: "bg-[#FDB913]",
+        showOfferIcon: true,
+      };
+    case "pre_order":
+      return {
+        label: "Pre-Order",
+        bgColor: "bg-[#0A7EA4]/20",
+        textColor: "text-[#0A7EA4]",
+        dotColor: "bg-[#0A7EA4]",
+        showOfferIcon: false,
+      };
+    case "out_of_stock":
+      return {
+        label: "Out of Stock",
+        bgColor: "bg-red-100",
+        textColor: "text-red-800",
+        dotColor: "bg-red-500",
+        showOfferIcon: false,
+      };
     default:
-      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500', showOfferIcon: false };
+      return {
+        label: "In Stock",
+        bgColor: "bg-green-100",
+        textColor: "text-green-800",
+        dotColor: "bg-green-500",
+        showOfferIcon: false,
+      };
   }
 };
 
 const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
-  const [heroProducts, setHeroProducts] = useState<HeroProduct[]>(initialProducts);
+  const [heroProducts, setHeroProducts] =
+    useState<HeroProduct[]>(initialProducts);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -79,12 +116,15 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
     return () => clearInterval(interval);
   }, [heroProducts.length]);
 
-  const handleSlideChange = useCallback((newIndex: number) => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentSlide(newIndex);
-    setTimeout(() => setIsTransitioning(false), 500);
-  }, [isTransitioning]);
+  const handleSlideChange = useCallback(
+    (newIndex: number) => {
+      if (isTransitioning) return;
+      setIsTransitioning(true);
+      setCurrentSlide(newIndex);
+      setTimeout(() => setIsTransitioning(false), 500);
+    },
+    [isTransitioning],
+  );
 
   const nextSlide = useCallback(() => {
     if (heroProducts.length > 0) {
@@ -94,7 +134,9 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
   const prevSlide = useCallback(() => {
     if (heroProducts.length > 0) {
-      handleSlideChange((currentSlide - 1 + heroProducts.length) % heroProducts.length);
+      handleSlideChange(
+        (currentSlide - 1 + heroProducts.length) % heroProducts.length,
+      );
     }
   }, [heroProducts.length, currentSlide, handleSlideChange]);
 
@@ -155,18 +197,20 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
     if (firstColor && product.images && product.images[firstColor]) {
       const imageData = product.images[firstColor];
       // Handle both string and array formats
-      if (typeof imageData === 'string' && imageData.trim() !== '') {
+      if (typeof imageData === "string" && imageData.trim() !== "") {
         imageUrl = imageData;
       } else if (Array.isArray(imageData) && imageData.length > 0) {
-        const validUrl = imageData.find((url: string) => url && typeof url === 'string' && url.trim() !== '');
+        const validUrl = imageData.find(
+          (url: string) => url && typeof url === "string" && url.trim() !== "",
+        );
         imageUrl = validUrl || imageUrl;
       }
     }
 
     return getCloudinaryUrl(imageUrl, {
       width: 1200,
-      quality: 'auto',
-      format: 'auto',
+      quality: "auto",
+      format: "auto",
     });
   };
 
@@ -209,26 +253,34 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[600px] lg:min-h-[700px] py-12 lg:py-0">
-
           {/* LEFT COLUMN - Text Content */}
           <div className="lg:col-span-5 flex flex-col justify-center space-y-6 lg:space-y-8 order-2 lg:order-1 z-10">
             <div className="space-y-6">
-
               {/* Headline & Subtitle */}
               <div
-                className={`space-y-4 transition-all duration-500 ease-out ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-                  }`}
-              >              {/* Stock Status Badge */}
-                {currentProduct.stockStatus && (() => {
-                  const badge = getStockBadge(currentProduct.stockStatus);
-                  return (
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.bgColor} ${badge.textColor} text-sm font-semibold`}>
-                      <span className={`w-2 h-2 rounded-full ${badge.dotColor} animate-pulse`}></span>
-                      {badge.showOfferIcon && <Tag className="w-3 h-3" />}
-                      {badge.label}
-                    </div>
-                  );
-                })()}
+                className={`space-y-4 transition-all duration-500 ease-out ${
+                  isTransitioning
+                    ? "opacity-0 translate-y-4"
+                    : "opacity-100 translate-y-0"
+                }`}
+              >
+                {" "}
+                {/* Stock Status Badge */}
+                {currentProduct.stockStatus &&
+                  (() => {
+                    const badge = getStockBadge(currentProduct.stockStatus);
+                    return (
+                      <div
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.bgColor} ${badge.textColor} text-sm font-semibold`}
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${badge.dotColor} animate-pulse`}
+                        ></span>
+                        {badge.showOfferIcon && <Tag className="w-3 h-3" />}
+                        {badge.label}
+                      </div>
+                    );
+                  })()}
                 <h1 className="text-6xl xl:text-7xl font-bold text-gray-900 leading-tight">
                   {headline}
                 </h1>
@@ -239,8 +291,11 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
               {/* CTA Buttons */}
               <div
-                className={`flex flex-col sm:flex-row gap-4 transition-all duration-500 ease-out delay-100 ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-                  }`}
+                className={`flex flex-col sm:flex-row gap-4 transition-all duration-500 ease-out delay-100 ${
+                  isTransitioning
+                    ? "opacity-0 translate-y-4"
+                    : "opacity-100 translate-y-0"
+                }`}
               >
                 <Link
                   href={`/products/${currentProduct.id}`}
@@ -259,17 +314,21 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
               {/* Pagination Dots */}
               <div
-                className={`hidden lg:flex items-center gap-2 pt-8 transition-all duration-500 ease-out delay-150 ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
-                  }`}
+                className={`hidden lg:flex items-center gap-2 pt-8 transition-all duration-500 ease-out delay-150 ${
+                  isTransitioning
+                    ? "opacity-0 translate-y-4"
+                    : "opacity-100 translate-y-0"
+                }`}
               >
                 {heroProducts.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => handleSlideChange(index)}
-                    className={`transition-all duration-300 rounded-full ${index === currentSlide
+                    className={`transition-all duration-300 rounded-full ${
+                      index === currentSlide
                         ? "w-8 h-2 bg-[#FDB913]"
                         : "w-2 h-2 bg-gray-300 hover:bg-[#0A7EA4]"
-                      }`}
+                    }`}
                     aria-label={`Go to slide ${index + 1}`}
                     aria-current={index === currentSlide ? "true" : "false"}
                   />
@@ -280,12 +339,14 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
           {/* RIGHT COLUMN - Product Image */}
           <div className="lg:col-span-7 relative flex items-center justify-center order-1 lg:order-2">
-
             {/* Main Product Image */}
             <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[550px]">
               <div
-                className={`relative w-full h-full transition-all duration-500 ease-out ${isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-                  }`}
+                className={`relative w-full h-full transition-all duration-500 ease-out ${
+                  isTransitioning
+                    ? "opacity-0 scale-95"
+                    : "opacity-100 scale-100"
+                }`}
               >
                 <Image
                   src={getProductImage(currentProduct)}
@@ -300,8 +361,11 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
             {/* Floating Product Card */}
             <div
-              className={`absolute bottom-4 right-4 sm:bottom-8 sm:right-8 lg:bottom-12 lg:right-0 bg-white rounded-xl shadow-xl p-4 sm:p-5 w-[200px] sm:w-[240px] transition-all duration-500 ease-out delay-200 ${isTransitioning ? "opacity-0 translate-x-8" : "opacity-100 translate-x-0"
-                }`}
+              className={`absolute bottom-4 right-4 sm:bottom-8 sm:right-8 lg:bottom-12 lg:right-0 bg-white rounded-xl shadow-xl p-4 sm:p-5 w-[200px] sm:w-[240px] transition-all duration-500 ease-out delay-200 ${
+                isTransitioning
+                  ? "opacity-0 translate-x-8"
+                  : "opacity-100 translate-x-0"
+              }`}
             >
               <div className="relative w-full h-24 sm:h-28 mb-3 bg-gray-50 rounded-lg overflow-hidden">
                 <Image
@@ -313,16 +377,21 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
               </div>
 
               {/* Stock Status Badge */}
-              {currentProduct.stockStatus && (() => {
-                const badge = getStockBadge(currentProduct.stockStatus);
-                return (
-                  <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${badge.bgColor} ${badge.textColor} text-xs font-semibold mb-2`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`}></span>
-                    {badge.showOfferIcon && <Tag className="w-3 h-3" />}
-                    {badge.label}
-                  </div>
-                );
-              })()}
+              {currentProduct.stockStatus &&
+                (() => {
+                  const badge = getStockBadge(currentProduct.stockStatus);
+                  return (
+                    <div
+                      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${badge.bgColor} ${badge.textColor} text-xs font-semibold mb-2`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`}
+                      ></span>
+                      {badge.showOfferIcon && <Tag className="w-3 h-3" />}
+                      {badge.label}
+                    </div>
+                  );
+                })()}
 
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2 line-clamp-2">
                 {currentProduct.name}
@@ -373,10 +442,11 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
           <button
             key={index}
             onClick={() => handleSlideChange(index)}
-            className={`transition-all duration-300 rounded-full ${index === currentSlide
+            className={`transition-all duration-300 rounded-full ${
+              index === currentSlide
                 ? "w-6 h-2 bg-[#FDB913]"
                 : "w-2 h-2 bg-gray-300 hover:bg-[#0A7EA4]"
-              }`}
+            }`}
             aria-label={`Go to slide ${index + 1}`}
             aria-current={index === currentSlide ? "true" : "false"}
           />
@@ -384,9 +454,13 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
       </div>
       {/* Slide Counter - Top Right */}
       <div className="absolute top-4 right-4 sm:top-8 sm:right-8 lg:top-8 lg:right-12 text-sm font-medium z-20">
-        <span className="text-[#001E3C] font-bold">{String(currentSlide + 1).padStart(2, "0")}</span>
+        <span className="text-[#001E3C] font-bold">
+          {String(currentSlide + 1).padStart(2, "0")}
+        </span>
         <span className="text-[#0A7EA4] mx-2">/</span>
-        <span className="text-gray-500">{String(heroProducts.length).padStart(2, "0")}</span>
+        <span className="text-gray-500">
+          {String(heroProducts.length).padStart(2, "0")}
+        </span>
       </div>
     </section>
   );

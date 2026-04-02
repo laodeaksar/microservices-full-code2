@@ -1,9 +1,9 @@
 /**
  * External Product API Integration
- * 
+ *
  * Fetches product details from TechSpecs API with fallback to multiple free APIs.
  * Includes caching, rate limiting, and error handling.
- * 
+ *
  * API Priority:
  * 1. TechSpecs API - Primary for tech products (requires TECHSPECS_API_KEY)
  * 2. DummyJSON - Good fallback with product dimensions
@@ -43,7 +43,7 @@ interface PlatziProduct {
 }
 
 export interface ExternalProductResult {
-  source: 'techspecs' | 'fakestore' | 'dummyjson' | 'platzi';
+  source: "techspecs" | "fakestore" | "dummyjson" | "platzi";
   id: string;
   name: string;
   brand: string;
@@ -56,7 +56,10 @@ export interface ExternalProductResult {
 }
 
 // Simple in-memory cache with TTL
-const cache = new Map<string, { data: ExternalProductResult[]; expiry: number }>();
+const cache = new Map<
+  string,
+  { data: ExternalProductResult[]; expiry: number }
+>();
 const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 // Rate limiting
@@ -67,16 +70,16 @@ const RATE_LIMIT_MAX = 30; // 30 requests per minute
 function checkRateLimit(key: string): boolean {
   const now = Date.now();
   const limit = rateLimitMap.get(key);
-  
+
   if (!limit || now > limit.resetAt) {
     rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
     return true;
   }
-  
+
   if (limit.count >= RATE_LIMIT_MAX) {
     return false;
   }
-  
+
   limit.count++;
   return true;
 }
@@ -98,29 +101,32 @@ function setCache(query: string, data: ExternalProductResult[]): void {
  * Normalize external image payloads into valid https URLs.
  * Handles arrays, JSON-string arrays, relative paths, and protocol-relative URLs.
  */
-function normalizeExternalImages(rawImages: unknown, fallbackImage?: unknown): string[] {
+function normalizeExternalImages(
+  rawImages: unknown,
+  fallbackImage?: unknown,
+): string[] {
   const result: string[] = [];
   const seen = new Set<string>();
 
   const pushUrl = (input: unknown) => {
-    if (typeof input !== 'string') return;
+    if (typeof input !== "string") return;
 
     let value = input.trim();
     if (!value) return;
 
-    value = value.replace(/^['\"]+|['\"]+$/g, '');
+    value = value.replace(/^['\"]+|['\"]+$/g, "");
 
-    if (value.startsWith('//')) {
+    if (value.startsWith("//")) {
       value = `https:${value}`;
     }
 
     // Avoid mixed-content blocking in browser previews.
-    if (value.startsWith('http://')) {
-      value = `https://${value.slice('http://'.length)}`;
+    if (value.startsWith("http://")) {
+      value = `https://${value.slice("http://".length)}`;
     }
 
     // Platzi can return relative file paths for images.
-    if (value.startsWith('/')) {
+    if (value.startsWith("/")) {
       value = `https://api.escuelajs.co${value}`;
     }
 
@@ -144,10 +150,13 @@ function normalizeExternalImages(rawImages: unknown, fallbackImage?: unknown): s
       return;
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       const trimmed = value.trim();
 
-      if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
+      if (
+        (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
+        (trimmed.startsWith("{") && trimmed.endsWith("}"))
+      ) {
         try {
           processValue(JSON.parse(trimmed));
           return;
@@ -160,7 +169,7 @@ function normalizeExternalImages(rawImages: unknown, fallbackImage?: unknown): s
       return;
     }
 
-    if (value && typeof value === 'object') {
+    if (value && typeof value === "object") {
       pushUrl((value as Record<string, unknown>).url);
     }
   };
@@ -174,16 +183,20 @@ function normalizeExternalImages(rawImages: unknown, fallbackImage?: unknown): s
 /**
  * Search TechSpecs API for product details
  */
-async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> {
+async function searchTechSpecs(
+  query: string,
+): Promise<ExternalProductResult[]> {
   const apiToken = (
     process.env.TECHSPECS_BEARER_TOKEN ||
     process.env.TECHSPECS_API_TOKEN ||
     process.env.TECHSPECS_API_KEY ||
     ""
   ).trim();
-  
+
   if (!apiToken) {
-    console.warn('TechSpecs token not configured (set TECHSPECS_BEARER_TOKEN or TECHSPECS_API_KEY), skipping TechSpecs search');
+    console.warn(
+      "TechSpecs token not configured (set TECHSPECS_BEARER_TOKEN or TECHSPECS_API_KEY), skipping TechSpecs search",
+    );
     return [];
   }
 
@@ -192,65 +205,77 @@ async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> 
     const response = await fetch(
       `https://api.techspecs.io/v4/product/search?query=${encodeURIComponent(query)}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${apiToken}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${apiToken}`,
+          Accept: "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {
-      let apiErrorText = '';
+      let apiErrorText = "";
       try {
         apiErrorText = await response.text();
       } catch {
-        apiErrorText = '';
+        apiErrorText = "";
       }
 
       if (response.status === 401) {
-        console.error('TechSpecs API auth failed (401). Check TECHSPECS_BEARER_TOKEN/TECHSPECS_API_KEY value.');
+        console.error(
+          "TechSpecs API auth failed (401). Check TECHSPECS_BEARER_TOKEN/TECHSPECS_API_KEY value.",
+        );
       }
 
-      console.error(`TechSpecs API error: ${response.status} ${response.statusText}${apiErrorText ? ` | ${apiErrorText.slice(0, 200)}` : ''}`);
+      console.error(
+        `TechSpecs API error: ${response.status} ${response.statusText}${apiErrorText ? ` | ${apiErrorText.slice(0, 200)}` : ""}`,
+      );
       return [];
     }
 
     const data = await response.json();
-    
+
     if (!data.data?.items || !Array.isArray(data.data.items)) {
       return [];
     }
 
-    return data.data.items.slice(0, 10).map((item: any): ExternalProductResult => {
-      // Transform TechSpecs response to our format
-      const specs: Record<string, Array<{ label: string; value: string }>> = {};
-      
-      if (item.specifications) {
-        for (const [category, categorySpecs] of Object.entries(item.specifications)) {
-          if (typeof categorySpecs === 'object' && categorySpecs !== null) {
-            specs[category] = Object.entries(categorySpecs as Record<string, string>).map(
-              ([label, value]) => ({ label, value: String(value) })
-            );
+    return data.data.items
+      .slice(0, 10)
+      .map((item: any): ExternalProductResult => {
+        // Transform TechSpecs response to our format
+        const specs: Record<
+          string,
+          Array<{ label: string; value: string }>
+        > = {};
+
+        if (item.specifications) {
+          for (const [category, categorySpecs] of Object.entries(
+            item.specifications,
+          )) {
+            if (typeof categorySpecs === "object" && categorySpecs !== null) {
+              specs[category] = Object.entries(
+                categorySpecs as Record<string, string>,
+              ).map(([label, value]) => ({ label, value: String(value) }));
+            }
           }
         }
-      }
 
-      return {
-        source: 'techspecs',
-        id: item.id || item.product_id || String(Date.now()),
-        name: item.name || item.product_name || query,
-        brand: item.brand || item.manufacturer || 'Unknown',
-        description: item.description || `${item.brand || ''} ${item.name || ''}`.trim(),
-        shortDescription: item.tagline || item.subtitle || '',
-        category: item.category || 'electronics',
-        images: item.images || (item.image ? [item.image] : []),
-        technicalSpecs: specs,
-        suggestedPrice: item.price?.value,
-      };
-    });
+        return {
+          source: "techspecs",
+          id: item.id || item.product_id || String(Date.now()),
+          name: item.name || item.product_name || query,
+          brand: item.brand || item.manufacturer || "Unknown",
+          description:
+            item.description || `${item.brand || ""} ${item.name || ""}`.trim(),
+          shortDescription: item.tagline || item.subtitle || "",
+          category: item.category || "electronics",
+          images: item.images || (item.image ? [item.image] : []),
+          technicalSpecs: specs,
+          suggestedPrice: item.price?.value,
+        };
+      });
   } catch (error) {
-    console.error('TechSpecs API error:', error);
+    console.error("TechSpecs API error:", error);
     return [];
   }
 }
@@ -258,10 +283,12 @@ async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> 
 /**
  * Fallback: Search DummyJSON API for products
  */
-async function searchDummyJson(query: string): Promise<ExternalProductResult[]> {
+async function searchDummyJson(
+  query: string,
+): Promise<ExternalProductResult[]> {
   try {
     const response = await fetch(
-      `https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=10`
+      `https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=10`,
     );
 
     if (!response.ok) {
@@ -277,47 +304,63 @@ async function searchDummyJson(query: string): Promise<ExternalProductResult[]> 
     return data.products.map((item: any): ExternalProductResult => {
       // Build specs from available data
       const specs: Record<string, Array<{ label: string; value: string }>> = {};
-      
+
       if (item.dimensions) {
-        specs['Physical Specifications'] = [
-          { label: 'Width', value: `${item.dimensions.width} cm` },
-          { label: 'Height', value: `${item.dimensions.height} cm` },
-          { label: 'Depth', value: `${item.dimensions.depth} cm` },
+        specs["Physical Specifications"] = [
+          { label: "Width", value: `${item.dimensions.width} cm` },
+          { label: "Height", value: `${item.dimensions.height} cm` },
+          { label: "Depth", value: `${item.dimensions.depth} cm` },
         ];
       }
-      
+
       if (item.weight) {
-        specs['Physical Specifications'] = specs['Physical Specifications'] || [];
-        specs['Physical Specifications'].push({ label: 'Weight', value: `${item.weight} g` });
+        specs["Physical Specifications"] =
+          specs["Physical Specifications"] || [];
+        specs["Physical Specifications"].push({
+          label: "Weight",
+          value: `${item.weight} g`,
+        });
       }
 
-      specs['Product Information'] = [
-        { label: 'SKU', value: item.sku || 'N/A' },
-        { label: 'Warranty', value: item.warrantyInformation || 'Standard warranty' },
-        { label: 'Shipping', value: item.shippingInformation || 'Standard shipping' },
-        { label: 'Return Policy', value: item.returnPolicy || 'Standard returns' },
-        { label: 'Availability', value: item.availabilityStatus || 'In stock' },
+      specs["Product Information"] = [
+        { label: "SKU", value: item.sku || "N/A" },
+        {
+          label: "Warranty",
+          value: item.warrantyInformation || "Standard warranty",
+        },
+        {
+          label: "Shipping",
+          value: item.shippingInformation || "Standard shipping",
+        },
+        {
+          label: "Return Policy",
+          value: item.returnPolicy || "Standard returns",
+        },
+        { label: "Availability", value: item.availabilityStatus || "In stock" },
       ];
 
       if (item.tags && item.tags.length > 0) {
-        specs['Tags'] = item.tags.map((tag: string) => ({ label: 'Tag', value: tag }));
+        specs["Tags"] = item.tags.map((tag: string) => ({
+          label: "Tag",
+          value: tag,
+        }));
       }
 
       return {
-        source: 'dummyjson',
+        source: "dummyjson",
         id: String(item.id),
         name: item.title,
-        brand: item.brand || 'Generic',
+        brand: item.brand || "Generic",
         description: item.description,
         shortDescription: item.title,
-        category: item.category || 'electronics',
+        category: item.category || "electronics",
         images: item.images || (item.thumbnail ? [item.thumbnail] : []),
         technicalSpecs: specs,
         suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined, // Convert USD to TZS roughly
       };
     });
   } catch (error) {
-    console.error('DummyJSON API error:', error);
+    console.error("DummyJSON API error:", error);
     return [];
   }
 }
@@ -325,45 +368,53 @@ async function searchDummyJson(query: string): Promise<ExternalProductResult[]> 
 /**
  * Fallback: Search FakeStore API for products
  */
-async function searchFakeStore(query: string): Promise<ExternalProductResult[]> {
+async function searchFakeStore(
+  query: string,
+): Promise<ExternalProductResult[]> {
   try {
     // FakeStore doesn't have search, so we get all and filter
-    const response = await fetch('https://fakestoreapi.com/products');
+    const response = await fetch("https://fakestoreapi.com/products");
 
     if (!response.ok) {
       return [];
     }
 
     const products: FakeStoreProduct[] = await response.json();
-    
+
     // Filter by query
     const filtered = products
-      .filter(p => 
-        p.title.toLowerCase().includes(query.toLowerCase()) ||
-        p.description.toLowerCase().includes(query.toLowerCase()) ||
-        p.category.toLowerCase().includes(query.toLowerCase())
+      .filter(
+        (p) =>
+          p.title.toLowerCase().includes(query.toLowerCase()) ||
+          p.description.toLowerCase().includes(query.toLowerCase()) ||
+          p.category.toLowerCase().includes(query.toLowerCase()),
       )
       .slice(0, 10);
 
-    return filtered.map((item): ExternalProductResult => ({
-      source: 'fakestore',
-      id: String(item.id),
-      name: item.title,
-      brand: 'Generic',
-      description: item.description,
-      shortDescription: item.title.slice(0, 100),
-      category: item.category,
-      images: [item.image],
-      technicalSpecs: {
-        'Product Information': [
-          { label: 'Rating', value: `${item.rating.rate}/5 (${item.rating.count} reviews)` },
-          { label: 'Category', value: item.category },
-        ],
-      },
-      suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined, // Convert USD to TZS roughly
-    }));
+    return filtered.map(
+      (item): ExternalProductResult => ({
+        source: "fakestore",
+        id: String(item.id),
+        name: item.title,
+        brand: "Generic",
+        description: item.description,
+        shortDescription: item.title.slice(0, 100),
+        category: item.category,
+        images: [item.image],
+        technicalSpecs: {
+          "Product Information": [
+            {
+              label: "Rating",
+              value: `${item.rating.rate}/5 (${item.rating.count} reviews)`,
+            },
+            { label: "Category", value: item.category },
+          ],
+        },
+        suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined, // Convert USD to TZS roughly
+      }),
+    );
   } catch (error) {
-    console.error('FakeStore API error:', error);
+    console.error("FakeStore API error:", error);
     return [];
   }
 }
@@ -376,7 +427,7 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
   try {
     // Platzi API has search via title parameter
     const response = await fetch(
-      `https://api.escuelajs.co/api/v1/products?title=${encodeURIComponent(query)}&limit=10`
+      `https://api.escuelajs.co/api/v1/products?title=${encodeURIComponent(query)}&limit=10`,
     );
 
     if (!response.ok) {
@@ -385,7 +436,9 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
 
     const responseData = await response.json();
     // Platzi returns { value: [...], Count: number } format
-    const products = Array.isArray(responseData) ? responseData : (responseData.value || []);
+    const products = Array.isArray(responseData)
+      ? responseData
+      : responseData.value || [];
 
     if (!Array.isArray(products)) {
       return [];
@@ -395,25 +448,28 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
       const cleanImages = normalizeExternalImages(item.images, item.image);
 
       return {
-        source: 'platzi',
+        source: "platzi",
         id: String(item.id),
         name: item.title,
         brand: extractBrandFromTitle(item.title),
         description: item.description || `${item.title} - High quality product`,
         shortDescription: item.title.slice(0, 100),
-        category: item.category?.name || 'electronics',
-        images: cleanImages.length > 0 ? cleanImages : ['https://placehold.co/400x400?text=No+Image'],
+        category: item.category?.name || "electronics",
+        images:
+          cleanImages.length > 0
+            ? cleanImages
+            : ["https://placehold.co/400x400?text=No+Image"],
         technicalSpecs: {
-          'Product Information': [
-            { label: 'Category', value: item.category?.name || 'Unknown' },
-            { label: 'Product ID', value: String(item.id) },
+          "Product Information": [
+            { label: "Category", value: item.category?.name || "Unknown" },
+            { label: "Product ID", value: String(item.id) },
           ],
         },
         suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
       };
     });
   } catch (error) {
-    console.error('Platzi API error:', error);
+    console.error("Platzi API error:", error);
     return [];
   }
 }
@@ -423,28 +479,69 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
  */
 function extractBrandFromTitle(title: string): string {
   const knownBrands = [
-    'Apple', 'Samsung', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer',
-    'Microsoft', 'Google', 'OnePlus', 'Xiaomi', 'Huawei', 'Oppo', 'Vivo',
-    'JBL', 'Bose', 'Sennheiser', 'Audio-Technica', 'Beats', 'Anker',
-    'Logitech', 'Razer', 'SteelSeries', 'Corsair', 'HyperX',
-    'Nintendo', 'PlayStation', 'Xbox', 'Canon', 'Nikon', 'GoPro',
-    'Fitbit', 'Garmin', 'Amazfit', 'Polar', 'Suunto',
-    'Nike', 'Adidas', 'Puma', 'Under Armour', 'New Balance',
+    "Apple",
+    "Samsung",
+    "Sony",
+    "LG",
+    "Dell",
+    "HP",
+    "Lenovo",
+    "Asus",
+    "Acer",
+    "Microsoft",
+    "Google",
+    "OnePlus",
+    "Xiaomi",
+    "Huawei",
+    "Oppo",
+    "Vivo",
+    "JBL",
+    "Bose",
+    "Sennheiser",
+    "Audio-Technica",
+    "Beats",
+    "Anker",
+    "Logitech",
+    "Razer",
+    "SteelSeries",
+    "Corsair",
+    "HyperX",
+    "Nintendo",
+    "PlayStation",
+    "Xbox",
+    "Canon",
+    "Nikon",
+    "GoPro",
+    "Fitbit",
+    "Garmin",
+    "Amazfit",
+    "Polar",
+    "Suunto",
+    "Nike",
+    "Adidas",
+    "Puma",
+    "Under Armour",
+    "New Balance",
   ];
-  
+
   for (const brand of knownBrands) {
     if (title.toLowerCase().includes(brand.toLowerCase())) {
       return brand;
     }
   }
-  
+
   // Try to extract first word as brand
-  const firstWord = title.split(' ')[0];
-  if (firstWord && firstWord.length > 2 && firstWord[0] && firstWord[0] === firstWord[0].toUpperCase()) {
+  const firstWord = title.split(" ")[0];
+  if (
+    firstWord &&
+    firstWord.length > 2 &&
+    firstWord[0] &&
+    firstWord[0] === firstWord[0].toUpperCase()
+  ) {
     return firstWord;
   }
-  
-  return 'Generic';
+
+  return "Generic";
 }
 
 /**
@@ -452,8 +549,12 @@ function extractBrandFromTitle(title: string): string {
  */
 export async function searchExternalProducts(
   query: string,
-  clientId: string = 'default'
-): Promise<{ results: ExternalProductResult[]; fromCache: boolean; rateLimited: boolean }> {
+  clientId: string = "default",
+): Promise<{
+  results: ExternalProductResult[];
+  fromCache: boolean;
+  rateLimited: boolean;
+}> {
   // Check rate limit
   if (!checkRateLimit(clientId)) {
     return { results: [], fromCache: false, rateLimited: true };
@@ -466,12 +567,13 @@ export async function searchExternalProducts(
   }
 
   // Fetch all sources so admin can choose across APIs, not just first non-empty fallback.
-  const [techspecsResults, dummyJsonResults, platziResults, fakeStoreResults] = await Promise.all([
-    searchTechSpecs(query),
-    searchDummyJson(query),
-    searchPlatzi(query),
-    searchFakeStore(query),
-  ]);
+  const [techspecsResults, dummyJsonResults, platziResults, fakeStoreResults] =
+    await Promise.all([
+      searchTechSpecs(query),
+      searchDummyJson(query),
+      searchPlatzi(query),
+      searchFakeStore(query),
+    ]);
 
   // Preserve source priority while including all available results.
   const mergedResults = [
@@ -504,11 +606,11 @@ export async function searchExternalProducts(
  * Get detailed product by ID from external API
  */
 export async function getExternalProductDetails(
-  source: 'techspecs' | 'fakestore' | 'dummyjson' | 'platzi',
-  productId: string
+  source: "techspecs" | "fakestore" | "dummyjson" | "platzi",
+  productId: string,
 ): Promise<ExternalProductResult | null> {
   try {
-    if (source === 'techspecs') {
+    if (source === "techspecs") {
       const apiKey = process.env.TECHSPECS_API_KEY;
       if (!apiKey) return null;
 
@@ -516,10 +618,10 @@ export async function getExternalProductDetails(
         `https://api.techspecs.io/v4/product/detail?productId=${productId}`,
         {
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Accept': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+            Accept: "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) return null;
@@ -530,57 +632,65 @@ export async function getExternalProductDetails(
 
       const specs: Record<string, Array<{ label: string; value: string }>> = {};
       if (item.specifications) {
-        for (const [category, categorySpecs] of Object.entries(item.specifications)) {
-          if (typeof categorySpecs === 'object' && categorySpecs !== null) {
-            specs[category] = Object.entries(categorySpecs as Record<string, string>).map(
-              ([label, value]) => ({ label, value: String(value) })
-            );
+        for (const [category, categorySpecs] of Object.entries(
+          item.specifications,
+        )) {
+          if (typeof categorySpecs === "object" && categorySpecs !== null) {
+            specs[category] = Object.entries(
+              categorySpecs as Record<string, string>,
+            ).map(([label, value]) => ({ label, value: String(value) }));
           }
         }
       }
 
       return {
-        source: 'techspecs',
+        source: "techspecs",
         id: item.id,
         name: item.name,
-        brand: item.brand || 'Unknown',
-        description: item.description || '',
-        shortDescription: item.tagline || '',
-        category: item.category || 'electronics',
+        brand: item.brand || "Unknown",
+        description: item.description || "",
+        shortDescription: item.tagline || "",
+        category: item.category || "electronics",
         images: item.images || [],
         technicalSpecs: specs,
         suggestedPrice: item.price?.value,
       };
     }
 
-    if (source === 'dummyjson') {
-      const response = await fetch(`https://dummyjson.com/products/${productId}`);
+    if (source === "dummyjson") {
+      const response = await fetch(
+        `https://dummyjson.com/products/${productId}`,
+      );
       if (!response.ok) return null;
 
       const item = await response.json();
-      
+
       const specs: Record<string, Array<{ label: string; value: string }>> = {};
       if (item.dimensions) {
-        specs['Physical Specifications'] = [
-          { label: 'Width', value: `${item.dimensions.width} cm` },
-          { label: 'Height', value: `${item.dimensions.height} cm` },
-          { label: 'Depth', value: `${item.dimensions.depth} cm` },
+        specs["Physical Specifications"] = [
+          { label: "Width", value: `${item.dimensions.width} cm` },
+          { label: "Height", value: `${item.dimensions.height} cm` },
+          { label: "Depth", value: `${item.dimensions.depth} cm` },
         ];
       }
       if (item.weight) {
-        specs['Physical Specifications'] = specs['Physical Specifications'] || [];
-        specs['Physical Specifications'].push({ label: 'Weight', value: `${item.weight} g` });
+        specs["Physical Specifications"] =
+          specs["Physical Specifications"] || [];
+        specs["Physical Specifications"].push({
+          label: "Weight",
+          value: `${item.weight} g`,
+        });
       }
-      specs['Product Information'] = [
-        { label: 'SKU', value: item.sku || 'N/A' },
-        { label: 'Warranty', value: item.warrantyInformation || 'Standard' },
+      specs["Product Information"] = [
+        { label: "SKU", value: item.sku || "N/A" },
+        { label: "Warranty", value: item.warrantyInformation || "Standard" },
       ];
 
       return {
-        source: 'dummyjson',
+        source: "dummyjson",
         id: String(item.id),
         name: item.title,
-        brand: item.brand || 'Generic',
+        brand: item.brand || "Generic",
         description: item.description,
         shortDescription: item.title,
         category: item.category,
@@ -590,32 +700,36 @@ export async function getExternalProductDetails(
       };
     }
 
-    if (source === 'fakestore') {
-      const response = await fetch(`https://fakestoreapi.com/products/${productId}`);
+    if (source === "fakestore") {
+      const response = await fetch(
+        `https://fakestoreapi.com/products/${productId}`,
+      );
       if (!response.ok) return null;
 
       const item: FakeStoreProduct = await response.json();
 
       return {
-        source: 'fakestore',
+        source: "fakestore",
         id: String(item.id),
         name: item.title,
-        brand: 'Generic',
+        brand: "Generic",
         description: item.description,
         shortDescription: item.title.slice(0, 100),
         category: item.category,
         images: [item.image],
         technicalSpecs: {
-          'Product Information': [
-            { label: 'Rating', value: `${item.rating.rate}/5` },
+          "Product Information": [
+            { label: "Rating", value: `${item.rating.rate}/5` },
           ],
         },
         suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
       };
     }
 
-    if (source === 'platzi') {
-      const response = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
+    if (source === "platzi") {
+      const response = await fetch(
+        `https://api.escuelajs.co/api/v1/products/${productId}`,
+      );
       if (!response.ok) return null;
 
       const item: any = await response.json();
@@ -624,18 +738,21 @@ export async function getExternalProductDetails(
       const cleanImages = normalizeExternalImages(item.images, item.image);
 
       return {
-        source: 'platzi',
+        source: "platzi",
         id: String(item.id),
         name: item.title,
         brand,
         description: item.description || `${item.title} - High quality product`,
         shortDescription: item.title.slice(0, 100),
-        category: item.category?.name || 'General',
-        images: cleanImages.length > 0 ? cleanImages : ['https://placehold.co/400x400?text=No+Image'],
+        category: item.category?.name || "General",
+        images:
+          cleanImages.length > 0
+            ? cleanImages
+            : ["https://placehold.co/400x400?text=No+Image"],
         technicalSpecs: {
-          'Product Information': [
-            { label: 'Category', value: item.category?.name || 'General' },
-            { label: 'Product ID', value: String(item.id) },
+          "Product Information": [
+            { label: "Category", value: item.category?.name || "General" },
+            { label: "Product ID", value: String(item.id) },
           ],
         },
         suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
@@ -644,7 +761,7 @@ export async function getExternalProductDetails(
 
     return null;
   } catch (error) {
-    console.error('Error fetching external product details:', error);
+    console.error("Error fetching external product details:", error);
     return null;
   }
 }

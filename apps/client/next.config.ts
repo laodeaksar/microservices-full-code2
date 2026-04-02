@@ -141,7 +141,7 @@ const nextConfig: NextConfig = {
         hostname: "**.hiclipart.com",
       },
     ],
-    formats: ['image/webp', 'image/avif'],
+    formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
@@ -149,17 +149,17 @@ const nextConfig: NextConfig = {
   // Enable compression for better performance
   compress: true,
   // Generate static pages for better SEO
-  output: 'standalone',
+  output: "standalone",
   // Enable React strict mode for better development
   reactStrictMode: true,
   // Power page speed insights
   poweredByHeader: false,
   // Reduce symlink issues on Windows
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ["lucide-react"],
   },
   // Better error reporting
-  productionBrowserSourceMaps: process.env.VERCEL === '1',
+  productionBrowserSourceMaps: process.env.VERCEL === "1",
   // Disable logging of unhandled promise rejections in development
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
@@ -168,4 +168,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

@@ -2,7 +2,13 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { AlertTriangle, Home, RefreshCcw, ArrowLeft, LifeBuoy } from "lucide-react";
+import {
+  AlertTriangle,
+  Home,
+  RefreshCcw,
+  ArrowLeft,
+  LifeBuoy,
+} from "lucide-react";
 
 export default function Error({
   error,
@@ -124,7 +130,7 @@ export default function Error({
                   href="tel:+1234567890"
                   className="text-[#0A7EA4] hover:text-[#001E3C] font-medium underline"
                 >
-                  +255 653 520 829  
+                  +255 653 520 829
                 </a>
               </div>
             </div>
@@ -134,7 +140,8 @@ export default function Error({
         {/* Additional Info */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
-            Error Code: {error.digest || "UNKNOWN"} | Neuraltale Admin Panel v1.0
+            Error Code: {error.digest || "UNKNOWN"} | Neuraltale Admin Panel
+            v1.0
           </p>
         </div>
       </div>

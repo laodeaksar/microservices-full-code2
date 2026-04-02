@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,10 +43,10 @@ import Image from "next/image";
 
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
-  
+
   // Profile settings
   const [displayName, setDisplayName] = useState(user?.fullName || "");
-  
+
   // Notification settings
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [orderAlerts, setOrderAlerts] = useState(true);
@@ -48,12 +54,12 @@ export default function SettingsPage() {
   const [userAlerts, setUserAlerts] = useState(false);
   const [systemAlerts, setSystemAlerts] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
-  
+
   // Appearance settings
   const [theme, setTheme] = useState("system");
   const [compactMode, setCompactMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
   // Regional settings
   const [language, setLanguage] = useState("en");
   const [currency, setCurrency] = useState("TZS");
@@ -108,7 +114,10 @@ export default function SettingsPage() {
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Profile</span>
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2">
+          <TabsTrigger
+            value="notifications"
+            className="flex items-center gap-2"
+          >
             <Bell className="h-4 w-4" />
             <span className="hidden sm:inline">Notifications</span>
           </TabsTrigger>
@@ -127,7 +136,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Update your account details and preferences</CardDescription>
+              <CardDescription>
+                Update your account details and preferences
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Avatar Section */}
@@ -147,8 +158,12 @@ export default function SettingsPage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-medium">{user?.fullName || "Admin User"}</h3>
-                  <p className="text-sm text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
+                  <h3 className="font-medium">
+                    {user?.fullName || "Admin User"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {user?.primaryEmailAddress?.emailAddress}
+                  </p>
                   <Badge variant="secondary" className="mt-1">
                     <Shield className="h-3 w-3 mr-1" />
                     Administrator
@@ -218,7 +233,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how you want to be notified</CardDescription>
+              <CardDescription>
+                Choose how you want to be notified
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Email Notifications */}
@@ -334,7 +351,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Appearance Settings</CardTitle>
-              <CardDescription>Customize how the dashboard looks</CardDescription>
+              <CardDescription>
+                Customize how the dashboard looks
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Theme Selection */}
@@ -344,7 +363,9 @@ export default function SettingsPage() {
                   <div
                     onClick={() => setTheme("light")}
                     className={`cursor-pointer border-2 rounded-lg p-4 text-center transition-colors ${
-                      theme === "light" ? "border-[#0A7EA4] bg-[#0A7EA4]/5" : "border-gray-200 hover:border-gray-300"
+                      theme === "light"
+                        ? "border-[#0A7EA4] bg-[#0A7EA4]/5"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Sun className="h-6 w-6 mx-auto mb-2" />
@@ -353,7 +374,9 @@ export default function SettingsPage() {
                   <div
                     onClick={() => setTheme("dark")}
                     className={`cursor-pointer border-2 rounded-lg p-4 text-center transition-colors ${
-                      theme === "dark" ? "border-[#0A7EA4] bg-[#0A7EA4]/5" : "border-gray-200 hover:border-gray-300"
+                      theme === "dark"
+                        ? "border-[#0A7EA4] bg-[#0A7EA4]/5"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Moon className="h-6 w-6 mx-auto mb-2" />
@@ -362,7 +385,9 @@ export default function SettingsPage() {
                   <div
                     onClick={() => setTheme("system")}
                     className={`cursor-pointer border-2 rounded-lg p-4 text-center transition-colors ${
-                      theme === "system" ? "border-[#0A7EA4] bg-[#0A7EA4]/5" : "border-gray-200 hover:border-gray-300"
+                      theme === "system"
+                        ? "border-[#0A7EA4] bg-[#0A7EA4]/5"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Monitor className="h-6 w-6 mx-auto mb-2" />
@@ -390,7 +415,9 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium">Collapsed Sidebar by Default</h4>
+                    <h4 className="font-medium">
+                      Collapsed Sidebar by Default
+                    </h4>
                     <p className="text-sm text-muted-foreground">
                       Start with the sidebar minimized
                     </p>
@@ -417,7 +444,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Regional Settings</CardTitle>
-              <CardDescription>Configure language, currency, and timezone</CardDescription>
+              <CardDescription>
+                Configure language, currency, and timezone
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-4">
@@ -442,7 +471,9 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="TZS">TZS - Tanzanian Shilling</SelectItem>
+                      <SelectItem value="TZS">
+                        TZS - Tanzanian Shilling
+                      </SelectItem>
                       <SelectItem value="USD">USD - US Dollar</SelectItem>
                       <SelectItem value="EUR">EUR - Euro</SelectItem>
                       <SelectItem value="KES">KES - Kenyan Shilling</SelectItem>
@@ -457,11 +488,19 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Africa/Dar_es_Salaam">Africa/Dar es Salaam (EAT)</SelectItem>
-                      <SelectItem value="Africa/Nairobi">Africa/Nairobi (EAT)</SelectItem>
+                      <SelectItem value="Africa/Dar_es_Salaam">
+                        Africa/Dar es Salaam (EAT)
+                      </SelectItem>
+                      <SelectItem value="Africa/Nairobi">
+                        Africa/Nairobi (EAT)
+                      </SelectItem>
                       <SelectItem value="UTC">UTC</SelectItem>
-                      <SelectItem value="Europe/London">Europe/London (GMT)</SelectItem>
-                      <SelectItem value="America/New_York">America/New York (EST)</SelectItem>
+                      <SelectItem value="Europe/London">
+                        Europe/London (GMT)
+                      </SelectItem>
+                      <SelectItem value="America/New_York">
+                        America/New York (EST)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -473,9 +512,15 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="DD/MM/YYYY">DD/MM/YYYY (31/12/2026)</SelectItem>
-                      <SelectItem value="MM/DD/YYYY">MM/DD/YYYY (12/31/2026)</SelectItem>
-                      <SelectItem value="YYYY-MM-DD">YYYY-MM-DD (2026-12-31)</SelectItem>
+                      <SelectItem value="DD/MM/YYYY">
+                        DD/MM/YYYY (31/12/2026)
+                      </SelectItem>
+                      <SelectItem value="MM/DD/YYYY">
+                        MM/DD/YYYY (12/31/2026)
+                      </SelectItem>
+                      <SelectItem value="YYYY-MM-DD">
+                        YYYY-MM-DD (2026-12-31)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

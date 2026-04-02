@@ -6,21 +6,21 @@ Production-grade e-commerce platform in a Turborepo monorepo. The backend is spl
 
 ### Services and ports
 
-| Service | Port | Framework | Database | Auth middleware |
-| --- | --- | --- | --- | --- |
-| product-service | 8000 | Express | Prisma + Neon PostgreSQL | @clerk/express |
-| order-service | 8001 | Fastify | Mongoose + MongoDB Atlas | @clerk/fastify |
-| payment-service | 8002 | Hono | None | @hono/clerk-auth |
-| auth-service | 8003 | Express | None | @clerk/express |
-| email-service | 8004 | Express | None | Internal only |
+| Service         | Port | Framework | Database                 | Auth middleware  |
+| --------------- | ---- | --------- | ------------------------ | ---------------- |
+| product-service | 8000 | Express   | Prisma + Neon PostgreSQL | @clerk/express   |
+| order-service   | 8001 | Fastify   | Mongoose + MongoDB Atlas | @clerk/fastify   |
+| payment-service | 8002 | Hono      | None                     | @hono/clerk-auth |
+| auth-service    | 8003 | Express   | None                     | @clerk/express   |
+| email-service   | 8004 | Express   | None                     | Internal only    |
 
 ### Frontends
 
-| App | Port | Framework | Auth |
-| --- | --- | --- | --- |
-| client | 3002 | Next.js 15 | @clerk/nextjs |
-| admin | 3003 | Next.js 15 | @clerk/nextjs |
-| mobile | N/A | Flutter | Clerk tokens via API |
+| App    | Port | Framework  | Auth                 |
+| ------ | ---- | ---------- | -------------------- |
+| client | 3002 | Next.js 15 | @clerk/nextjs        |
+| admin  | 3003 | Next.js 15 | @clerk/nextjs        |
+| mobile | N/A  | Flutter    | Clerk tokens via API |
 
 ### Communication
 
@@ -169,4 +169,5 @@ Update the build command path when deploying the admin app.
 - payment-service: [apps/payment-service/src/index.ts](apps/payment-service/src/index.ts)
 - auth-service: [apps/auth-service/src/index.ts](apps/auth-service/src/index.ts)
 - email-service: [apps/email-service/src/index.ts](apps/email-service/src/index.ts)
+
 # microservices-full-code2

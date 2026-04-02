@@ -31,9 +31,21 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Badge } from "./ui/badge";
-import { CategoryType, colors, ProductFormSchema, ProductType, sizes } from "@repo/types";
+import {
+  CategoryType,
+  colors,
+  ProductFormSchema,
+  ProductType,
+  sizes,
+} from "@repo/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/nextjs";
@@ -49,13 +61,15 @@ import {
   Plus,
   Check,
   Loader2,
-  Search
+  Search,
 } from "lucide-react";
-import ExternalProductSearch, { ExternalProductResult } from "./ExternalProductSearch";
+import ExternalProductSearch, {
+  ExternalProductResult,
+} from "./ExternalProductSearch";
 
 const fetchCategories = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
+    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
   );
   if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
@@ -63,27 +77,27 @@ const fetchCategories = async () => {
 
 // Color hex mapping for visual display
 const colorHexMap: Record<string, string> = {
-  'Natural Titanium': '#8B8680',
-  'Blue Titanium': '#5B7C99',
-  'White Titanium': '#E8E4E0',
-  'Black Titanium': '#3A3A3C',
-  'Titanium Gray': '#71706E',
-  'Space Black': '#1C1C1E',
-  'Silver': '#C0C0C0',
-  'Graphite': '#41424C',
-  'Platinum': '#E5E4E2',
-  'Sapphire': '#0F52BA',
-  'blue': '#3B82F6',
-  'green': '#22C55E',
-  'red': '#EF4444',
-  'yellow': '#EAB308',
-  'purple': '#A855F7',
-  'orange': '#F97316',
-  'pink': '#EC4899',
-  'black': '#000000',
-  'white': '#FFFFFF',
-  'gray': '#6B7280',
-  'brown': '#92400E',
+  "Natural Titanium": "#8B8680",
+  "Blue Titanium": "#5B7C99",
+  "White Titanium": "#E8E4E0",
+  "Black Titanium": "#3A3A3C",
+  "Titanium Gray": "#71706E",
+  "Space Black": "#1C1C1E",
+  Silver: "#C0C0C0",
+  Graphite: "#41424C",
+  Platinum: "#E5E4E2",
+  Sapphire: "#0F52BA",
+  blue: "#3B82F6",
+  green: "#22C55E",
+  red: "#EF4444",
+  yellow: "#EAB308",
+  purple: "#A855F7",
+  orange: "#F97316",
+  pink: "#EC4899",
+  black: "#000000",
+  white: "#FFFFFF",
+  gray: "#6B7280",
+  brown: "#92400E",
 };
 
 interface AddProductProps {
@@ -101,17 +115,23 @@ const pickFirstImageUrl = (value: unknown): string | undefined => {
   }
 
   if (Array.isArray(value)) {
-    const first = value.find((item) => typeof item === "string" && item.trim()) as string | undefined;
+    const first = value.find(
+      (item) => typeof item === "string" && item.trim(),
+    ) as string | undefined;
     return first?.trim();
   }
 
   return undefined;
 };
 
-const getFormDefaults = (product?: ProductType): z.infer<typeof ProductFormSchema> => {
-  const rawImages = (product?.images && typeof product.images === "object"
-    ? (product.images as Record<string, unknown>)
-    : {}) as Record<string, unknown>;
+const getFormDefaults = (
+  product?: ProductType,
+): z.infer<typeof ProductFormSchema> => {
+  const rawImages = (
+    product?.images && typeof product.images === "object"
+      ? (product.images as Record<string, unknown>)
+      : {}
+  ) as Record<string, unknown>;
 
   const normalizedImages: Record<string, string | string[]> = {};
   for (const [key, value] of Object.entries(rawImages)) {
@@ -121,7 +141,9 @@ const getFormDefaults = (product?: ProductType): z.infer<typeof ProductFormSchem
 
   const imageKeys = Object.keys(normalizedImages);
 
-  let normalizedColors = (product?.colors || []).filter((color) => allowedColors.has(color));
+  let normalizedColors = (product?.colors || []).filter((color) =>
+    allowedColors.has(color),
+  );
   if (product && normalizedColors.length === 0) {
     normalizedColors = imageKeys.filter((color) => allowedColors.has(color));
   }
@@ -129,14 +151,17 @@ const getFormDefaults = (product?: ProductType): z.infer<typeof ProductFormSchem
     normalizedColors = ["black"];
   }
 
-  let normalizedSizes = (product?.sizes || []).filter((size) => allowedSizes.has(size));
+  let normalizedSizes = (product?.sizes || []).filter((size) =>
+    allowedSizes.has(size),
+  );
   if (product && normalizedSizes.length === 0) {
     normalizedSizes = ["Standard"];
   }
 
-  const fallbackImage = Object.values(normalizedImages)
-    .map((value) => pickFirstImageUrl(value))
-    .find(Boolean) || "https://placehold.co/600x600?text=Product";
+  const fallbackImage =
+    Object.values(normalizedImages)
+      .map((value) => pickFirstImageUrl(value))
+      .find(Boolean) || "https://placehold.co/600x600?text=Product";
 
   normalizedColors.forEach((color) => {
     if (!normalizedImages[color]) {
@@ -159,7 +184,9 @@ const getFormDefaults = (product?: ProductType): z.infer<typeof ProductFormSchem
     technicalSpecs: product?.technicalSpecs || {},
     certifications: product?.certifications || [],
     stockQuantity: product?.stockQuantity || 0,
-    stockStatus: (product?.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
+    stockStatus: (product?.stockStatus || "in_stock") as z.infer<
+      typeof ProductFormSchema
+    >["stockStatus"],
     lowStockThreshold: product?.lowStockThreshold || 10,
     soldCount: product?.soldCount || 0,
     discount: product?.discount || 0,
@@ -213,7 +240,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       });
 
       if (!res.ok) {
-        let message = isEditMode ? "Failed to update product!" : "Failed to create product!";
+        let message = isEditMode
+          ? "Failed to update product!"
+          : "Failed to create product!";
         try {
           const body = await res.json();
           message = body?.error || body?.message || message;
@@ -229,7 +258,11 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       }
     },
     onSuccess: () => {
-      toast.success(isEditMode ? "Product updated successfully!" : "Product created successfully!");
+      toast.success(
+        isEditMode
+          ? "Product updated successfully!"
+          : "Product created successfully!",
+      );
       queryClient.invalidateQueries({ queryKey: ["products"] });
       if (isEditMode && product?.id) {
         queryClient.invalidateQueries({ queryKey: ["product", product.id] });
@@ -251,7 +284,15 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
     if (["sizes", "colors"].includes(root)) return "variants";
     if (root === "images") return "images";
-    if (["techHighlights", "boxContents", "productFeatures", "technicalSpecs", "certifications"].includes(root)) {
+    if (
+      [
+        "techHighlights",
+        "boxContents",
+        "productFeatures",
+        "technicalSpecs",
+        "certifications",
+      ].includes(root)
+    ) {
       return "extras";
     }
     return "basic";
@@ -261,7 +302,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
     mutation.mutate(data);
   };
 
-  const handleFormInvalid = (errors: FieldErrors<z.infer<typeof ProductFormSchema>>) => {
+  const handleFormInvalid = (
+    errors: FieldErrors<z.infer<typeof ProductFormSchema>>,
+  ) => {
     const firstErrorPath = Object.keys(errors)[0];
     if (!firstErrorPath) {
       toast.error("Please fix form errors before submitting.");
@@ -273,7 +316,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
     const fieldError = errors[firstErrorPath as keyof typeof errors];
     const message =
-      (fieldError && typeof fieldError === "object" && "message" in fieldError && fieldError.message)
+      fieldError &&
+      typeof fieldError === "object" &&
+      "message" in fieldError &&
+      fieldError.message
         ? String(fieldError.message)
         : "Please fix the highlighted field and try again.";
 
@@ -287,21 +333,28 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
       // Map the JSON data to form fields
       if (data.name) form.setValue("name", data.name);
-      if (data.shortDescription) form.setValue("shortDescription", data.shortDescription);
+      if (data.shortDescription)
+        form.setValue("shortDescription", data.shortDescription);
       if (data.description) form.setValue("description", data.description);
       if (data.price) form.setValue("price", Number(data.price));
       if (data.categorySlug) form.setValue("categorySlug", data.categorySlug);
       if (data.sizes) form.setValue("sizes", data.sizes);
       if (data.colors) form.setValue("colors", data.colors);
       if (data.images) form.setValue("images", data.images);
-      if (data.stockQuantity) form.setValue("stockQuantity", Number(data.stockQuantity));
+      if (data.stockQuantity)
+        form.setValue("stockQuantity", Number(data.stockQuantity));
       if (data.stockStatus) form.setValue("stockStatus", data.stockStatus);
-      if (data.lowStockThreshold) form.setValue("lowStockThreshold", Number(data.lowStockThreshold));
-      if (data.techHighlights) form.setValue("techHighlights", data.techHighlights);
+      if (data.lowStockThreshold)
+        form.setValue("lowStockThreshold", Number(data.lowStockThreshold));
+      if (data.techHighlights)
+        form.setValue("techHighlights", data.techHighlights);
       if (data.boxContents) form.setValue("boxContents", data.boxContents);
-      if (data.productFeatures) form.setValue("productFeatures", data.productFeatures);
-      if (data.technicalSpecs) form.setValue("technicalSpecs", data.technicalSpecs);
-      if (data.certifications) form.setValue("certifications", data.certifications);
+      if (data.productFeatures)
+        form.setValue("productFeatures", data.productFeatures);
+      if (data.technicalSpecs)
+        form.setValue("technicalSpecs", data.technicalSpecs);
+      if (data.certifications)
+        form.setValue("certifications", data.certifications);
 
       toast.success("Data imported! Review and submit.");
       setJsonInput("");
@@ -312,10 +365,15 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
   };
 
   // Import from external product API
-  const handleExternalProductImport = (externalProduct: ExternalProductResult) => {
+  const handleExternalProductImport = (
+    externalProduct: ExternalProductResult,
+  ) => {
     // Map external product to form fields
     form.setValue("name", externalProduct.name);
-    form.setValue("shortDescription", externalProduct.shortDescription || externalProduct.name);
+    form.setValue(
+      "shortDescription",
+      externalProduct.shortDescription || externalProduct.name,
+    );
     form.setValue("description", externalProduct.description);
 
     // Set suggested price if available, otherwise admin must set manually
@@ -336,7 +394,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       form.setValue("images", { [imageColor]: externalProduct.images });
 
       // Auto-add the color if using default
-      if (imageColor !== "default" && !currentColors.includes(imageColor as any)) {
+      if (
+        imageColor !== "default" &&
+        !currentColors.includes(imageColor as any)
+      ) {
         form.setValue("colors", [imageColor] as any);
       }
     }
@@ -344,67 +405,67 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
     // Comprehensive category mapping from external APIs to our categories
     const categoryMapping: Record<string, string> = {
       // Smartphones & Phones
-      "smartphones": "smartphones",
-      "phones": "smartphones",
-      "mobile": "smartphones",
+      smartphones: "smartphones",
+      phones: "smartphones",
+      mobile: "smartphones",
       "mobile-accessories": "accessories",
-      "iphone": "smartphones",
-      "android": "smartphones",
+      iphone: "smartphones",
+      android: "smartphones",
 
       // Laptops & Computers
-      "laptops": "laptops",
-      "laptop": "laptops",
-      "computers": "laptops",
-      "computer": "laptops",
-      "notebook": "laptops",
-      "macbook": "laptops",
+      laptops: "laptops",
+      laptop: "laptops",
+      computers: "laptops",
+      computer: "laptops",
+      notebook: "laptops",
+      macbook: "laptops",
 
       // Tablets
-      "tablets": "tablets",
-      "tablet": "tablets",
-      "ipad": "tablets",
+      tablets: "tablets",
+      tablet: "tablets",
+      ipad: "tablets",
 
       // Audio
-      "audio": "audio",
-      "headphones": "audio",
-      "earphones": "audio",
-      "earbuds": "audio",
-      "speakers": "audio",
-      "sound": "audio",
+      audio: "audio",
+      headphones: "audio",
+      earphones: "audio",
+      earbuds: "audio",
+      speakers: "audio",
+      sound: "audio",
 
       // Wearables & Watches
-      "wearables": "wearables",
-      "smartwatches": "wearables",
-      "smartwatch": "wearables",
-      "watches": "wearables",
+      wearables: "wearables",
+      smartwatches: "wearables",
+      smartwatch: "wearables",
+      watches: "wearables",
       "mens-watches": "wearables",
       "womens-watches": "wearables",
-      "fitness": "wearables",
-      "tracker": "wearables",
+      fitness: "wearables",
+      tracker: "wearables",
 
       // Gaming
-      "gaming": "gaming",
-      "games": "gaming",
-      "console": "gaming",
-      "playstation": "gaming",
-      "xbox": "gaming",
-      "nintendo": "gaming",
+      gaming: "gaming",
+      games: "gaming",
+      console: "gaming",
+      playstation: "gaming",
+      xbox: "gaming",
+      nintendo: "gaming",
       "video-games": "gaming",
 
       // Accessories
-      "accessories": "accessories",
-      "charger": "accessories",
-      "cable": "accessories",
-      "case": "accessories",
-      "cover": "accessories",
-      "adapter": "accessories",
+      accessories: "accessories",
+      charger: "accessories",
+      cable: "accessories",
+      case: "accessories",
+      cover: "accessories",
+      adapter: "accessories",
       "power-bank": "accessories",
 
       // DummyJSON specific categories
-      "beauty": "accessories",
-      "fragrances": "accessories",
-      "furniture": "accessories",
-      "groceries": "accessories",
+      beauty: "accessories",
+      fragrances: "accessories",
+      furniture: "accessories",
+      groceries: "accessories",
       "home-decoration": "accessories",
       "kitchen-accessories": "accessories",
       "mens-shirts": "accessories",
@@ -413,33 +474,33 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       "womens-dresses": "accessories",
       "womens-jewellery": "accessories",
       "womens-shoes": "accessories",
-      "sunglasses": "accessories",
-      "tops": "accessories",
-      "vehicle": "accessories",
-      "motorcycle": "accessories",
-      "lighting": "accessories",
+      sunglasses: "accessories",
+      tops: "accessories",
+      vehicle: "accessories",
+      motorcycle: "accessories",
+      lighting: "accessories",
       "skin-care": "accessories",
       "sports-accessories": "accessories",
 
       // FakeStore specific categories
       "men's clothing": "accessories",
       "women's clothing": "accessories",
-      "jewelery": "accessories",
+      jewelery: "accessories",
 
       // Platzi specific categories
-      "clothes": "accessories",
-      "shoes": "accessories",
-      "miscellaneous": "accessories",
+      clothes: "accessories",
+      shoes: "accessories",
+      miscellaneous: "accessories",
 
       // General electronics fallbacks
-      "electronics": "smartphones",
-      "tech": "smartphones",
-      "gadgets": "smartphones",
+      electronics: "smartphones",
+      tech: "smartphones",
+      gadgets: "smartphones",
     };
 
     const normalizedCategory = externalProduct.category.toLowerCase();
     const matchedCategory = Object.entries(categoryMapping).find(([key]) =>
-      normalizedCategory.includes(key)
+      normalizedCategory.includes(key),
     );
     if (matchedCategory) {
       form.setValue("categorySlug", matchedCategory[1]);
@@ -462,15 +523,15 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/upload`,
-        { method: "POST", body: formData }
+        { method: "POST", body: formData },
       );
       const data = await res.json();
 
       const currentImages = form.getValues("images") || {};
       const colorImages = currentImages[color]
-        ? (Array.isArray(currentImages[color])
-          ? currentImages[color] as string[]
-          : [currentImages[color] as string])
+        ? Array.isArray(currentImages[color])
+          ? (currentImages[color] as string[])
+          : [currentImages[color] as string]
         : [];
 
       form.setValue("images", {
@@ -494,11 +555,17 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
           {isEditMode ? "Edit Product" : "Add New Product"}
         </SheetTitle>
         <SheetDescription>
-          {isEditMode ? "Update product details" : "Fill in the details or import from JSON"}
+          {isEditMode
+            ? "Update product details"
+            : "Fill in the details or import from JSON"}
         </SheetDescription>
       </SheetHeader>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex-1 flex flex-col min-h-0"
+      >
         <div className="px-6 pt-4 flex-shrink-0">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="search" className="text-xs gap-1">
@@ -530,11 +597,16 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
         <ScrollArea className="flex-1 px-6 min-h-0">
           <Form {...form}>
-            <form id="product-form" onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)} className="pb-6">
-
+            <form
+              id="product-form"
+              onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)}
+              className="pb-6"
+            >
               {/* EXTERNAL API SEARCH TAB */}
               <TabsContent value="search" className="space-y-4 mt-4">
-                <ExternalProductSearch onSelectProduct={handleExternalProductImport} />
+                <ExternalProductSearch
+                  onSelectProduct={handleExternalProductImport}
+                />
               </TabsContent>
 
               {/* BASIC INFO TAB */}
@@ -565,7 +637,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                         <FormItem>
                           <FormLabel>Tagline *</FormLabel>
                           <FormControl>
-                            <Input placeholder="A17 Pro chip, Titanium design" {...field} />
+                            <Input
+                              placeholder="A17 Pro chip, Titanium design"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -602,7 +677,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="number"
                                 placeholder="2500000"
                                 {...field}
-                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
                               />
                             </FormControl>
                             <FormMessage />
@@ -616,7 +693,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Category *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select" />
@@ -655,7 +735,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="number"
                                 min="0"
                                 {...field}
-                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
                               />
                             </FormControl>
                             <FormMessage />
@@ -669,17 +751,28 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Status</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="in_stock">In Stock</SelectItem>
-                                <SelectItem value="limited_stock">Limited</SelectItem>
-                                <SelectItem value="pre_order">Pre-Order</SelectItem>
-                                <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                                <SelectItem value="in_stock">
+                                  In Stock
+                                </SelectItem>
+                                <SelectItem value="limited_stock">
+                                  Limited
+                                </SelectItem>
+                                <SelectItem value="pre_order">
+                                  Pre-Order
+                                </SelectItem>
+                                <SelectItem value="out_of_stock">
+                                  Out of Stock
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -698,7 +791,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="number"
                                 min="0"
                                 {...field}
-                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
                               />
                             </FormControl>
                             <FormMessage />
@@ -734,26 +829,34 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                     onClick={() => {
                                       const current = field.value || [];
                                       if (isSelected) {
-                                        field.onChange(current.filter((c) => c !== color));
+                                        field.onChange(
+                                          current.filter((c) => c !== color),
+                                        );
                                         // Also remove images for this color
-                                        const imgs = form.getValues("images") || {};
+                                        const imgs =
+                                          form.getValues("images") || {};
                                         delete imgs[color];
                                         form.setValue("images", imgs);
                                       } else {
                                         field.onChange([...current, color]);
                                       }
                                     }}
-                                    className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-all text-sm ${isSelected
+                                    className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-all text-sm ${
+                                      isSelected
                                         ? "border-primary bg-primary/10"
                                         : "border-border hover:border-primary/50"
-                                      }`}
+                                    }`}
                                   >
                                     <div
                                       className="w-4 h-4 rounded-full border shrink-0"
                                       style={{ backgroundColor: hex }}
                                     />
-                                    <span className="truncate flex-1">{color}</span>
-                                    {isSelected && <Check className="h-3 w-3 text-primary shrink-0" />}
+                                    <span className="truncate flex-1">
+                                      {color}
+                                    </span>
+                                    {isSelected && (
+                                      <Check className="h-3 w-3 text-primary shrink-0" />
+                                    )}
                                   </div>
                                 );
                               })}
@@ -766,7 +869,11 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                     {selectedColors.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-3 pt-3 border-t">
                         {selectedColors.map((c) => (
-                          <Badge key={c} variant="secondary" className="text-xs">
+                          <Badge
+                            key={c}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {c}
                           </Badge>
                         ))}
@@ -777,7 +884,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm">Sizes / Variants *</CardTitle>
+                    <CardTitle className="text-sm">
+                      Sizes / Variants *
+                    </CardTitle>
                     <CardDescription>Storage, dimensions, etc.</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -796,15 +905,18 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                     onClick={() => {
                                       const current = field.value || [];
                                       if (isSelected) {
-                                        field.onChange(current.filter((s) => s !== size));
+                                        field.onChange(
+                                          current.filter((s) => s !== size),
+                                        );
                                       } else {
                                         field.onChange([...current, size]);
                                       }
                                     }}
-                                    className={`p-2 text-center rounded-md border cursor-pointer transition-all text-xs ${isSelected
+                                    className={`p-2 text-center rounded-md border cursor-pointer transition-all text-xs ${
+                                      isSelected
                                         ? "border-primary bg-primary/10 font-medium"
                                         : "border-border hover:border-primary/50"
-                                      }`}
+                                    }`}
                                   >
                                     {size}
                                   </div>
@@ -858,7 +970,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                           const hex = colorHexMap[color] || "#888";
                           const images = currentImages[color];
                           const imageArray = images
-                            ? (Array.isArray(images) ? images : [images])
+                            ? Array.isArray(images)
+                              ? images
+                              : [images]
                             : [];
 
                           return (
@@ -868,10 +982,16 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                   className="w-4 h-4 rounded-full border"
                                   style={{ backgroundColor: hex }}
                                 />
-                                <span className="text-sm font-medium flex-1">{color}</span>
+                                <span className="text-sm font-medium flex-1">
+                                  {color}
+                                </span>
                                 {imageArray.length > 0 && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    {imageArray.length} image{imageArray.length > 1 ? 's' : ''}
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    {imageArray.length} image
+                                    {imageArray.length > 1 ? "s" : ""}
                                   </Badge>
                                 )}
                               </div>
@@ -885,7 +1005,7 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) handleImageUpload(color, file);
-                                    e.target.value = '';
+                                    e.target.value = "";
                                   }}
                                 />
                                 {uploadingColor === color && (
@@ -895,29 +1015,37 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
                               {imageArray.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                  {imageArray.map((url: string, idx: number) => (
-                                    <div key={idx} className="relative group">
-                                      <img
-                                        src={url}
-                                        alt={`${color} ${idx + 1}`}
-                                        className="w-14 h-14 object-cover rounded border"
-                                      />
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          const current = form.getValues("images") || {};
-                                          const filtered = imageArray.filter((_, i) => i !== idx);
-                                          form.setValue("images", {
-                                            ...current,
-                                            [color]: filtered.length > 0 ? filtered : undefined,
-                                          } as any);
-                                        }}
-                                        className="absolute -top-1 -right-1 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </button>
-                                    </div>
-                                  ))}
+                                  {imageArray.map(
+                                    (url: string, idx: number) => (
+                                      <div key={idx} className="relative group">
+                                        <img
+                                          src={url}
+                                          alt={`${color} ${idx + 1}`}
+                                          className="w-14 h-14 object-cover rounded border"
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const current =
+                                              form.getValues("images") || {};
+                                            const filtered = imageArray.filter(
+                                              (_, i) => i !== idx,
+                                            );
+                                            form.setValue("images", {
+                                              ...current,
+                                              [color]:
+                                                filtered.length > 0
+                                                  ? filtered
+                                                  : undefined,
+                                            } as any);
+                                          }}
+                                          className="absolute -top-1 -right-1 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                          <X className="h-3 w-3" />
+                                        </button>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -927,7 +1055,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                     )}
                   </CardContent>
                 </Card>
-
               </TabsContent>
 
               {/* EXTRAS TAB */}
@@ -950,7 +1077,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 value={item.label}
                                 onChange={(e) => {
                                   const arr = [...(field.value || [])];
-                                  arr[idx] = { label: e.target.value, icon: arr[idx]?.icon || "" };
+                                  arr[idx] = {
+                                    label: e.target.value,
+                                    icon: arr[idx]?.icon || "",
+                                  };
                                   field.onChange(arr);
                                 }}
                                 className="flex-1"
@@ -960,7 +1090,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 value={item.icon}
                                 onChange={(e) => {
                                   const arr = [...(field.value || [])];
-                                  arr[idx] = { label: arr[idx]?.label || "", icon: e.target.value };
+                                  arr[idx] = {
+                                    label: arr[idx]?.label || "",
+                                    icon: e.target.value,
+                                  };
                                   field.onChange(arr);
                                 }}
                                 className="w-20"
@@ -969,7 +1102,13 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
+                                onClick={() =>
+                                  field.onChange(
+                                    (field.value || []).filter(
+                                      (_, i) => i !== idx,
+                                    ),
+                                  )
+                                }
                               >
                                 <X className="h-4 w-4" />
                               </Button>
@@ -979,7 +1118,12 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            onClick={() => field.onChange([...(field.value || []), { label: "", icon: "" }])}
+                            onClick={() =>
+                              field.onChange([
+                                ...(field.value || []),
+                                { label: "", icon: "" },
+                              ])
+                            }
                           >
                             <Plus className="h-3 w-3 mr-1" /> Add
                           </Button>
@@ -1015,7 +1159,13 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
+                                onClick={() =>
+                                  field.onChange(
+                                    (field.value || []).filter(
+                                      (_, i) => i !== idx,
+                                    ),
+                                  )
+                                }
                               >
                                 <X className="h-4 w-4" />
                               </Button>
@@ -1025,7 +1175,9 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            onClick={() => field.onChange([...(field.value || []), ""])}
+                            onClick={() =>
+                              field.onChange([...(field.value || []), ""])
+                            }
                           >
                             <Plus className="h-3 w-3 mr-1" /> Add
                           </Button>
@@ -1052,7 +1204,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 value={item.title}
                                 onChange={(e) => {
                                   const arr = [...(field.value || [])];
-                                  arr[idx] = { title: e.target.value, description: arr[idx]?.description || "" };
+                                  arr[idx] = {
+                                    title: e.target.value,
+                                    description: arr[idx]?.description || "",
+                                  };
                                   field.onChange(arr);
                                 }}
                                 className="w-1/3"
@@ -1062,7 +1217,10 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 value={item.description}
                                 onChange={(e) => {
                                   const arr = [...(field.value || [])];
-                                  arr[idx] = { title: arr[idx]?.title || "", description: e.target.value };
+                                  arr[idx] = {
+                                    title: arr[idx]?.title || "",
+                                    description: e.target.value,
+                                  };
                                   field.onChange(arr);
                                 }}
                                 className="flex-1"
@@ -1071,7 +1229,13 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
+                                onClick={() =>
+                                  field.onChange(
+                                    (field.value || []).filter(
+                                      (_, i) => i !== idx,
+                                    ),
+                                  )
+                                }
                               >
                                 <X className="h-4 w-4" />
                               </Button>
@@ -1081,7 +1245,12 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                             type="button"
                             variant="outline"
                             size="sm"
-                            onClick={() => field.onChange([...(field.value || []), { title: "", description: "" }])}
+                            onClick={() =>
+                              field.onChange([
+                                ...(field.value || []),
+                                { title: "", description: "" },
+                              ])
+                            }
                           >
                             <Plus className="h-3 w-3 mr-1" /> Add
                           </Button>
@@ -1092,7 +1261,12 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                 </Card>
 
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("images")}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setActiveTab("images")}
+                  >
                     ← Back
                   </Button>
                 </div>
@@ -1163,7 +1337,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                   </CardContent>
                 </Card>
               </TabsContent>
-
             </form>
           </Form>
         </ScrollArea>
@@ -1172,54 +1345,97 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
         <div className="border-t px-6 py-4 flex-shrink-0 bg-background space-y-3">
           {/* Tab navigation rows */}
           {activeTab === "search" && (
-            <Button type="button" className="w-full" onClick={() => setActiveTab("basic")}>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => setActiveTab("basic")}
+            >
               Skip to Manual Entry →
             </Button>
           )}
           {activeTab === "basic" && (
-            <Button type="button" className="w-full" onClick={() => setActiveTab("variants")}>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => setActiveTab("variants")}
+            >
               Next: Select Variants →
             </Button>
           )}
           {activeTab === "variants" && (
             <div className="flex gap-2">
-              <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("basic")}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setActiveTab("basic")}
+              >
                 ← Back
               </Button>
-              <Button type="button" className="flex-1" onClick={() => setActiveTab("images")}>
+              <Button
+                type="button"
+                className="flex-1"
+                onClick={() => setActiveTab("images")}
+              >
                 Next: Images →
               </Button>
             </div>
           )}
           {activeTab === "images" && (
             <div className="flex gap-2">
-              <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("variants")}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setActiveTab("variants")}
+              >
                 ← Back
               </Button>
-              <Button type="button" className="flex-1" onClick={() => setActiveTab("extras")}>
+              <Button
+                type="button"
+                className="flex-1"
+                onClick={() => setActiveTab("extras")}
+              >
                 Next: Extras →
               </Button>
             </div>
           )}
           {activeTab === "extras" && (
             <div className="flex gap-2">
-              <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("images")}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setActiveTab("images")}
+              >
                 ← Back
               </Button>
-              <Button type="submit" form="product-form" className="flex-1" disabled={mutation.isPending}>
+              <Button
+                type="submit"
+                form="product-form"
+                className="flex-1"
+                disabled={mutation.isPending}
+              >
                 {mutation.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     {isEditMode ? "Updating..." : "Creating..."}
                   </>
+                ) : isEditMode ? (
+                  "Update Product"
                 ) : (
-                  isEditMode ? "Update Product" : "Create Product"
+                  "Create Product"
                 )}
               </Button>
             </div>
           )}
           {activeTab === "import" && (
-            <Button type="button" variant="outline" className="w-full" onClick={() => setActiveTab("basic")}>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => setActiveTab("basic")}
+            >
               Done Reviewing
             </Button>
           )}

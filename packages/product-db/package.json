@@ -12,6 +12,7 @@
     "@prisma/adapter-neon": "^7.6.0",
     "@prisma/client": "^6.19.3",
     "dotenv": "^17.4.0",
+    "drizzle-orm": "^0.45.2",
     "prisma": "^6.19.3",
     "ws": "^8.20.0"
   },
@@ -19,6 +20,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.12.0",
     "@types/ws": "^8.18.1",
+    "drizzle-kit": "^0.31.10",
     "tsx": "^4.21.0"
   },
   "exports": {

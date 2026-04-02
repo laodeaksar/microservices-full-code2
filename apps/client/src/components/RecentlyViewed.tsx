@@ -12,7 +12,9 @@ interface RecentlyViewedProps {
   currentProductId?: number;
 }
 
-const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => {
+const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
+  currentProductId,
+}) => {
   const [recentProducts, setRecentProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
@@ -21,10 +23,16 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
         id: 1,
         name: "iPhone 15 Pro Max",
         shortDescription: "A17 Pro chip, Titanium Design, 256GB",
-        description: "The ultimate iPhone with titanium design and A17 Pro chip.",
+        description:
+          "The ultimate iPhone with titanium design and A17 Pro chip.",
         price: 1199,
         sizes: ["128GB", "256GB", "512GB", "1TB"],
-        colors: ["Natural Titanium", "Blue Titanium", "White Titanium", "Black Titanium"],
+        colors: [
+          "Natural Titanium",
+          "Blue Titanium",
+          "White Titanium",
+          "Black Titanium",
+        ],
         images: {
           "Natural Titanium": "/products/iphone-15-pro-titanium.jpg",
           "Blue Titanium": "/products/iphone-15-pro-blue.jpg",
@@ -54,15 +62,16 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
       },
       {
         id: 3,
-        name: "MacBook Pro 14\" M4",
+        name: 'MacBook Pro 14" M4',
         shortDescription: "M4 chip, 16GB RAM, 512GB SSD, Space Black",
-        description: "Professional laptop with M4 chip for ultimate performance.",
+        description:
+          "Professional laptop with M4 chip for ultimate performance.",
         price: 1999,
         sizes: ["512GB", "1TB", "2TB"],
         colors: ["Space Black", "Silver"],
         images: {
           "Space Black": "/products/macbook-pro-14-black.jpg",
-          "Silver": "/products/macbook-pro-14-silver.jpg",
+          Silver: "/products/macbook-pro-14-silver.jpg",
         },
         techHighlights: null,
         boxContents: null,
@@ -89,12 +98,13 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
         id: 8,
         name: "AirPods Pro (3rd Gen)",
         shortDescription: "Active Noise Cancellation, USB-C",
-        description: "Premium wireless earbuds with advanced noise cancellation.",
+        description:
+          "Premium wireless earbuds with advanced noise cancellation.",
         price: 249,
         sizes: ["One Size"],
         colors: ["White"],
         images: {
-          "White": "/products/airpods-pro-3rd-gen.jpg",
+          White: "/products/airpods-pro-3rd-gen.jpg",
         },
         techHighlights: null,
         boxContents: null,
@@ -119,7 +129,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
       },
       {
         id: 21,
-        name: "iPad Pro 12.9\"",
+        name: 'iPad Pro 12.9"',
         shortDescription: "M2 chip, 128GB, Wi-Fi + Cellular",
         description: "Ultimate iPad experience with M2 chip.",
         price: 1099,
@@ -127,7 +137,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
         colors: ["Space Gray", "Silver"],
         images: {
           "Space Gray": "/products/ipad-pro-gray.jpg",
-          "Silver": "/products/ipad-pro-silver.jpg",
+          Silver: "/products/ipad-pro-silver.jpg",
         },
         techHighlights: null,
         boxContents: null,
@@ -153,7 +163,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
     ];
     // Filter out current product if provided
     const filteredProducts = currentProductId
-      ? mockRecentProducts.filter(p => p.id !== currentProductId)
+      ? mockRecentProducts.filter((p) => p.id !== currentProductId)
       : mockRecentProducts;
 
     setRecentProducts(filteredProducts.slice(0, 4));
@@ -180,14 +190,22 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
             }
 
             const firstValue = Object.values(images)[0];
-            if (typeof firstValue === 'string') return firstValue;
-            if (Array.isArray(firstValue) && firstValue.length > 0 && typeof firstValue[0] === 'string') return firstValue[0];
+            if (typeof firstValue === "string") return firstValue;
+            if (
+              Array.isArray(firstValue) &&
+              firstValue.length > 0 &&
+              typeof firstValue[0] === "string"
+            )
+              return firstValue[0];
 
             return "https://via.placeholder.com/600x600?text=Product+Image";
           };
 
           const firstImage = getFirstImage();
-          const optimizedImageUrl = getCloudinaryUrl(firstImage, { width: 400, crop: 'fill' });
+          const optimizedImageUrl = getCloudinaryUrl(firstImage, {
+            width: 400,
+            crop: "fill",
+          });
 
           return (
             <Link

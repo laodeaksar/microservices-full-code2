@@ -64,7 +64,9 @@ const ProductInteractionContent = ({
     <div className="flex flex-col gap-4">
       {/* QUANTITY */}
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Quantity</label>
+        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          Quantity
+        </label>
         <div className="flex items-center gap-3">
           <button
             className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
@@ -72,7 +74,9 @@ const ProductInteractionContent = ({
           >
             <Minus className="w-4 h-4" />
           </button>
-          <span className="text-lg font-semibold text-gray-900 min-w-[3rem] text-center">{quantity}</span>
+          <span className="text-lg font-semibold text-gray-900 min-w-[3rem] text-center">
+            {quantity}
+          </span>
           <button
             className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
             onClick={() => handleQuantityChange("increment")}
@@ -89,7 +93,7 @@ const ProductInteractionContent = ({
         <Plus className="w-5 h-5" />
         Add to Cart
       </button>
-      <button 
+      <button
         onClick={handleBuyNow}
         className="border-2 border-[#001E3C] shadow-lg text-[#001E3C] px-6 py-3 rounded-lg flex items-center justify-center cursor-pointer gap-2 text-sm font-semibold hover:bg-[#001E3C] hover:text-white transition-all"
       >
@@ -111,7 +115,11 @@ const ProductInteraction = ({
 }) => {
   return (
     <Suspense fallback={<div className="w-full h-48" />}>
-      <ProductInteractionContent product={product} selectedSize={selectedSize} selectedColor={selectedColor} />
+      <ProductInteractionContent
+        product={product}
+        selectedSize={selectedSize}
+        selectedColor={selectedColor}
+      />
     </Suspense>
   );
 };

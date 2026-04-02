@@ -13,8 +13,8 @@ export const batchUpdateHeroProducts = async (req: Request, res: Response) => {
     // Validate updates
     for (const update of updates) {
       if (!update.id || typeof update.isHeroProduct !== "boolean") {
-        return res.status(400).json({ 
-          error: "Each update must have id and isHeroProduct fields" 
+        return res.status(400).json({
+          error: "Each update must have id and isHeroProduct fields",
         });
       }
     }
@@ -28,8 +28,8 @@ export const batchUpdateHeroProducts = async (req: Request, res: Response) => {
             isHeroProduct: update.isHeroProduct,
             heroOrder: update.heroOrder || null,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return res.status(200).json({
@@ -60,8 +60,8 @@ export const reorderHeroProducts = async (req: Request, res: Response) => {
           data: {
             heroOrder: index + 1,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return res.status(200).json({

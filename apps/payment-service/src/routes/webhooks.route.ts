@@ -13,7 +13,6 @@ webhookRoute.get("/", (c) => {
   });
 });
 
-
 webhookRoute.post("/stripe", async (c) => {
   const body = await c.req.text();
   const sig = c.req.header("stripe-signature");
@@ -32,9 +31,9 @@ webhookRoute.post("/stripe", async (c) => {
       const session = event.data.object as Stripe.Checkout.Session;
 
       const lineItems = await stripe.checkout.sessions.listLineItems(
-        session.id
+        session.id,
       );
-      
+
       // Create order via direct HTTP call to order service
       const orderData = {
         userId: session.client_reference_id,
@@ -49,15 +48,16 @@ webhookRoute.post("/stripe", async (c) => {
       };
 
       try {
-        const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:8001';
+        const ORDER_SERVICE_URL =
+          process.env.ORDER_SERVICE_URL || "http://localhost:8001";
         await fetch(`${ORDER_SERVICE_URL}/orders`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderData),
         });
-        console.log('Order created successfully');
+        console.log("Order created successfully");
       } catch (error) {
-        console.error('Failed to create order:', error);
+        console.error("Failed to create order:", error);
       }
 
       break;

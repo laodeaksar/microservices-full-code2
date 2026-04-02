@@ -1,5 +1,11 @@
 "use client";
-import React, { Suspense, useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  Suspense,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Grid3X3 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -7,18 +13,30 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // Category image mapping - matched to actual database categories
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
-  Laptops: "https://p7.hiclipart.com/preview/210/256/992/laptop-clip-art-laptop-notebook-png-image-thumbnail.jpg",
-  "Computer Monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
-  "Smart Phones": "https://p7.hiclipart.com/preview/450/269/77/iphone-4-iphone-8-plus-iphone-5-iphone-x-iphone-apple-thumbnail.jpg?w=200&h=200&fit=crop&q=80",
-  Speaker: "https://p7.hiclipart.com/preview/168/674/441/loudspeaker-wireless-speaker-jbl-audio-bluetooth.jpg",
-  Desktops: "https://in-files.apjonlinecdn.com/landingpages/content-pages/visid-rich-content/hp-omen-45l/images/w100_desktop_laptop_v1.png",
-  Components: "https://p7.hiclipart.com/preview/866/368/879/laptop-dell-motherboard-microatx-asus-motherboard-thumbnail.jpg",
-  Peripherals: "https://p7.hiclipart.com/preview/273/555/811/computer-mouse-optical-mouse-sensor-mousepad-microsoft-surface-logitech-gaming-mouse-thumbnail.jpg",
-  Networking: "https://p7.hiclipart.com/preview/966/244/938/wireless-router-ieee-802-11ac-tp-link-router-thumbnail.jpg",
-  Gadgets: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=80",
-  Gaming: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
-  Storage: "https://as1.ftcdn.net/v2/jpg/03/15/67/52/1000_F_315675287_mbsCqFFs1MQ807oFkPDZD6D7xKJwj6AL.jpg",
-  "Software & Services": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
+  Laptops:
+    "https://p7.hiclipart.com/preview/210/256/992/laptop-clip-art-laptop-notebook-png-image-thumbnail.jpg",
+  "Computer Monitors":
+    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
+  "Smart Phones":
+    "https://p7.hiclipart.com/preview/450/269/77/iphone-4-iphone-8-plus-iphone-5-iphone-x-iphone-apple-thumbnail.jpg?w=200&h=200&fit=crop&q=80",
+  Speaker:
+    "https://p7.hiclipart.com/preview/168/674/441/loudspeaker-wireless-speaker-jbl-audio-bluetooth.jpg",
+  Desktops:
+    "https://in-files.apjonlinecdn.com/landingpages/content-pages/visid-rich-content/hp-omen-45l/images/w100_desktop_laptop_v1.png",
+  Components:
+    "https://p7.hiclipart.com/preview/866/368/879/laptop-dell-motherboard-microatx-asus-motherboard-thumbnail.jpg",
+  Peripherals:
+    "https://p7.hiclipart.com/preview/273/555/811/computer-mouse-optical-mouse-sensor-mousepad-microsoft-surface-logitech-gaming-mouse-thumbnail.jpg",
+  Networking:
+    "https://p7.hiclipart.com/preview/966/244/938/wireless-router-ieee-802-11ac-tp-link-router-thumbnail.jpg",
+  Gadgets:
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=80",
+  Gaming:
+    "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
+  Storage:
+    "https://as1.ftcdn.net/v2/jpg/03/15/67/52/1000_F_315675287_mbsCqFFs1MQ807oFkPDZD6D7xKJwj6AL.jpg",
+  "Software & Services":
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
 };
 
 const normalizeCategoryKey = (value: string): string =>
@@ -31,7 +49,10 @@ const normalizeCategoryKey = (value: string): string =>
     .replace(/^-|-$/g, "");
 
 const normalizedCategoryImages: Record<string, string> = Object.fromEntries(
-  Object.entries(categoryImages).map(([key, image]) => [normalizeCategoryKey(key), image])
+  Object.entries(categoryImages).map(([key, image]) => [
+    normalizeCategoryKey(key),
+    image,
+  ]),
 );
 
 const getCategoryImage = (slug: string, name?: string): string => {
@@ -81,7 +102,7 @@ const CategoriesContent = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -97,7 +118,7 @@ const CategoriesContent = () => {
     const { scrollLeft, scrollWidth, clientWidth } = container;
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    
+
     // Calculate scroll progress (0-100)
     const maxScroll = scrollWidth - clientWidth;
     const progress = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
@@ -110,10 +131,11 @@ const CategoriesContent = () => {
     if (!container) return;
 
     const scrollAmount = 300;
-    const newScrollLeft = direction === "left" 
-      ? container.scrollLeft - scrollAmount 
-      : container.scrollLeft + scrollAmount;
-    
+    const newScrollLeft =
+      direction === "left"
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount;
+
     container.scrollTo({ left: newScrollLeft, behavior: "smooth" });
   };
 
@@ -155,7 +177,10 @@ const CategoriesContent = () => {
 
         if (res.ok) {
           const data: Category[] = await res.json();
-          const totalProducts = data.reduce((sum, cat) => sum + (cat.count || 0), 0);
+          const totalProducts = data.reduce(
+            (sum, cat) => sum + (cat.count || 0),
+            0,
+          );
 
           const categoriesWithImages: CategoryWithImage[] = [
             {
@@ -199,7 +224,8 @@ const CategoriesContent = () => {
     container.addEventListener("scroll", updateScrollIndicators);
     updateScrollIndicators();
 
-    return () => container.removeEventListener("scroll", updateScrollIndicators);
+    return () =>
+      container.removeEventListener("scroll", updateScrollIndicators);
   }, [categories, updateScrollIndicators]);
 
   const handleChange = (value: string) => {
@@ -216,8 +242,12 @@ const CategoriesContent = () => {
     return (
       <div className="bg-white border-2 border-[#E5E5E5] rounded-2xl p-4 mb-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold text-[#1A1A1A]">Browse Categories</h3>
-          <p className="text-sm text-[#666666] hidden sm:block">Loading categories...</p>
+          <h3 className="text-xl font-semibold text-[#1A1A1A]">
+            Browse Categories
+          </h3>
+          <p className="text-sm text-[#666666] hidden sm:block">
+            Loading categories...
+          </p>
         </div>
         <div className="flex gap-4 overflow-hidden">
           {Array.from({ length: 8 }).map((_, index) => (
@@ -238,7 +268,9 @@ const CategoriesContent = () => {
     <div className="bg-white border-2 border-[#E5E5E5] rounded-2xl p-4 mb-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-[#1A1A1A]">Browse Categories</h3>
+        <h3 className="text-xl font-semibold text-[#1A1A1A]">
+          Browse Categories
+        </h3>
         <p className="text-sm text-[#666666] hidden sm:block">
           Find exactly what you&apos;re looking for
         </p>
@@ -289,9 +321,7 @@ const CategoriesContent = () => {
                 key={category.slug}
                 onClick={() => !isDragging && handleChange(category.slug)}
                 className={`flex-shrink-0 flex flex-col items-center rounded-xl transition-all duration-200 min-w-[90px] ${
-                  isSelected
-                    ? "bg-white"
-                    : "hover:bg-gray-50"
+                  isSelected ? "bg-white" : "hover:bg-gray-50"
                 }`}
                 aria-pressed={isSelected}
                 aria-label={`${category.name} category with ${category.count} products`}
@@ -340,7 +370,7 @@ const CategoriesContent = () => {
           <div
             className="h-full bg-[#1A1A1A] rounded-full transition-all duration-150 ease-out"
             style={{
-              width: '25%',
+              width: "25%",
               transform: `translateX(${scrollProgress * 3}%)`,
             }}
           />

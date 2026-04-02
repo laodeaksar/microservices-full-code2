@@ -1,6 +1,6 @@
 /**
  * Currency formatting utilities for Tanzania Shillings (TZS)
- * 
+ *
  * IMPORTANT: The database stores prices as whole TZS (not cents)
  * Example: 1500000 in database = TZS 1,500,000
  */
@@ -16,18 +16,18 @@ export function formatTZS(price: number, compact = false): string {
   const priceValue = price;
 
   if (compact && priceValue >= 1_000_000) {
-    return new Intl.NumberFormat('en-TZ', {
-      style: 'currency',
-      currency: 'TZS',
-      notation: 'compact',
+    return new Intl.NumberFormat("en-TZ", {
+      style: "currency",
+      currency: "TZS",
+      notation: "compact",
       minimumFractionDigits: 0,
       maximumFractionDigits: 1,
     }).format(priceValue);
   }
 
-  return new Intl.NumberFormat('en-TZ', {
-    style: 'currency',
-    currency: 'TZS',
+  return new Intl.NumberFormat("en-TZ", {
+    style: "currency",
+    currency: "TZS",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(priceValue);

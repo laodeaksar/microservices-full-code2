@@ -3,6 +3,7 @@
 ## API Priority & Status
 
 ### 1. ✅ **DummyJSON** - PRIMARY FALLBACK (Working)
+
 - **URL**: https://dummyjson.com/products/search?q={query}&limit=10
 - **Status**: ✅ Fully functional
 - **Features**:
@@ -13,6 +14,7 @@
 - **Price Conversion**: USD → TZS (× 2500)
 
 ### 2. ❌ **TechSpecs API** - PRIMARY (NOT CONFIGURED)
+
 - **URL**: https://api.techspecs.io/v4/product/search
 - **Status**: ❌ Requires `TECHSPECS_API_KEY` (not set)
 - **Fix**: Set environment variable in product-service:
@@ -21,6 +23,7 @@
   ```
 
 ### 3. ✅ **Platzi API** - SECONDARY FALLBACK (Fixed)
+
 - **URL**: https://api.escuelajs.co/api/v1/products?title={query}
 - **Status**: ✅ Fixed (was returning wrong format)
 - **Response Format**: `{ value: [...products], Count: number }`
@@ -36,6 +39,7 @@
   - ✅ Price conversion correction (was × 100, now × 2500)
 
 ### 4. ✅ **FakeStore API** - LAST RESORT (Working)
+
 - **URL**: https://fakestoreapi.com/products
 - **Status**: ✅ Working (but not optimized)
 - **Features**:
@@ -48,17 +52,20 @@
 - **Limitation**: Loads all products and filters locally
 
 ## Search Fallback Order
+
 1. TechSpecs (if TECHSPECS_API_KEY is set)
 2. DummyJSON (fast, good data)
 3. Platzi (good for tech/electronics)
 4. FakeStore (basic fallback)
 
 ## Rate Limiting
+
 - **Limit**: 30 requests per minute per user
 - **Window**: 60 seconds
 - **Status**: Returns 429 if exceeded
 
 ## Caching
+
 - **TTL**: 10 minutes
 - **Storage**: In-memory
 - **Status**: Working
@@ -79,12 +86,14 @@ Invoke-WebRequest -Uri "https://fakestoreapi.com/products" -UseBasicParsing
 ## Recommendations
 
 ### For Production
+
 1. **Get TechSpecs API Key** for primary technical specs
 2. **Set TECHSPECS_API_KEY** in Render environment
 3. **DummyJSON as main fallback** (reliable and feature-rich)
 4. Keep Platzi & FakeStore as additional fallbacks
 
 ### For Development (Local)
+
 1. DummyJSON, Platzi, and FakeStore all work without keys
 2. Add `.env` entry if you obtain TechSpecs API key:
    ```
@@ -92,6 +101,7 @@ Invoke-WebRequest -Uri "https://fakestoreapi.com/products" -UseBasicParsing
    ```
 
 ## Recent Fixes
+
 - ✅ Fixed Platzi response format parsing
 - ✅ Corrected Platzi price conversion (100 → 2500)
 - ✅ Improved Platzi image filtering

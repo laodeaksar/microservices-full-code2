@@ -1,6 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -66,21 +72,60 @@ interface StripePaymentsClientProps {
 }
 
 const getStatusBadge = (status: string) => {
-  const statusConfig: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ReactNode }> = {
-    succeeded: { variant: "default", icon: <CheckCircle2 className="h-3 w-3 mr-1" /> },
-    complete: { variant: "default", icon: <CheckCircle2 className="h-3 w-3 mr-1" /> },
-    paid: { variant: "default", icon: <CheckCircle2 className="h-3 w-3 mr-1" /> },
+  const statusConfig: Record<
+    string,
+    {
+      variant: "default" | "secondary" | "destructive" | "outline";
+      icon: React.ReactNode;
+    }
+  > = {
+    succeeded: {
+      variant: "default",
+      icon: <CheckCircle2 className="h-3 w-3 mr-1" />,
+    },
+    complete: {
+      variant: "default",
+      icon: <CheckCircle2 className="h-3 w-3 mr-1" />,
+    },
+    paid: {
+      variant: "default",
+      icon: <CheckCircle2 className="h-3 w-3 mr-1" />,
+    },
     pending: { variant: "secondary", icon: <Clock className="h-3 w-3 mr-1" /> },
-    processing: { variant: "secondary", icon: <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> },
-    requires_payment_method: { variant: "outline", icon: <AlertCircle className="h-3 w-3 mr-1" /> },
-    requires_confirmation: { variant: "outline", icon: <AlertCircle className="h-3 w-3 mr-1" /> },
-    canceled: { variant: "destructive", icon: <XCircle className="h-3 w-3 mr-1" /> },
-    failed: { variant: "destructive", icon: <XCircle className="h-3 w-3 mr-1" /> },
-    expired: { variant: "destructive", icon: <XCircle className="h-3 w-3 mr-1" /> },
-    unpaid: { variant: "destructive", icon: <XCircle className="h-3 w-3 mr-1" /> },
+    processing: {
+      variant: "secondary",
+      icon: <RefreshCw className="h-3 w-3 mr-1 animate-spin" />,
+    },
+    requires_payment_method: {
+      variant: "outline",
+      icon: <AlertCircle className="h-3 w-3 mr-1" />,
+    },
+    requires_confirmation: {
+      variant: "outline",
+      icon: <AlertCircle className="h-3 w-3 mr-1" />,
+    },
+    canceled: {
+      variant: "destructive",
+      icon: <XCircle className="h-3 w-3 mr-1" />,
+    },
+    failed: {
+      variant: "destructive",
+      icon: <XCircle className="h-3 w-3 mr-1" />,
+    },
+    expired: {
+      variant: "destructive",
+      icon: <XCircle className="h-3 w-3 mr-1" />,
+    },
+    unpaid: {
+      variant: "destructive",
+      icon: <XCircle className="h-3 w-3 mr-1" />,
+    },
   };
 
-  const config = statusConfig[status] || { variant: "outline" as const, icon: null };
+  const config = statusConfig[status] || {
+    variant: "outline" as const,
+    icon: null,
+  };
 
   return (
     <Badge variant={config.variant} className="flex items-center w-fit">
@@ -110,7 +155,9 @@ const formatAmount = (amount: number, currency: string) => {
   }).format(amount);
 };
 
-export default function StripePaymentsClient({ data }: StripePaymentsClientProps) {
+export default function StripePaymentsClient({
+  data,
+}: StripePaymentsClientProps) {
   const router = useRouter();
 
   if (!data) {
@@ -122,19 +169,28 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
               <CreditCard className="h-6 w-6 text-[#635BFF]" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Stripe Payments Dashboard</h1>
-              <p className="text-gray-600">View and manage your Stripe payments</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Stripe Payments Dashboard
+              </h1>
+              <p className="text-gray-600">
+                View and manage your Stripe payments
+              </p>
             </div>
           </div>
         </div>
-        
+
         <Card className="bg-red-50 border-red-200">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <XCircle className="h-8 w-8 text-red-500" />
               <div>
-                <h3 className="font-semibold text-red-800">Failed to load Stripe data</h3>
-                <p className="text-red-600">Please check your Stripe API key configuration in the .env file.</p>
+                <h3 className="font-semibold text-red-800">
+                  Failed to load Stripe data
+                </h3>
+                <p className="text-red-600">
+                  Please check your Stripe API key configuration in the .env
+                  file.
+                </p>
               </div>
             </div>
           </CardContent>
@@ -143,10 +199,20 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
     );
   }
 
-  const totalAvailable = data.balance.available.reduce((sum, b) => sum + b.amount, 0);
-  const totalPending = data.balance.pending.reduce((sum, b) => sum + b.amount, 0);
-  const successfulCharges = data.charges.filter(c => c.paid && !c.refunded).length;
-  const totalChargeAmount = data.charges.filter(c => c.paid).reduce((sum, c) => sum + c.amount, 0);
+  const totalAvailable = data.balance.available.reduce(
+    (sum, b) => sum + b.amount,
+    0,
+  );
+  const totalPending = data.balance.pending.reduce(
+    (sum, b) => sum + b.amount,
+    0,
+  );
+  const successfulCharges = data.charges.filter(
+    (c) => c.paid && !c.refunded,
+  ).length;
+  const totalChargeAmount = data.charges
+    .filter((c) => c.paid)
+    .reduce((sum, c) => sum + c.amount, 0);
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -158,22 +224,28 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
               <CreditCard className="h-6 w-6 text-[#635BFF]" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Stripe Payments Dashboard</h1>
-              <p className="text-gray-600">View and manage your Stripe payments</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Stripe Payments Dashboard
+              </h1>
+              <p className="text-gray-600">
+                View and manage your Stripe payments
+              </p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={() => router.refresh()}
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
-            <Button 
+            <Button
               size="sm"
-              onClick={() => window.open("https://dashboard.stripe.com", "_blank")}
+              onClick={() =>
+                window.open("https://dashboard.stripe.com", "_blank")
+              }
             >
               <ExternalLink className="h-4 w-4 mr-2" />
               Open Stripe
@@ -186,7 +258,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Available Balance
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -199,7 +273,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Pending Balance</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Balance
+            </CardTitle>
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
@@ -212,7 +288,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Recent Charges</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Recent Charges
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -227,7 +305,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
             <CreditCard className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalChargeAmount.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ${totalChargeAmount.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">From recent charges</p>
           </CardContent>
         </Card>
@@ -246,7 +326,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
           <Card>
             <CardHeader>
               <CardTitle>Recent Checkout Sessions</CardTitle>
-              <CardDescription>Last 10 checkout sessions from Stripe</CardDescription>
+              <CardDescription>
+                Last 10 checkout sessions from Stripe
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {data.checkoutSessions.length === 0 ? (
@@ -275,8 +357,12 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
                         <TableCell>
                           {formatAmount(session.amountTotal, session.currency)}
                         </TableCell>
-                        <TableCell>{getStatusBadge(session.status || "unknown")}</TableCell>
-                        <TableCell>{getStatusBadge(session.paymentStatus)}</TableCell>
+                        <TableCell>
+                          {getStatusBadge(session.status || "unknown")}
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(session.paymentStatus)}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {formatDate(session.created)}
                         </TableCell>
@@ -327,7 +413,10 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
                           <div className="flex flex-col gap-1">
                             {getStatusBadge(charge.status)}
                             {charge.refunded && (
-                              <Badge variant="outline" className="text-orange-600 w-fit">
+                              <Badge
+                                variant="outline"
+                                className="text-orange-600 w-fit"
+                              >
                                 Refunded
                               </Badge>
                             )}
@@ -353,7 +442,9 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
           <Card>
             <CardHeader>
               <CardTitle>Recent Payment Intents</CardTitle>
-              <CardDescription>Last 10 payment intents from Stripe</CardDescription>
+              <CardDescription>
+                Last 10 payment intents from Stripe
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {data.paymentIntents.length === 0 ? (
@@ -401,15 +492,29 @@ export default function StripePaymentsClient({ data }: StripePaymentsClientProps
       <Card>
         <CardHeader>
           <CardTitle>Quick Links</CardTitle>
-          <CardDescription>Access Stripe Dashboard sections directly</CardDescription>
+          <CardDescription>
+            Access Stripe Dashboard sections directly
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: "Payments", url: "https://dashboard.stripe.com/payments" },
-              { name: "Customers", url: "https://dashboard.stripe.com/customers" },
-              { name: "Balances", url: "https://dashboard.stripe.com/balance/overview" },
-              { name: "Webhooks", url: "https://dashboard.stripe.com/webhooks" },
+              {
+                name: "Payments",
+                url: "https://dashboard.stripe.com/payments",
+              },
+              {
+                name: "Customers",
+                url: "https://dashboard.stripe.com/customers",
+              },
+              {
+                name: "Balances",
+                url: "https://dashboard.stripe.com/balance/overview",
+              },
+              {
+                name: "Webhooks",
+                url: "https://dashboard.stripe.com/webhooks",
+              },
             ].map((link) => (
               <Button
                 key={link.name}

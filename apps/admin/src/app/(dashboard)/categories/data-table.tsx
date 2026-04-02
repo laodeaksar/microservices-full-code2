@@ -65,9 +65,9 @@ export function DataTable<TData, TValue>({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
     globalFilterFn: (row, columnId, filterValue) => {
       const category = row.original as CategoryType;
       const searchValue = filterValue.toLowerCase();
-      
+
       return (
         category.name?.toLowerCase().includes(searchValue) ||
         category.slug?.toLowerCase().includes(searchValue)
@@ -133,7 +133,7 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
         </div>
-        
+
         <Sheet>
           <SheetTrigger asChild>
             <Button>Add Category</Button>
@@ -151,11 +151,15 @@ export function DataTable<TData, TValue>({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               size="sm"
               onClick={() => {
-                if (confirm(`Are you sure you want to delete ${selectedCount} categor${selectedCount > 1 ? "ies" : "y"}?`)) {
+                if (
+                  confirm(
+                    `Are you sure you want to delete ${selectedCount} categor${selectedCount > 1 ? "ies" : "y"}?`,
+                  )
+                ) {
                   deleteMutation.mutate();
                 }
               }}
@@ -179,7 +183,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -198,7 +202,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -2,13 +2,13 @@
 
 import { Card, CardContent } from "./ui/card";
 import { DashboardStats } from "@repo/types";
-import { 
-  ShoppingCart, 
-  TrendingUp, 
+import {
+  ShoppingCart,
+  TrendingUp,
   Package,
   CalendarCheck,
   Banknote,
-  Wallet
+  Wallet,
 } from "lucide-react";
 import { formatTZSCompact } from "@/lib/utils/currency";
 
@@ -54,7 +54,9 @@ const StatsCards = ({ stats, stripeBalance }: StatsCardsProps) => {
     {
       title: "Stripe Revenue",
       value: formatTZSCompact(totalRevenue),
-      subtitle: stripeBalance ? `Available: ${formatTZSCompact(availableBalance)}` : undefined,
+      subtitle: stripeBalance
+        ? `Available: ${formatTZSCompact(availableBalance)}`
+        : undefined,
       icon: Wallet,
       color: "text-green-600",
       bgColor: "bg-green-100",
@@ -95,14 +97,18 @@ const StatsCards = ({ stats, stripeBalance }: StatsCardsProps) => {
         <Card key={item.title} className="hover:shadow-md transition-shadow">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">{item.title}</span>
+              <span className="text-sm text-muted-foreground">
+                {item.title}
+              </span>
               <div className={`p-1.5 rounded-md ${item.bgColor}`}>
                 <item.icon className={`h-4 w-4 ${item.color}`} />
               </div>
             </div>
             <p className="text-xl font-bold">{item.value}</p>
             {"subtitle" in item && item.subtitle && (
-              <p className="text-xs text-muted-foreground mt-1">{item.subtitle}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {item.subtitle}
+              </p>
             )}
           </CardContent>
         </Card>

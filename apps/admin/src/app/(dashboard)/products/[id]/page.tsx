@@ -6,10 +6,28 @@ import { ProductType } from "@repo/types";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, ArrowLeft, Edit, Trash2, Package, Palette, Box, Award, Cpu, Star, ImageIcon } from "lucide-react";
+import {
+  Loader2,
+  ArrowLeft,
+  Edit,
+  Trash2,
+  Package,
+  Palette,
+  Box,
+  Award,
+  Cpu,
+  Star,
+  ImageIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
@@ -20,27 +38,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Color hex mapping for visual display
 const colorHexMap: Record<string, string> = {
-  'Natural Titanium': '#8B8680',
-  'Blue Titanium': '#5B7C99',
-  'White Titanium': '#E8E4E0',
-  'Black Titanium': '#3A3A3C',
-  'Titanium Gray': '#71706E',
-  'Space Black': '#1C1C1E',
-  'Silver': '#C0C0C0',
-  'Graphite': '#41424C',
-  'Platinum': '#E5E4E2',
-  'Sapphire': '#0F52BA',
-  'blue': '#3B82F6',
-  'green': '#22C55E',
-  'red': '#EF4444',
-  'yellow': '#EAB308',
-  'purple': '#A855F7',
-  'orange': '#F97316',
-  'pink': '#EC4899',
-  'black': '#000000',
-  'white': '#FFFFFF',
-  'gray': '#6B7280',
-  'brown': '#92400E',
+  "Natural Titanium": "#8B8680",
+  "Blue Titanium": "#5B7C99",
+  "White Titanium": "#E8E4E0",
+  "Black Titanium": "#3A3A3C",
+  "Titanium Gray": "#71706E",
+  "Space Black": "#1C1C1E",
+  Silver: "#C0C0C0",
+  Graphite: "#41424C",
+  Platinum: "#E5E4E2",
+  Sapphire: "#0F52BA",
+  blue: "#3B82F6",
+  green: "#22C55E",
+  red: "#EF4444",
+  yellow: "#EAB308",
+  purple: "#A855F7",
+  orange: "#F97316",
+  pink: "#EC4899",
+  black: "#000000",
+  white: "#FFFFFF",
+  gray: "#6B7280",
+  brown: "#92400E",
 };
 
 export default function ViewProductPage() {
@@ -58,25 +76,26 @@ export default function ViewProductPage() {
     }
 
     const token = await getToken();
-    const res = await fetch(
-      `${productServiceUrl}/products/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    
+    const res = await fetch(`${productServiceUrl}/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     if (!res.ok) {
       const errorText = await res.text();
       console.error("Failed to fetch product:", res.status, errorText);
       throw new Error(`Failed to fetch product: ${res.status} - ${errorText}`);
     }
-    
+
     return res.json();
   };
 
-  const { data: product, isLoading, error } = useQuery({
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => fetchProduct(productId),
     enabled: !!productId,
@@ -92,7 +111,7 @@ export default function ViewProductPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (!res.ok) {
         throw new Error("Failed to delete product");
@@ -139,7 +158,10 @@ export default function ViewProductPage() {
                     </div>
                     <div className="grid grid-cols-4 gap-2">
                       {[...Array(4)].map((_, i) => (
-                        <Skeleton key={i} className="aspect-square rounded-md" />
+                        <Skeleton
+                          key={i}
+                          className="aspect-square rounded-md"
+                        />
                       ))}
                     </div>
                   </div>
@@ -225,10 +247,14 @@ export default function ViewProductPage() {
 
   // Parse images - handle both string and array formats
   const images = product.images as Record<string, string | string[]>;
-  
+
   // Get all images flattened for the gallery
-  const getAllImages = (): Array<{color: string, url: string, index: number}> => {
-    const allImages: Array<{color: string, url: string, index: number}> = [];
+  const getAllImages = (): Array<{
+    color: string;
+    url: string;
+    index: number;
+  }> => {
+    const allImages: Array<{ color: string; url: string; index: number }> = [];
     Object.entries(images || {}).forEach(([color, urls]) => {
       if (Array.isArray(urls)) {
         urls.forEach((url, idx) => {
@@ -246,7 +272,13 @@ export default function ViewProductPage() {
 
   // Stock status display
   const getStockStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+    const statusConfig: Record<
+      string,
+      {
+        label: string;
+        variant: "default" | "secondary" | "destructive" | "outline";
+      }
+    > = {
       in_stock: { label: "In Stock", variant: "default" },
       limited_stock: { label: "Limited Stock", variant: "secondary" },
       pre_order: { label: "Pre-Order", variant: "outline" },
@@ -274,9 +306,9 @@ export default function ViewProductPage() {
                 Edit
               </Button>
             </SheetTrigger>
-            <AddProduct 
-              product={product} 
-              onSuccess={() => setEditSheetOpen(false)} 
+            <AddProduct
+              product={product}
+              onSuccess={() => setEditSheetOpen(false)}
             />
           </Sheet>
           <Button
@@ -296,7 +328,6 @@ export default function ViewProductPage() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Left Column - Images */}
         <div className="lg:col-span-2 space-y-6">
           {/* Main Image */}
@@ -307,7 +338,9 @@ export default function ViewProductPage() {
                 Product Images
               </CardTitle>
               <CardDescription>
-                {allImages.length} image{allImages.length !== 1 ? 's' : ''} across {product.colors.length} color{product.colors.length !== 1 ? 's' : ''}
+                {allImages.length} image{allImages.length !== 1 ? "s" : ""}{" "}
+                across {product.colors.length} color
+                {product.colors.length !== 1 ? "s" : ""}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -324,33 +357,42 @@ export default function ViewProductPage() {
                       />
                     </div>
                   )}
-                  
+
                   {/* Image Grid by Color */}
                   <div className="space-y-4">
                     {product.colors.map((color) => {
                       const colorImages = images[color];
-                      const imageArray = colorImages 
-                        ? (Array.isArray(colorImages) ? colorImages : [colorImages])
+                      const imageArray = colorImages
+                        ? Array.isArray(colorImages)
+                          ? colorImages
+                          : [colorImages]
                         : [];
                       const hex = colorHexMap[color] || "#888";
-                      
+
                       if (imageArray.length === 0) return null;
-                      
+
                       return (
                         <div key={color} className="border rounded-lg p-4">
                           <div className="flex items-center gap-2 mb-3">
-                            <div 
+                            <div
                               className="w-4 h-4 rounded-full border"
                               style={{ backgroundColor: hex }}
                             />
                             <span className="font-medium text-sm">{color}</span>
-                            <Badge variant="secondary" className="text-xs ml-auto">
-                              {imageArray.length} image{imageArray.length !== 1 ? 's' : ''}
+                            <Badge
+                              variant="secondary"
+                              className="text-xs ml-auto"
+                            >
+                              {imageArray.length} image
+                              {imageArray.length !== 1 ? "s" : ""}
                             </Badge>
                           </div>
                           <div className="grid grid-cols-4 gap-2">
                             {imageArray.map((url, idx) => (
-                              <div key={idx} className="relative aspect-square rounded-md overflow-hidden bg-gray-100">
+                              <div
+                                key={idx}
+                                className="relative aspect-square rounded-md overflow-hidden bg-gray-100"
+                              >
                                 <Image
                                   src={url}
                                   alt={`${product.name} - ${color} ${idx + 1}`}
@@ -375,8 +417,10 @@ export default function ViewProductPage() {
           </Card>
 
           {/* Extended Data Section */}
-          {(product.techHighlights?.length || product.boxContents?.length || 
-            product.productFeatures?.length || product.certifications?.length) && (
+          {(product.techHighlights?.length ||
+            product.boxContents?.length ||
+            product.productFeatures?.length ||
+            product.certifications?.length) && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -386,22 +430,30 @@ export default function ViewProductPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Tech Highlights */}
-                {product.techHighlights && product.techHighlights.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-3 flex items-center gap-2">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      Tech Highlights
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {product.techHighlights.map((highlight, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                          {highlight.icon && <span className="text-primary">{highlight.icon}</span>}
-                          <span className="text-sm">{highlight.label}</span>
-                        </div>
-                      ))}
+                {product.techHighlights &&
+                  product.techHighlights.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        Tech Highlights
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        {product.techHighlights.map((highlight, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 p-2 bg-muted rounded-md"
+                          >
+                            {highlight.icon && (
+                              <span className="text-primary">
+                                {highlight.icon}
+                              </span>
+                            )}
+                            <span className="text-sm">{highlight.label}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Box Contents */}
                 {product.boxContents && product.boxContents.length > 0 && (
@@ -412,7 +464,10 @@ export default function ViewProductPage() {
                     </h3>
                     <div className="grid grid-cols-2 gap-2">
                       {product.boxContents.map((item, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm">
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 text-sm"
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                           {item}
                         </div>
@@ -422,69 +477,99 @@ export default function ViewProductPage() {
                 )}
 
                 {/* Product Features */}
-                {product.productFeatures && product.productFeatures.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-3">Product Features</h3>
-                    <div className="space-y-3">
-                      {product.productFeatures.map((feature, index) => (
-                        <div key={index} className="border-l-2 border-primary pl-4 py-1">
-                          <h4 className="font-medium text-sm">{feature.title}</h4>
-                          <p className="text-sm text-muted-foreground">{feature.description}</p>
-                        </div>
-                      ))}
+                {product.productFeatures &&
+                  product.productFeatures.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold mb-3">Product Features</h3>
+                      <div className="space-y-3">
+                        {product.productFeatures.map((feature, index) => (
+                          <div
+                            key={index}
+                            className="border-l-2 border-primary pl-4 py-1"
+                          >
+                            <h4 className="font-medium text-sm">
+                              {feature.title}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {feature.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Certifications */}
-                {product.certifications && product.certifications.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-3 flex items-center gap-2">
-                      <Award className="h-4 w-4" />
-                      Certifications
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {product.certifications.map((cert, index) => (
-                        <Badge key={index} variant="outline" className="text-sm py-1">
-                          {cert.icon && <span className="mr-1">{cert.icon}</span>}
-                          {cert.label}
-                        </Badge>
-                      ))}
+                {product.certifications &&
+                  product.certifications.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <Award className="h-4 w-4" />
+                        Certifications
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {product.certifications.map((cert, index) => (
+                          <Badge
+                            key={index}
+                            variant="outline"
+                            className="text-sm py-1"
+                          >
+                            {cert.icon && (
+                              <span className="mr-1">{cert.icon}</span>
+                            )}
+                            {cert.label}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </CardContent>
             </Card>
           )}
 
           {/* Technical Specifications */}
-          {product.technicalSpecs && Object.keys(product.technicalSpecs).length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Technical Specifications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {Object.entries(product.technicalSpecs).map(([category, specsData]) => {
-                    const specs = specsData as Array<{label: string, value: string}>;
-                    return (
-                      <div key={category}>
-                        <h4 className="font-semibold text-sm mb-3 text-primary">{category}</h4>
-                        <div className="space-y-2">
-                          {specs?.map((spec, index) => (
-                            <div key={index} className="flex justify-between text-sm py-2 border-b last:border-0">
-                              <span className="text-muted-foreground">{spec.label}</span>
-                              <span className="font-medium">{spec.value}</span>
+          {product.technicalSpecs &&
+            Object.keys(product.technicalSpecs).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Technical Specifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {Object.entries(product.technicalSpecs).map(
+                      ([category, specsData]) => {
+                        const specs = specsData as Array<{
+                          label: string;
+                          value: string;
+                        }>;
+                        return (
+                          <div key={category}>
+                            <h4 className="font-semibold text-sm mb-3 text-primary">
+                              {category}
+                            </h4>
+                            <div className="space-y-2">
+                              {specs?.map((spec, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between text-sm py-2 border-b last:border-0"
+                                >
+                                  <span className="text-muted-foreground">
+                                    {spec.label}
+                                  </span>
+                                  <span className="font-medium">
+                                    {spec.value}
+                                  </span>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
         </div>
 
         {/* Right Column - Details */}
@@ -500,11 +585,15 @@ export default function ViewProductPage() {
             <CardContent className="space-y-4">
               <div>
                 <h2 className="text-xl font-bold">{product.name}</h2>
-                <p className="text-muted-foreground text-sm mt-1">{product.shortDescription}</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  {product.shortDescription}
+                </p>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold text-primary">{formatTZS(product.price)}</span>
+                <span className="text-2xl font-bold text-primary">
+                  {formatTZS(product.price)}
+                </span>
                 {product.isHeroProduct && (
                   <Badge className="bg-yellow-500">
                     <Star className="h-3 w-3 mr-1" />
@@ -514,7 +603,7 @@ export default function ViewProductPage() {
               </div>
 
               <Separator />
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Category</span>
@@ -526,15 +615,21 @@ export default function ViewProductPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Stock</span>
-                  <span className="font-medium">{product.stockQuantity || 0} units</span>
+                  <span className="font-medium">
+                    {product.stockQuantity || 0} units
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Sold</span>
-                  <span className="font-medium">{product.soldCount || 0} units</span>
+                  <span className="font-medium">
+                    {product.soldCount || 0} units
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Low Stock Alert</span>
-                  <span className="font-medium">{product.lowStockThreshold || 10}</span>
+                  <span className="font-medium">
+                    {product.lowStockThreshold || 10}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -553,8 +648,11 @@ export default function ViewProductPage() {
                 {product.colors.map((color) => {
                   const hex = colorHexMap[color] || "#888";
                   return (
-                    <div key={color} className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full">
-                      <div 
+                    <div
+                      key={color}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full"
+                    >
+                      <div
                         className="w-3 h-3 rounded-full border"
                         style={{ backgroundColor: hex }}
                       />
@@ -569,7 +667,9 @@ export default function ViewProductPage() {
           {/* Sizes/Variants */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Sizes / Variants ({product.sizes.length})</CardTitle>
+              <CardTitle className="text-base">
+                Sizes / Variants ({product.sizes.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">

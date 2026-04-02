@@ -6,7 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
@@ -45,10 +51,13 @@ const sourceLabels: Record<string, { label: string; color: string }> = {
   platzi: { label: "Platzi", color: "bg-purple-500" },
 };
 
-export default function ExternalProductSearch({ onSelectProduct }: ExternalProductSearchProps) {
+export default function ExternalProductSearch({
+  onSelectProduct,
+}: ExternalProductSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ExternalProductResult[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ExternalProductResult | null>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<ExternalProductResult | null>(null);
   const [fromCache, setFromCache] = useState(false);
   const { getToken } = useAuth();
 
@@ -56,7 +65,7 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
     mutationFn: async (searchQuery: string) => {
       const token = await getToken();
       const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/external-products/search?q=${encodeURIComponent(searchQuery)}`;
-      
+
       console.log("Search URL:", url);
       console.log("Auth token available:", !!token);
 
@@ -71,13 +80,15 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
 
       // Read the response text first (can only read body once)
       const responseText = await res.text();
-      
+
       let data;
       try {
         data = JSON.parse(responseText);
       } catch (parseError) {
         console.error("API response is not valid JSON:", responseText);
-        throw new Error(`API returned invalid JSON: ${responseText.substring(0, 150)}`);
+        throw new Error(
+          `API returned invalid JSON: ${responseText.substring(0, 150)}`,
+        );
       }
 
       if (!res.ok) {
@@ -85,9 +96,15 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
           throw new Error("Rate limit exceeded. Please wait a minute.");
         }
         if (res.status === 404) {
-          throw new Error("Search endpoint not found. Check if product-service is running.");
+          throw new Error(
+            "Search endpoint not found. Check if product-service is running.",
+          );
         }
-        throw new Error(data.error || data.message || `Search failed with status ${res.status}`);
+        throw new Error(
+          data.error ||
+            data.message ||
+            `Search failed with status ${res.status}`,
+        );
       }
 
       return data;
@@ -96,7 +113,7 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
       setResults(data.results || []);
       setFromCache(data.fromCache || false);
       setSelectedProduct(null);
-      
+
       if (data.results?.length === 0) {
         toast.info("No products found. Try a different search term.");
       } else if (data.fromCache) {
@@ -146,7 +163,7 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && query.trim().length >= 2) {
+                  if (e.key === "Enter" && query.trim().length >= 2) {
                     e.preventDefault();
                     searchMutation.mutate(query.trim());
                   }
@@ -155,8 +172,8 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
                 disabled={searchMutation.isPending}
               />
             </div>
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               onClick={() => {
                 if (query.trim().length >= 2) {
                   searchMutation.mutate(query.trim());
@@ -173,7 +190,7 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
               )}
             </Button>
           </div>
-          
+
           {fromCache && results.length > 0 && (
             <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
@@ -199,7 +216,8 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
                     key={`${product.source}-${product.id}`}
                     onClick={() => handleSelectProduct(product)}
                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                      selectedProduct?.id === product.id && selectedProduct?.source === product.source
+                      selectedProduct?.id === product.id &&
+                      selectedProduct?.source === product.source
                         ? "border-primary bg-primary/5"
                         : "hover:border-primary/50"
                     }`}
@@ -214,21 +232,25 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
                             alt={product.name}
                             className="w-full h-full object-contain"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/placeholder-product.png";
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder-product.png";
                             }}
                           />
                         </div>
                       )}
-                      
+
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-medium text-sm truncate">{product.name}</h4>
-                          <Badge 
-                            variant="secondary" 
-                            className={`text-xs text-white ${sourceLabels[product.source]?.color || 'bg-gray-500'}`}
+                          <h4 className="font-medium text-sm truncate">
+                            {product.name}
+                          </h4>
+                          <Badge
+                            variant="secondary"
+                            className={`text-xs text-white ${sourceLabels[product.source]?.color || "bg-gray-500"}`}
                           >
-                            {sourceLabels[product.source]?.label || product.source}
+                            {sourceLabels[product.source]?.label ||
+                              product.source}
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -239,15 +261,17 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
                         </p>
                         {product.suggestedPrice && (
                           <p className="text-xs font-medium text-green-600 mt-1">
-                            Suggested: TZS {product.suggestedPrice.toLocaleString()}
+                            Suggested: TZS{" "}
+                            {product.suggestedPrice.toLocaleString()}
                           </p>
                         )}
                       </div>
-                      
+
                       {/* Selected Check */}
-                      {selectedProduct?.id === product.id && selectedProduct?.source === product.source && (
-                        <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                      )}
+                      {selectedProduct?.id === product.id &&
+                        selectedProduct?.source === product.source && (
+                          <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                        )}
                     </div>
                   </div>
                 ))}
@@ -272,7 +296,10 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
               {selectedProduct.images.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto">
                   {selectedProduct.images.slice(0, 4).map((img, i) => (
-                    <div key={i} className="w-20 h-20 flex-shrink-0 rounded overflow-hidden bg-gray-100">
+                    <div
+                      key={i}
+                      className="w-20 h-20 flex-shrink-0 rounded overflow-hidden bg-gray-100"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img}
@@ -287,28 +314,38 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
 
             <div>
               <h3 className="font-semibold">{selectedProduct.name}</h3>
-              <p className="text-sm text-muted-foreground">{selectedProduct.brand}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedProduct.brand}
+              </p>
               <p className="text-sm mt-2">{selectedProduct.description}</p>
             </div>
 
             {/* Technical Specs Preview */}
             {Object.keys(selectedProduct.technicalSpecs).length > 0 && (
               <div>
-                <h4 className="text-sm font-medium mb-2">Technical Specifications</h4>
+                <h4 className="text-sm font-medium mb-2">
+                  Technical Specifications
+                </h4>
                 <div className="space-y-3">
-                  {Object.entries(selectedProduct.technicalSpecs).slice(0, 2).map(([category, specs]) => (
-                    <div key={category}>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">{category}</p>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                        {specs.slice(0, 4).map((spec, i) => (
-                          <div key={i} className="text-xs">
-                            <span className="text-muted-foreground">{spec.label}:</span>{" "}
-                            <span>{spec.value}</span>
-                          </div>
-                        ))}
+                  {Object.entries(selectedProduct.technicalSpecs)
+                    .slice(0, 2)
+                    .map(([category, specs]) => (
+                      <div key={category}>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          {category}
+                        </p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                          {specs.slice(0, 4).map((spec, i) => (
+                            <div key={i} className="text-xs">
+                              <span className="text-muted-foreground">
+                                {spec.label}:
+                              </span>{" "}
+                              <span>{spec.value}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             )}
@@ -318,7 +355,8 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-amber-500" />
               <p className="text-xs text-muted-foreground">
-                You&apos;ll need to set the price and stock quantity manually after import
+                You&apos;ll need to set the price and stock quantity manually
+                after import
               </p>
             </div>
 

@@ -36,7 +36,10 @@ const WishlistPage = () => {
       ...product,
       quantity: 1,
       selectedSize: product.sizes?.[0] || "M",
-      selectedColor: product.colors?.[0] || Object.keys(product.images || {})[0] || "default",
+      selectedColor:
+        product.colors?.[0] ||
+        Object.keys(product.images || {})[0] ||
+        "default",
     });
   };
 
@@ -54,7 +57,9 @@ const WishlistPage = () => {
             </h1>
           </div>
           <p className="text-gray-600 text-sm lg:text-base">
-            {isEmpty ? "Your wishlist is empty" : `${wishlist.length} item${wishlist.length > 1 ? 's' : ''} saved for later`}
+            {isEmpty
+              ? "Your wishlist is empty"
+              : `${wishlist.length} item${wishlist.length > 1 ? "s" : ""} saved for later`}
           </p>
         </div>
 
@@ -63,7 +68,9 @@ const WishlistPage = () => {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
               <Heart className="w-10 h-10 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Your wishlist is empty</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Your wishlist is empty
+            </h3>
             <p className="text-gray-600 mb-8">Save items you love for later!</p>
             <button
               onClick={() => router.push("/products")}
@@ -81,18 +88,32 @@ const WishlistPage = () => {
                 className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group"
               >
                 {/* Product Image */}
-                <Link href={`/products/${product.id}`} className="block relative h-56 bg-gray-50">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="block relative h-56 bg-gray-50"
+                >
                   <Image
                     src={(() => {
                       try {
-                        const images = product.images as Record<string, string | string[]>;
+                        const images = product.images as Record<
+                          string,
+                          string | string[]
+                        >;
                         const firstColor = Object.keys(images)[0];
                         if (!firstColor) return "/products/placeholder.jpg";
                         const imageValue = images[firstColor];
-                        if (typeof imageValue === 'string' && imageValue.trim() !== '') {
+                        if (
+                          typeof imageValue === "string" &&
+                          imageValue.trim() !== ""
+                        ) {
                           return imageValue;
                         } else if (Array.isArray(imageValue)) {
-                          const validUrl = imageValue.find((url: string) => url && typeof url === 'string' && url.trim() !== '');
+                          const validUrl = imageValue.find(
+                            (url: string) =>
+                              url &&
+                              typeof url === "string" &&
+                              url.trim() !== "",
+                          );
                           return validUrl || "/products/placeholder.jpg";
                         }
                         return "/products/placeholder.jpg";
@@ -104,7 +125,7 @@ const WishlistPage = () => {
                     fill
                     className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
                   />
-                  
+
                   {/* Remove from Wishlist Button */}
                   <button
                     onClick={() => removeFromWishlist(product.id)}
@@ -122,7 +143,7 @@ const WishlistPage = () => {
                       {product.name}
                     </h3>
                   </Link>
-                  
+
                   <p className="text-xl font-bold text-gray-900">
                     {formatTzs(product.price)}
                   </p>

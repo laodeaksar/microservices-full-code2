@@ -16,7 +16,13 @@ import {
   SheetDescription,
 } from "./ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -61,10 +67,14 @@ import type { CategoryType, ProductType } from "@repo/types";
 
 // Local schema for API imports - only business fields needed
 const ApiImportSchema = z.object({
-  price: z.number({ message: "Price is required" }).min(1, "Price must be greater than 0"),
+  price: z
+    .number({ message: "Price is required" })
+    .min(1, "Price must be greater than 0"),
   discount: z.number().int().min(0).max(100),
   stockQuantity: z.number().int().min(0),
-  categorySlug: z.string({ message: "Category is required" }).min(1, "Category is required"),
+  categorySlug: z
+    .string({ message: "Category is required" })
+    .min(1, "Category is required"),
   isPublished: z.boolean(),
   sizes: z.array(z.string()).optional(),
 });
@@ -105,15 +115,15 @@ const sourceLabels: Record<string, { label: string; color: string }> = {
 
 // Map external categories to our slugs
 const categoryMapping: Record<string, string> = {
-  "smartphones": "smartphones",
-  "laptops": "laptops",
-  "tablets": "tablets",
-  "fragrances": "accessories",
-  "skincare": "accessories",
-  "groceries": "accessories",
+  smartphones: "smartphones",
+  laptops: "laptops",
+  tablets: "tablets",
+  fragrances: "accessories",
+  skincare: "accessories",
+  groceries: "accessories",
   "home-decoration": "accessories",
-  "furniture": "accessories",
-  "tops": "accessories",
+  furniture: "accessories",
+  tops: "accessories",
   "womens-dresses": "accessories",
   "womens-shoes": "accessories",
   "mens-shirts": "accessories",
@@ -122,15 +132,15 @@ const categoryMapping: Record<string, string> = {
   "womens-watches": "smartwatches",
   "womens-bags": "accessories",
   "womens-jewellery": "accessories",
-  "sunglasses": "accessories",
-  "automotive": "accessories",
-  "motorcycle": "accessories",
-  "lighting": "accessories",
-  "clothes": "accessories",
-  "electronics": "accessories",
-  "shoes": "accessories",
-  "others": "accessories",
-  "miscellaneous": "accessories",
+  sunglasses: "accessories",
+  automotive: "accessories",
+  motorcycle: "accessories",
+  lighting: "accessories",
+  clothes: "accessories",
+  electronics: "accessories",
+  shoes: "accessories",
+  others: "accessories",
+  miscellaneous: "accessories",
 };
 
 interface AddProductApiFirstProps {
@@ -139,24 +149,36 @@ interface AddProductApiFirstProps {
   onOpenManualForm?: () => void;
 }
 
-export default function AddProductApiFirst({ editData, onClose, onOpenManualForm }: AddProductApiFirstProps) {
+export default function AddProductApiFirst({
+  editData,
+  onClose,
+  onOpenManualForm,
+}: AddProductApiFirstProps) {
   const isEditMode = !!editData;
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
   // Workflow state
-  const [mode, setMode] = useState<"search" | "import" | "manual">(isEditMode ? "manual" : "search");
+  const [mode, setMode] = useState<"search" | "import" | "manual">(
+    isEditMode ? "manual" : "search",
+  );
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<ExternalProductResult[]>([]);
+  const [searchResults, setSearchResults] = useState<ExternalProductResult[]>(
+    [],
+  );
   const [fromCache, setFromCache] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ExternalProductResult | null>(null);
-  const [duplicateWarning, setDuplicateWarning] = useState<DuplicateCheckResult | null>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<ExternalProductResult | null>(null);
+  const [duplicateWarning, setDuplicateWarning] =
+    useState<DuplicateCheckResult | null>(null);
 
   // Fetch categories
   const { data: categories = [] } = useQuery<CategoryType[]>({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
+      );
       if (!res.ok) throw new Error("Failed to fetch categories");
       return res.json();
     },
@@ -187,7 +209,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const text = await res.text();
@@ -227,7 +249,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
         `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/external-products/check-duplicate?source=${product.source}&externalId=${product.id}&name=${encodeURIComponent(product.name)}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       const text = await res.text();
       return JSON.parse(text);
@@ -255,7 +277,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
             externalProduct: selectedProduct,
             businessData: formData,
           }),
-        }
+        },
       );
 
       const text = await res.text();
@@ -281,23 +303,30 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
     },
   });
 
-  const resolveCategorySlug = useCallback((externalCategory?: string) => {
-    if (!categories.length) return "";
+  const resolveCategorySlug = useCallback(
+    (externalCategory?: string) => {
+      if (!categories.length) return "";
 
-    const normalized = (externalCategory || "").toLowerCase().trim();
-    const mapped = categoryMapping[normalized] || "accessories";
+      const normalized = (externalCategory || "").toLowerCase().trim();
+      const mapped = categoryMapping[normalized] || "accessories";
 
-    const mappedExists = categories.some((cat) => cat.slug === mapped);
-    if (mappedExists) return mapped;
+      const mappedExists = categories.some((cat) => cat.slug === mapped);
+      if (mappedExists) return mapped;
 
-    const bySlug = categories.find((cat) => cat.slug.toLowerCase() === normalized);
-    if (bySlug) return bySlug.slug;
+      const bySlug = categories.find(
+        (cat) => cat.slug.toLowerCase() === normalized,
+      );
+      if (bySlug) return bySlug.slug;
 
-    const byName = categories.find((cat) => cat.name.toLowerCase() === normalized);
-    if (byName) return byName.slug;
+      const byName = categories.find(
+        (cat) => cat.name.toLowerCase() === normalized,
+      );
+      if (byName) return byName.slug;
 
-    return categories[0]?.slug || "";
-  }, [categories]);
+      return categories[0]?.slug || "";
+    },
+    [categories],
+  );
 
   // Handle product selection
   const handleSelectProduct = (product: ExternalProductResult) => {
@@ -320,7 +349,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
 
   useEffect(() => {
     if (selectedProduct && !form.getValues("categorySlug")) {
-      const resolvedCategorySlug = resolveCategorySlug(selectedProduct.category);
+      const resolvedCategorySlug = resolveCategorySlug(
+        selectedProduct.category,
+      );
       if (resolvedCategorySlug) {
         form.setValue("categorySlug", resolvedCategorySlug);
       }
@@ -362,13 +393,24 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
       <ScrollArea className="flex-1 overflow-y-auto">
         <div className="px-6 pb-6 space-y-4">
           {/* Mode Tabs */}
-          <Tabs value={mode} onValueChange={(v) => setMode(v as "search" | "import" | "manual")}>
+          <Tabs
+            value={mode}
+            onValueChange={(v) => setMode(v as "search" | "import" | "manual")}
+          >
             <TabsList className="w-full">
-              <TabsTrigger value="search" className="flex-1" disabled={isEditMode}>
+              <TabsTrigger
+                value="search"
+                className="flex-1"
+                disabled={isEditMode}
+              >
                 <Database className="h-4 w-4 mr-2" />
                 API Search
               </TabsTrigger>
-              <TabsTrigger value="import" className="flex-1" disabled={!selectedProduct}>
+              <TabsTrigger
+                value="import"
+                className="flex-1"
+                disabled={!selectedProduct}
+              >
                 <Tag className="h-4 w-4 mr-2" />
                 Set Price
               </TabsTrigger>
@@ -397,14 +439,20 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" && searchQuery.trim().length >= 2) {
+                        if (
+                          e.key === "Enter" &&
+                          searchQuery.trim().length >= 2
+                        ) {
                           searchMutation.mutate(searchQuery.trim());
                         }
                       }}
                     />
                     <Button
                       onClick={() => searchMutation.mutate(searchQuery.trim())}
-                      disabled={searchQuery.trim().length < 2 || searchMutation.isPending}
+                      disabled={
+                        searchQuery.trim().length < 2 ||
+                        searchMutation.isPending
+                      }
                     >
                       {searchMutation.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -435,7 +483,8 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                       <div
                         key={`${product.source}-${product.id}`}
                         className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted ${
-                          selectedProduct?.id === product.id && selectedProduct?.source === product.source
+                          selectedProduct?.id === product.id &&
+                          selectedProduct?.source === product.source
                             ? "border-primary bg-primary/5"
                             : ""
                         }`}
@@ -451,7 +500,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                           )}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
-                              <p className="font-medium text-sm truncate">{product.name}</p>
+                              <p className="font-medium text-sm truncate">
+                                {product.name}
+                              </p>
                               <Badge
                                 className={`${sourceLabels[product.source]?.color} text-white text-xs shrink-0`}
                               >
@@ -459,10 +510,13 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                               </Badge>
                             </div>
                             {product.brand && (
-                              <p className="text-xs text-muted-foreground">{product.brand}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {product.brand}
+                              </p>
                             )}
                             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                              {product.shortDescription || product.description?.substring(0, 100)}
+                              {product.shortDescription ||
+                                product.description?.substring(0, 100)}
                             </p>
                           </div>
                         </div>
@@ -516,7 +570,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                               </span>
                             )}
                           </div>
-                          <p className="font-medium mt-1">{selectedProduct.name}</p>
+                          <p className="font-medium mt-1">
+                            {selectedProduct.name}
+                          </p>
                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                             {selectedProduct.description?.substring(0, 150)}
                           </p>
@@ -527,7 +583,13 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
 
                   {/* Duplicate Warning */}
                   {duplicateWarning?.exists && (
-                    <Card className={duplicateWarning.matchType === "exact" ? "border-destructive" : "border-yellow-500"}>
+                    <Card
+                      className={
+                        duplicateWarning.matchType === "exact"
+                          ? "border-destructive"
+                          : "border-yellow-500"
+                      }
+                    >
                       <CardContent className="pt-4">
                         <div className="flex items-start gap-3">
                           {duplicateWarning.matchType === "exact" ? (
@@ -542,9 +604,16 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                 : "Similar Product Found"}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
-                              &quot;{duplicateWarning.existingProduct?.name}&quot; exists in database
+                              &quot;{duplicateWarning.existingProduct?.name}
+                              &quot; exists in database
                               {duplicateWarning.existingProduct?.price && (
-                                <> at {formatTZS(duplicateWarning.existingProduct.price)}</>
+                                <>
+                                  {" "}
+                                  at{" "}
+                                  {formatTZS(
+                                    duplicateWarning.existingProduct.price,
+                                  )}
+                                </>
                               )}
                             </p>
                           </div>
@@ -555,7 +624,10 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
 
                   {/* Business Fields Form */}
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleImportSubmit)} className="space-y-4">
+                    <form
+                      onSubmit={form.handleSubmit(handleImportSubmit)}
+                      className="space-y-4"
+                    >
                       <Card>
                         <CardHeader className="pb-3">
                           <CardTitle className="text-sm flex items-center gap-2">
@@ -579,7 +651,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                     type="number"
                                     placeholder="e.g., 25000000"
                                     {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(Number(e.target.value))
+                                    }
                                   />
                                 </FormControl>
                                 <FormDescription>
@@ -607,12 +681,20 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                     max={100}
                                     placeholder="0"
                                     {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(Number(e.target.value))
+                                    }
                                   />
                                 </FormControl>
                                 {field.value > 0 && form.watch("price") > 0 && (
                                   <FormDescription>
-                                    Final: {formatTZS(Math.round(form.watch("price") * (1 - field.value / 100)))}
+                                    Final:{" "}
+                                    {formatTZS(
+                                      Math.round(
+                                        form.watch("price") *
+                                          (1 - field.value / 100),
+                                      ),
+                                    )}
                                   </FormDescription>
                                 )}
                                 <FormMessage />
@@ -636,7 +718,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                     min={0}
                                     placeholder="e.g., 50"
                                     {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(Number(e.target.value))
+                                    }
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -651,7 +735,10 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Category *</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  value={field.value}
+                                >
                                   <FormControl>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Select category" />
@@ -659,7 +746,10 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                   </FormControl>
                                   <SelectContent>
                                     {categories.map((cat) => (
-                                      <SelectItem key={cat.slug} value={cat.slug}>
+                                      <SelectItem
+                                        key={cat.slug}
+                                        value={cat.slug}
+                                      >
                                         {cat.name}
                                       </SelectItem>
                                     ))}
@@ -709,7 +799,8 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                         className="w-full"
                         disabled={
                           importMutation.isPending ||
-                          (duplicateWarning?.exists && duplicateWarning.matchType === "exact")
+                          (duplicateWarning?.exists &&
+                            duplicateWarning.matchType === "exact")
                         }
                       >
                         {importMutation.isPending ? (
@@ -757,8 +848,8 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                     <div>
                       <p className="font-medium text-sm">Advanced Mode</p>
                       <p className="text-xs text-muted-foreground">
-                        For products not found in external databases. 
-                        Consider using API search first for better data quality.
+                        For products not found in external databases. Consider
+                        using API search first for better data quality.
                       </p>
                     </div>
                   </div>
@@ -771,13 +862,18 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                     Manual product entry requires filling all fields including
                     name, description, images, and specifications.
                   </p>
-                  <Button variant="outline" onClick={() => {
-                    if (onOpenManualForm) {
-                      onOpenManualForm();
-                      return;
-                    }
-                    toast.info("Manual full form is not available in this view.");
-                  }}>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      if (onOpenManualForm) {
+                        onOpenManualForm();
+                        return;
+                      }
+                      toast.info(
+                        "Manual full form is not available in this view.",
+                      );
+                    }}
+                  >
                     <Pencil className="h-4 w-4 mr-2" />
                     Open Full Form
                   </Button>
@@ -797,7 +893,11 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
           </Button>
         )}
         {mode === "import" && (
-          <Button variant="outline" className="w-full" onClick={() => setMode("search")}>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setMode("search")}
+          >
             Back to Search
           </Button>
         )}

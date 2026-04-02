@@ -35,18 +35,18 @@ export const getCategories = async (req: Request, res: Response) => {
     include: {
       _count: {
         select: {
-          products: true
-        }
-      }
-    }
+          products: true,
+        },
+      },
+    },
   });
 
   // Transform the response to include product count
-  const categoriesWithCount = categories.map(category => ({
+  const categoriesWithCount = categories.map((category) => ({
     id: category.id,
     name: category.name,
     slug: category.slug,
-    count: category._count.products
+    count: category._count.products,
   }));
 
   return res.status(200).json(categoriesWithCount);

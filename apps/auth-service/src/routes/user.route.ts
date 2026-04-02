@@ -10,19 +10,19 @@ router.get("/", async (req, res) => {
     // Clerk returns { data: User[], totalCount: number }
     res.status(200).json({
       data: users.data || [],
-      totalCount: users.totalCount || 0
+      totalCount: users.totalCount || 0,
     });
   } catch (error: any) {
     console.error("Error fetching users:", error);
     console.error("Error details:", {
       message: error?.message,
       status: error?.status,
-      clerkError: error?.clerkError
+      clerkError: error?.clerkError,
     });
     res.status(500).json({
       data: [],
       totalCount: 0,
-      error: error?.message || "Failed to fetch users"
+      error: error?.message || "Failed to fetch users",
     });
   }
 });
@@ -31,18 +31,18 @@ router.get("/", async (req, res) => {
 router.get("/check-username", async (req, res) => {
   try {
     const { username } = req.query;
-    
+
     if (!username || typeof username !== "string") {
-      return res.status(400).json({ 
-        available: false, 
-        error: "Username is required" 
+      return res.status(400).json({
+        available: false,
+        error: "Username is required",
       });
     }
 
     const users = await clerkClient.users.getUserList({
       username: [username],
     });
-    
+
     res.status(200).json({
       available: users.data.length === 0,
     });
@@ -50,7 +50,7 @@ router.get("/check-username", async (req, res) => {
     console.error("Error checking username:", error);
     res.status(500).json({
       available: false,
-      error: error?.message || "Failed to check username availability"
+      error: error?.message || "Failed to check username availability",
     });
   }
 });
@@ -63,7 +63,7 @@ router.get("/:id", async (req, res) => {
   } catch (error: any) {
     console.error("Error fetching user:", error);
     res.status(500).json({
-      error: error?.message || "Failed to fetch user"
+      error: error?.message || "Failed to fetch user",
     });
   }
 });
@@ -75,14 +75,14 @@ router.post("/", async (req, res) => {
     const user = await clerkClient.users.createUser(newUser);
     // Send welcome email directly
     await sendUserWelcomeEmail(
-      user.emailAddresses[0]?.emailAddress || '',
-      user.username || ''
+      user.emailAddresses[0]?.emailAddress || "",
+      user.username || "",
     );
     res.status(200).json(user);
   } catch (error: any) {
     console.error("Error creating user:", error);
     res.status(500).json({
-      error: error?.message || "Failed to create user"
+      error: error?.message || "Failed to create user",
     });
   }
 });
@@ -93,13 +93,13 @@ router.patch("/:id", async (req, res) => {
     const { id } = req.params;
     type UpdateParams = Parameters<typeof clerkClient.users.updateUser>[1];
     const updateData: UpdateParams = req.body;
-    
+
     const user = await clerkClient.users.updateUser(id, updateData);
     res.status(200).json(user);
   } catch (error: any) {
     console.error("Error updating user:", error);
     res.status(500).json({
-      error: error?.message || "Failed to update user"
+      error: error?.message || "Failed to update user",
     });
   }
 });
@@ -112,7 +112,7 @@ router.delete("/:id", async (req, res) => {
   } catch (error: any) {
     console.error("Error deleting user:", error);
     res.status(500).json({
-      error: error?.message || "Failed to delete user"
+      error: error?.message || "Failed to delete user",
     });
   }
 });

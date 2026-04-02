@@ -1,7 +1,7 @@
 /**
  * Currency utility functions for Neuraltale E-commerce
  * Handles conversion between USD and Tanzanian Shillings (TZS)
- * 
+ *
  * IMPORTANT: The database stores prices as whole numbers in TZS (not cents)
  * Example: 1500000 in database = TZS 1,500,000
  */
@@ -36,10 +36,10 @@ export function convertTzsToUsd(tzsAmount: number): number {
 export function formatTzs(amount: number, fromUsd: boolean = false): string {
   // Price is stored as whole TZS, not cents
   const tzsAmount = fromUsd ? convertUsdToTzs(amount) : amount;
-  
-  return new Intl.NumberFormat('en-TZ', {
-    style: 'currency',
-    currency: 'TZS',
+
+  return new Intl.NumberFormat("en-TZ", {
+    style: "currency",
+    currency: "TZS",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(tzsAmount);
@@ -64,7 +64,7 @@ export function getPriceDisplay(usdPrice: number) {
     usd: formatUsd(usdPrice),
     tzs: formatTzs(usdPrice, true),
     tzsAmount: convertUsdToTzs(usdPrice),
-    usdAmount: usdPrice
+    usdAmount: usdPrice,
   };
 }
 
@@ -74,7 +74,10 @@ export function getPriceDisplay(usdPrice: number) {
  * @param discountedUsdPrice - Discounted price in USD
  * @returns Savings amount in TZS
  */
-export function calculateSavingsTzs(originalUsdPrice: number, discountedUsdPrice: number): number {
+export function calculateSavingsTzs(
+  originalUsdPrice: number,
+  discountedUsdPrice: number,
+): number {
   return convertUsdToTzs(originalUsdPrice - discountedUsdPrice);
 }
 
@@ -84,7 +87,10 @@ export function calculateSavingsTzs(originalUsdPrice: number, discountedUsdPrice
  * @param discountedUsdPrice - Discounted price in USD
  * @returns Formatted savings string
  */
-export function formatSavings(originalUsdPrice: number, discountedUsdPrice: number): string {
+export function formatSavings(
+  originalUsdPrice: number,
+  discountedUsdPrice: number,
+): string {
   const savings = calculateSavingsTzs(originalUsdPrice, discountedUsdPrice);
   return `SAVE ${formatTzs(savings)}`;
 }

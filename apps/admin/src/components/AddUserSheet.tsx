@@ -28,7 +28,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Eye, EyeOff, RefreshCw, Shield, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  RefreshCw,
+  Shield,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
 import {
   SheetContent,
   SheetDescription,
@@ -53,7 +60,9 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
   const isEditMode = !!user;
   const [showPassword, setShowPassword] = useState(false);
   const [checkingUsername, setCheckingUsername] = useState(false);
-  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
+    null,
+  );
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   const userRole = (user?.publicMetadata?.role as UserRole) || "user";
@@ -127,7 +136,7 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const data = await response.json();
       setUsernameAvailable(data.available);
@@ -141,7 +150,8 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
 
   // Generate random password
   const generatePassword = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
     const length = 16;
     let password = "";
     for (let i = 0; i < length; i++) {
@@ -155,7 +165,7 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
   const userMutation = useMutation({
     mutationFn: async (data: FormData) => {
       const token = await getToken();
-      
+
       if (isEditMode && user) {
         // Update existing user
         const response = await fetch(
@@ -175,7 +185,7 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
                 status: data.status,
               },
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -206,7 +216,7 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
                 status: data.status,
               },
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -233,7 +243,9 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
       router.refresh();
     },
     onError: (error: Error) => {
-      toast.error(error.message || `Failed to ${isEditMode ? "update" : "create"} user`);
+      toast.error(
+        error.message || `Failed to ${isEditMode ? "update" : "create"} user`,
+      );
     },
   });
 
@@ -246,36 +258,40 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
     passwordStrength >= 75
       ? "bg-green-500"
       : passwordStrength >= 50
-      ? "bg-yellow-500"
-      : "bg-red-500";
+        ? "bg-yellow-500"
+        : "bg-red-500";
   const strengthLabel =
     passwordStrength >= 75
       ? "Strong"
       : passwordStrength >= 50
-      ? "Medium"
-      : passwordStrength > 0
-      ? "Weak"
-      : "";
+        ? "Medium"
+        : passwordStrength > 0
+          ? "Weak"
+          : "";
 
   return (
     <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
       <SheetHeader className="px-6 pt-6">
         <SheetTitle>{isEditMode ? "Edit User" : "Add New User"}</SheetTitle>
         <SheetDescription>
-          {isEditMode 
+          {isEditMode
             ? "Update user information and role permissions"
-            : "Create a new user account with specific role and permissions"
-          }
+            : "Create a new user account with specific role and permissions"}
         </SheetDescription>
       </SheetHeader>
 
       <ScrollArea className="h-[calc(100vh-140px)] px-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-6 pb-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 mt-6 pb-6"
+          >
             {/* Basic Information */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-700">Basic Information</h3>
-              
+              <h3 className="text-sm font-semibold text-gray-700">
+                Basic Information
+              </h3>
+
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -310,26 +326,28 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
 
               <div className="space-y-4">
                 <FormField
-                control={form.control}
-                name="emailAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="john.doe@example.com"
-                        disabled={isEditMode}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {isEditMode ? "Email cannot be changed" : "Must be a valid email address"}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  control={form.control}
+                  name="emailAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="john.doe@example.com"
+                          disabled={isEditMode}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {isEditMode
+                          ? "Email cannot be changed"
+                          : "Must be a valid email address"}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <div className="space-y-4">
@@ -354,17 +372,21 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
                             {checkingUsername && (
                               <RefreshCw className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
                             )}
-                            {!checkingUsername && usernameAvailable !== null && (
-                              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                                {usernameAvailable ? (
-                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                ) : (
-                                  <Badge variant="destructive" className="text-xs">
-                                    Taken
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
+                            {!checkingUsername &&
+                              usernameAvailable !== null && (
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                  {usernameAvailable ? (
+                                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                  ) : (
+                                    <Badge
+                                      variant="destructive"
+                                      className="text-xs"
+                                    >
+                                      Taken
+                                    </Badge>
+                                  )}
+                                </div>
+                              )}
                           </div>
                         </FormControl>
                         <FormDescription className="text-xs">
@@ -481,7 +503,9 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
 
             {/* Account Settings */}
             <div className="space-y-4 pt-2">
-              <h3 className="text-sm font-semibold text-gray-700">Account Settings</h3>
+              <h3 className="text-sm font-semibold text-gray-700">
+                Account Settings
+              </h3>
 
               <FormField
                 control={form.control}
@@ -523,7 +547,7 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
                               onChange={(e) => {
                                 field.onChange(e);
                                 setPasswordStrength(
-                                  calculatePasswordStrength(e.target.value)
+                                  calculatePasswordStrength(e.target.value),
                                 );
                               }}
                             />
@@ -591,8 +615,10 @@ export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     {isEditMode ? "Updating..." : "Creating..."}
                   </>
+                ) : isEditMode ? (
+                  "Update User"
                 ) : (
-                  isEditMode ? "Update User" : "Create User"
+                  "Create User"
                 )}
               </Button>
             </div>

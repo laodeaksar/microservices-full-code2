@@ -3,14 +3,31 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { ProductType, colors as availableColors, sizes as availableSizes, CategoryType } from "@repo/types";
+import {
+  ProductType,
+  colors as availableColors,
+  sizes as availableSizes,
+  CategoryType,
+} from "@repo/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "react-toastify";
 import { ArrowLeft, Loader2, Plus, Trash } from "lucide-react";
 import Link from "next/link";
@@ -29,11 +46,11 @@ type FormData = {
   colors: string[];
   sizes: string[];
   images: Record<string, string>;
-  techHighlights: Array<{label: string, icon: string}>;
+  techHighlights: Array<{ label: string; icon: string }>;
   boxContents: string[];
-  productFeatures: Array<{title: string, description: string}>;
-  technicalSpecs: Record<string, Array<{label: string, value: string}>>;
-  certifications: Array<{label: string, icon: string}>;
+  productFeatures: Array<{ title: string; description: string }>;
+  technicalSpecs: Record<string, Array<{ label: string; value: string }>>;
+  certifications: Array<{ label: string; icon: string }>;
 };
 
 const normalizeImages = (colors: string[], images: Record<string, string>) => {
@@ -74,14 +91,14 @@ const sanitizeSpecs = (technicalSpecs: FormData["technicalSpecs"]) => {
 const fetchCategories = async () => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
+      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
     );
     if (!res.ok) {
       throw new Error(`Failed to fetch categories: ${res.statusText}`);
     }
     return await res.json();
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error("Error fetching categories:", error);
     throw error;
   }
 };
@@ -97,7 +114,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
-  
+
   const [formData, setFormData] = useState<FormData>({
     name: product.name,
     shortDescription: product.shortDescription,
@@ -106,28 +123,41 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     categorySlug: product.categorySlug,
     colors: product.colors,
     sizes: product.sizes,
-    images: typeof product.images === 'object' ? product.images as Record<string, string> : {},
-    techHighlights: (product.techHighlights as Array<{label: string, icon: string}>) || [],
+    images:
+      typeof product.images === "object"
+        ? (product.images as Record<string, string>)
+        : {},
+    techHighlights:
+      (product.techHighlights as Array<{ label: string; icon: string }>) || [],
     boxContents: (product.boxContents as string[]) || [],
-    productFeatures: (product.productFeatures as Array<{title: string, description: string}>) || [],
-    technicalSpecs: (product.technicalSpecs as Record<string, Array<{label: string, value: string}>>) || {},
-    certifications: (product.certifications as Array<{label: string, icon: string}>) || [],
+    productFeatures:
+      (product.productFeatures as Array<{
+        title: string;
+        description: string;
+      }>) || [],
+    technicalSpecs:
+      (product.technicalSpecs as Record<
+        string,
+        Array<{ label: string; value: string }>
+      >) || {},
+    certifications:
+      (product.certifications as Array<{ label: string; icon: string }>) || [],
   });
 
   const handleColorToggle = (color: string) => {
     const isSelected = formData.colors.includes(color);
     if (isSelected) {
-      const newImages = {...formData.images};
+      const newImages = { ...formData.images };
       delete newImages[color];
       setFormData({
         ...formData,
-        colors: formData.colors.filter(c => c !== color),
-        images: newImages
+        colors: formData.colors.filter((c) => c !== color),
+        images: newImages,
       });
     } else {
       setFormData({
         ...formData,
-        colors: [...formData.colors, color]
+        colors: [...formData.colors, color],
       });
     }
   };
@@ -137,12 +167,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     if (isSelected) {
       setFormData({
         ...formData,
-        sizes: formData.sizes.filter(s => s !== size)
+        sizes: formData.sizes.filter((s) => s !== size),
       });
     } else {
       setFormData({
         ...formData,
-        sizes: [...formData.sizes, size]
+        sizes: [...formData.sizes, size],
       });
     }
   };
@@ -150,14 +180,23 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const token = await getToken();
-      const normalizedColors = Array.from(new Set(formData.colors.map((color) => color.trim()).filter(Boolean)));
-      const normalizedSizes = Array.from(new Set(formData.sizes.map((size) => size.trim()).filter(Boolean)));
-      const normalizedImages = normalizeImages(normalizedColors, formData.images);
+      const normalizedColors = Array.from(
+        new Set(formData.colors.map((color) => color.trim()).filter(Boolean)),
+      );
+      const normalizedSizes = Array.from(
+        new Set(formData.sizes.map((size) => size.trim()).filter(Boolean)),
+      );
+      const normalizedImages = normalizeImages(
+        normalizedColors,
+        formData.images,
+      );
 
-      const missingImageColors = normalizedColors.filter((color) => !normalizedImages[color]);
+      const missingImageColors = normalizedColors.filter(
+        (color) => !normalizedImages[color],
+      );
       if (missingImageColors.length > 0) {
         toast.error(`Add image URL for: ${missingImageColors.join(", ")}`);
         setIsLoading(false);
@@ -182,17 +221,28 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         images: normalizedImages,
         techHighlights: formData.techHighlights
           .filter((item) => item.label.trim() && item.icon.trim())
-          .map((item) => ({ label: item.label.trim(), icon: item.icon.trim() })),
-        boxContents: formData.boxContents.map((item) => item.trim()).filter(Boolean),
+          .map((item) => ({
+            label: item.label.trim(),
+            icon: item.icon.trim(),
+          })),
+        boxContents: formData.boxContents
+          .map((item) => item.trim())
+          .filter(Boolean),
         productFeatures: formData.productFeatures
           .filter((item) => item.title.trim() && item.description.trim())
-          .map((item) => ({ title: item.title.trim(), description: item.description.trim() })),
+          .map((item) => ({
+            title: item.title.trim(),
+            description: item.description.trim(),
+          })),
         technicalSpecs: sanitizeSpecs(formData.technicalSpecs),
         certifications: formData.certifications
           .filter((item) => item.label.trim() && item.icon.trim())
-          .map((item) => ({ label: item.label.trim(), icon: item.icon.trim() })),
+          .map((item) => ({
+            label: item.label.trim(),
+            icon: item.icon.trim(),
+          })),
       };
-      
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${product.id}`,
         {
@@ -202,7 +252,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!res.ok) {
@@ -226,7 +276,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       router.refresh();
     } catch (error) {
       console.error("Error updating product:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to update product");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update product",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -248,7 +300,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
-            <CardDescription>Essential product details and pricing</CardDescription>
+            <CardDescription>
+              Essential product details and pricing
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -256,7 +310,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 required
               />
             </div>
@@ -266,7 +322,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               <Input
                 id="shortDescription"
                 value={formData.shortDescription}
-                onChange={(e) => setFormData({...formData, shortDescription: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, shortDescription: e.target.value })
+                }
                 maxLength={60}
                 required
               />
@@ -277,7 +335,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 rows={4}
                 required
               />
@@ -304,7 +364,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               <Label htmlFor="category">Category</Label>
               <Select
                 value={formData.categorySlug}
-                onValueChange={(value) => setFormData({...formData, categorySlug: value})}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, categorySlug: value })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
@@ -338,7 +400,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       checked={formData.colors.includes(color)}
                       onCheckedChange={() => handleColorToggle(color)}
                     />
-                    <Label htmlFor={`color-${color}`} className="cursor-pointer">
+                    <Label
+                      htmlFor={`color-${color}`}
+                      className="cursor-pointer"
+                    >
                       {color}
                     </Label>
                   </div>
@@ -370,7 +435,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         <Card>
           <CardHeader>
             <CardTitle>Product Images</CardTitle>
-            <CardDescription>Image URLs for each selected color</CardDescription>
+            <CardDescription>
+              Image URLs for each selected color
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {formData.colors.map((color) => (
@@ -380,10 +447,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                   id={`image-${color}`}
                   placeholder={`Image URL for ${color}`}
                   value={formData.images[color] || ""}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    images: {...formData.images, [color]: e.target.value}
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      images: { ...formData.images, [color]: e.target.value },
+                    })
+                  }
                 />
               </div>
             ))}
@@ -394,7 +463,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         <Card>
           <CardHeader>
             <CardTitle>Extended Product Information</CardTitle>
-            <CardDescription>Additional details and specifications</CardDescription>
+            <CardDescription>
+              Additional details and specifications
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Tech Highlights */}
@@ -409,7 +480,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.techHighlights];
                       if (updated[index]) {
                         updated[index].label = e.target.value;
-                        setFormData({...formData, techHighlights: updated});
+                        setFormData({ ...formData, techHighlights: updated });
                       }
                     }}
                   />
@@ -420,7 +491,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.techHighlights];
                       if (updated[index]) {
                         updated[index].icon = e.target.value;
-                        setFormData({...formData, techHighlights: updated});
+                        setFormData({ ...formData, techHighlights: updated });
                       }
                     }}
                   />
@@ -431,7 +502,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        techHighlights: formData.techHighlights.filter((_, i) => i !== index)
+                        techHighlights: formData.techHighlights.filter(
+                          (_, i) => i !== index,
+                        ),
                       });
                     }}
                   >
@@ -446,7 +519,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 onClick={() => {
                   setFormData({
                     ...formData,
-                    techHighlights: [...formData.techHighlights, {label: "", icon: ""}]
+                    techHighlights: [
+                      ...formData.techHighlights,
+                      { label: "", icon: "" },
+                    ],
                   });
                 }}
               >
@@ -465,7 +541,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                     onChange={(e) => {
                       const updated = [...formData.boxContents];
                       updated[index] = e.target.value;
-                      setFormData({...formData, boxContents: updated});
+                      setFormData({ ...formData, boxContents: updated });
                     }}
                   />
                   <Button
@@ -475,7 +551,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        boxContents: formData.boxContents.filter((_, i) => i !== index)
+                        boxContents: formData.boxContents.filter(
+                          (_, i) => i !== index,
+                        ),
                       });
                     }}
                   >
@@ -490,7 +568,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 onClick={() => {
                   setFormData({
                     ...formData,
-                    boxContents: [...formData.boxContents, ""]
+                    boxContents: [...formData.boxContents, ""],
                   });
                 }}
               >
@@ -510,7 +588,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.productFeatures];
                       if (updated[index]) {
                         updated[index].title = e.target.value;
-                        setFormData({...formData, productFeatures: updated});
+                        setFormData({ ...formData, productFeatures: updated });
                       }
                     }}
                   />
@@ -521,7 +599,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.productFeatures];
                       if (updated[index]) {
                         updated[index].description = e.target.value;
-                        setFormData({...formData, productFeatures: updated});
+                        setFormData({ ...formData, productFeatures: updated });
                       }
                     }}
                   />
@@ -532,7 +610,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        productFeatures: formData.productFeatures.filter((_, i) => i !== index)
+                        productFeatures: formData.productFeatures.filter(
+                          (_, i) => i !== index,
+                        ),
                       });
                     }}
                   >
@@ -547,7 +627,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 onClick={() => {
                   setFormData({
                     ...formData,
-                    productFeatures: [...formData.productFeatures, {title: "", description: ""}]
+                    productFeatures: [
+                      ...formData.productFeatures,
+                      { title: "", description: "" },
+                    ],
                   });
                 }}
               >
@@ -557,14 +640,16 @@ export default function EditProductForm({ product }: EditProductFormProps) {
 
             {/* Technical Specs */}
             <div>
-              <Label className="mb-2 block">Technical Specifications (JSON)</Label>
+              <Label className="mb-2 block">
+                Technical Specifications (JSON)
+              </Label>
               <Textarea
                 placeholder='{"General": [{"label": "Model", "value": "XYZ-2024"}]}'
                 value={JSON.stringify(formData.technicalSpecs, null, 2)}
                 onChange={(e) => {
                   try {
                     const parsed = JSON.parse(e.target.value);
-                    setFormData({...formData, technicalSpecs: parsed});
+                    setFormData({ ...formData, technicalSpecs: parsed });
                   } catch {
                     // Invalid JSON, don't update
                   }
@@ -585,7 +670,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.certifications];
                       if (updated[index]) {
                         updated[index].label = e.target.value;
-                        setFormData({...formData, certifications: updated});
+                        setFormData({ ...formData, certifications: updated });
                       }
                     }}
                   />
@@ -596,7 +681,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       const updated = [...formData.certifications];
                       if (updated[index]) {
                         updated[index].icon = e.target.value;
-                        setFormData({...formData, certifications: updated});
+                        setFormData({ ...formData, certifications: updated });
                       }
                     }}
                   />
@@ -607,7 +692,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        certifications: formData.certifications.filter((_, i) => i !== index)
+                        certifications: formData.certifications.filter(
+                          (_, i) => i !== index,
+                        ),
                       });
                     }}
                   >
@@ -622,7 +709,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 onClick={() => {
                   setFormData({
                     ...formData,
-                    certifications: [...formData.certifications, {label: "", icon: ""}]
+                    certifications: [
+                      ...formData.certifications,
+                      { label: "", icon: "" },
+                    ],
                   });
                 }}
               >

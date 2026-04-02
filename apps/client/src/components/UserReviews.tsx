@@ -20,9 +20,10 @@ export default function UserReviews({ productId }: UserReviewsProps) {
       rating: 5,
       date: "2 weeks ago",
       title: "Excellent sound quality and battery life!",
-      content: "These are by far the best wireless headphones I've owned. The ANC is impressive, blocking out most ambient noise. Battery life easily lasts 2-3 days with moderate use. Build quality feels premium and the touch controls are responsive.",
+      content:
+        "These are by far the best wireless headphones I've owned. The ANC is impressive, blocking out most ambient noise. Battery life easily lasts 2-3 days with moderate use. Build quality feels premium and the touch controls are responsive.",
       helpful: 47,
-      images: []
+      images: [],
     },
     {
       id: 2,
@@ -31,9 +32,10 @@ export default function UserReviews({ productId }: UserReviewsProps) {
       rating: 4,
       date: "1 month ago",
       title: "Great product, minor connectivity issues",
-      content: "Love the sound quality and comfort. Occasionally have brief connectivity drops when moving between rooms, but overall excellent value for money. The app is intuitive and allows good customization of EQ settings.",
+      content:
+        "Love the sound quality and comfort. Occasionally have brief connectivity drops when moving between rooms, but overall excellent value for money. The app is intuitive and allows good customization of EQ settings.",
       helpful: 32,
-      images: []
+      images: [],
     },
     {
       id: 3,
@@ -42,10 +44,11 @@ export default function UserReviews({ productId }: UserReviewsProps) {
       rating: 5,
       date: "3 weeks ago",
       title: "Best in class for the price point",
-      content: "As someone who tests audio equipment professionally, these punch well above their weight class. The frequency response is balanced, ANC rivals products 2x the price, and codec support is comprehensive. Highly recommended for audiophiles on a budget.",
+      content:
+        "As someone who tests audio equipment professionally, these punch well above their weight class. The frequency response is balanced, ANC rivals products 2x the price, and codec support is comprehensive. Highly recommended for audiophiles on a budget.",
       helpful: 89,
-      images: []
-    }
+      images: [],
+    },
   ];
 
   const ratingBreakdown = [
@@ -96,14 +99,21 @@ export default function UserReviews({ productId }: UserReviewsProps) {
             <div className="space-y-2">
               {ratingBreakdown.map((rating) => (
                 <div key={rating.stars} className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 w-8">{rating.stars}★</span>
+                  <span className="text-sm text-gray-600 w-8">
+                    {rating.stars}★
+                  </span>
                   <div className="flex-1 bg-gray-200 rounded-full h-2">
                     <div
                       className={`bg-[#FDB913] rounded-full h-2 ${
-                        rating.percentage >= 75 ? 'w-3/4' :
-                        rating.percentage >= 50 ? 'w-1/2' :
-                        rating.percentage >= 25 ? 'w-1/4' :
-                        rating.percentage >= 10 ? 'w-1/12' : 'w-px'
+                        rating.percentage >= 75
+                          ? "w-3/4"
+                          : rating.percentage >= 50
+                            ? "w-1/2"
+                            : rating.percentage >= 25
+                              ? "w-1/4"
+                              : rating.percentage >= 10
+                                ? "w-1/12"
+                                : "w-px"
                       }`}
                     ></div>
                   </div>
@@ -126,7 +136,9 @@ export default function UserReviews({ productId }: UserReviewsProps) {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-gray-900">{review.author}</span>
+                    <span className="font-semibold text-gray-900">
+                      {review.author}
+                    </span>
                     {review.verified && (
                       <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
                         Verified Purchase
@@ -151,8 +163,12 @@ export default function UserReviews({ productId }: UserReviewsProps) {
                 </div>
               </div>
 
-              <h3 className="font-semibold text-gray-900 mb-2">{review.title}</h3>
-              <p className="text-gray-700 leading-relaxed mb-4">{review.content}</p>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {review.title}
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                {review.content}
+              </p>
 
               <div className="flex items-center gap-4 text-sm">
                 <button className="text-gray-600 hover:text-[#0A7EA4] transition-colors">

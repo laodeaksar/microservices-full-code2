@@ -1,9 +1,18 @@
-export default function TableSkeleton({ rows = 10, columns = 6 }: { rows?: number; columns?: number }) {
+export default function TableSkeleton({
+  rows = 10,
+  columns = 6,
+}: {
+  rows?: number;
+  columns?: number;
+}) {
   return (
     <div className="animate-pulse">
       {/* Table Header */}
       <div className="border-b border-gray-200 bg-gray-50 p-4">
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+        <div
+          className="grid gap-4"
+          style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+        >
           {[...Array(columns)].map((_, i) => (
             <div key={i} className="h-4 bg-gray-300 rounded"></div>
           ))}
@@ -13,7 +22,10 @@ export default function TableSkeleton({ rows = 10, columns = 6 }: { rows?: numbe
       {/* Table Rows */}
       {[...Array(rows)].map((_, rowIndex) => (
         <div key={rowIndex} className="border-b border-gray-100 p-4 bg-white">
-          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+          <div
+            className="grid gap-4"
+            style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+          >
             {[...Array(columns)].map((_, colIndex) => (
               <div key={colIndex}>
                 {colIndex === 0 ? (

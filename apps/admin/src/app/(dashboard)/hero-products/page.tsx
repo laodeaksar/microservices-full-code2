@@ -3,22 +3,28 @@
 import { ProductType } from "@repo/types";
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  Star, 
-  StarOff, 
-  ArrowUp, 
-  ArrowDown, 
-  Eye, 
+import {
+  Star,
+  StarOff,
+  ArrowUp,
+  ArrowDown,
+  Eye,
   EyeOff,
   Loader2,
   AlertCircle,
   CheckCircle2,
   Search,
   X,
-  Filter
+  Filter,
 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
@@ -50,22 +56,19 @@ export default function HeroProductsPage() {
     try {
       setLoading(true);
       const token = await getToken();
-      
+
       const productServiceUrl = process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL;
       if (!productServiceUrl) {
         console.error("NEXT_PUBLIC_PRODUCT_SERVICE_URL is not defined");
         toast.error("Configuration error: Product service URL not set");
         return;
       }
-      
-      const res = await fetch(
-        `${productServiceUrl}/products`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+
+      const res = await fetch(`${productServiceUrl}/products`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!res.ok) {
         const errorText = await res.text();
@@ -76,31 +79,41 @@ export default function HeroProductsPage() {
 
       const data = await res.json();
       console.log("Fetched products:", data.length);
-      console.log("Hero products:", data.filter((p: ProductType) => p.isHeroProduct));
+      console.log(
+        "Hero products:",
+        data.filter((p: ProductType) => p.isHeroProduct),
+      );
       setProducts(data);
       setHeroProducts(
         data
           .filter((p: ProductType) => p.isHeroProduct)
-          .sort((a: ProductType, b: ProductType) => 
-            (a.heroOrder || 999) - (b.heroOrder || 999)
-          )
+          .sort(
+            (a: ProductType, b: ProductType) =>
+              (a.heroOrder || 999) - (b.heroOrder || 999),
+          ),
       );
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error(`Failed to fetch products: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to fetch products: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleHeroStatus = async (productId: number, currentStatus: boolean) => {
+  const toggleHeroStatus = async (
+    productId: number,
+    currentStatus: boolean,
+  ) => {
     try {
       setUpdating(productId);
       const token = await getToken();
 
-      const maxOrder = heroProducts.length > 0 
-        ? Math.max(...heroProducts.map(p => p.heroOrder || 0))
-        : 0;
+      const maxOrder =
+        heroProducts.length > 0
+          ? Math.max(...heroProducts.map((p) => p.heroOrder || 0))
+          : 0;
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${productId}`,
@@ -114,14 +127,14 @@ export default function HeroProductsPage() {
             isHeroProduct: !currentStatus,
             heroOrder: !currentStatus ? maxOrder + 1 : null,
           }),
-        }
+        },
       );
 
       if (res.ok) {
         toast.success(
-          !currentStatus 
-            ? "Added to hero products" 
-            : "Removed from hero products"
+          !currentStatus
+            ? "Added to hero products"
+            : "Removed from hero products",
         );
         await fetchProducts();
       } else {
@@ -135,12 +148,15 @@ export default function HeroProductsPage() {
     }
   };
 
-  const updateHeroOrder = async (productId: number, direction: "up" | "down") => {
+  const updateHeroOrder = async (
+    productId: number,
+    direction: "up" | "down",
+  ) => {
     try {
       setUpdating(productId);
       const token = await getToken();
-      
-      const currentIndex = heroProducts.findIndex(p => p.id === productId);
+
+      const currentIndex = heroProducts.findIndex((p) => p.id === productId);
       if (
         (direction === "up" && currentIndex === 0) ||
         (direction === "down" && currentIndex === heroProducts.length - 1)
@@ -148,7 +164,8 @@ export default function HeroProductsPage() {
         return;
       }
 
-      const swapIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      const swapIndex =
+        direction === "up" ? currentIndex - 1 : currentIndex + 1;
       const currentProduct = heroProducts[currentIndex];
       const swapProduct = heroProducts[swapIndex];
 
@@ -171,7 +188,7 @@ export default function HeroProductsPage() {
             body: JSON.stringify({
               heroOrder: swapProduct.heroOrder,
             }),
-          }
+          },
         ),
         fetch(
           `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${swapProduct.id}`,
@@ -184,7 +201,7 @@ export default function HeroProductsPage() {
             body: JSON.stringify({
               heroOrder: currentProduct.heroOrder,
             }),
-          }
+          },
         ),
       ];
 
@@ -205,7 +222,9 @@ export default function HeroProductsPage() {
       const images = product.images as Record<string, string | string[]>;
       const imageValue = images[firstColor];
       if (imageValue) {
-        return Array.isArray(imageValue) ? imageValue[0] || "/products/placeholder.jpg" : imageValue;
+        return Array.isArray(imageValue)
+          ? imageValue[0] || "/products/placeholder.jpg"
+          : imageValue;
       }
     }
     return "/products/placeholder.jpg";
@@ -213,27 +232,34 @@ export default function HeroProductsPage() {
 
   // Get unique categories
   const categories = useMemo(() => {
-    return Array.from(new Set(products.map(p => p.categorySlug))).filter(Boolean) as string[];
+    return Array.from(new Set(products.map((p) => p.categorySlug))).filter(
+      Boolean,
+    ) as string[];
   }, [products]);
 
   // Filter non-hero products
   const filteredNonHeroProducts = useMemo(() => {
     let filtered = products.filter((p) => !p.isHeroProduct);
-    
+
     // Apply search filter
     if (searchQuery) {
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.categorySlug.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.shortDescription
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          p.categorySlug.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
-    
+
     // Apply category filter
     if (categoryFilter.length > 0) {
-      filtered = filtered.filter(p => categoryFilter.includes(p.categorySlug));
+      filtered = filtered.filter((p) =>
+        categoryFilter.includes(p.categorySlug),
+      );
     }
-    
+
     return filtered;
   }, [products, searchQuery, categoryFilter]);
 
@@ -249,7 +275,10 @@ export default function HeroProductsPage() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-lg p-4">
+            <div
+              key={i}
+              className="bg-white border border-gray-200 rounded-lg p-4"
+            >
               <div className="pb-3">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
               </div>
@@ -269,7 +298,10 @@ export default function HeroProductsPage() {
           </div>
           <div className="p-6 space-y-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg">
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg"
+              >
                 <div className="flex flex-col gap-2">
                   <div className="h-6 w-12 bg-gray-200 rounded"></div>
                   <div className="flex flex-col gap-1">
@@ -302,7 +334,10 @@ export default function HeroProductsPage() {
             </div>
             <div className="space-y-3">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg">
+                <div
+                  key={i}
+                  className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg"
+                >
                   <div className="w-16 h-16 bg-gray-200 rounded-md"></div>
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-48 bg-gray-200 rounded"></div>
@@ -346,7 +381,8 @@ export default function HeroProductsPage() {
           Hero Products Management
         </h1>
         <p className="text-gray-600">
-          Manage products displayed in the homepage hero slider. Drag to reorder or add/remove products.
+          Manage products displayed in the homepage hero slider. Drag to reorder
+          or add/remove products.
         </p>
       </div>
 
@@ -433,7 +469,7 @@ export default function HeroProductsPage() {
                         variant="ghost"
                         onClick={() => updateHeroOrder(product.id, "down")}
                         disabled={
-                          index === heroProducts.length - 1 || 
+                          index === heroProducts.length - 1 ||
                           updating === product.id
                         }
                         className="h-6 w-6 p-0"
@@ -549,10 +585,10 @@ export default function HeroProductsPage() {
                     key={category}
                     checked={categoryFilter.includes(category)}
                     onCheckedChange={(checked) => {
-                      setCategoryFilter(prev =>
+                      setCategoryFilter((prev) =>
                         checked
                           ? [...prev, category]
-                          : prev.filter((c) => c !== category)
+                          : prev.filter((c) => c !== category),
                       );
                     }}
                   >
@@ -641,7 +677,9 @@ export default function HeroProductsPage() {
         <CardContent className="text-sm text-[#001E3C]/80 space-y-2">
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <p>Choose products with high-quality images for best visual impact</p>
+            <p>
+              Choose products with high-quality images for best visual impact
+            </p>
           </div>
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -649,7 +687,10 @@ export default function HeroProductsPage() {
           </div>
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <p>Use the order arrows to prioritize your best-selling or featured products</p>
+            <p>
+              Use the order arrows to prioritize your best-selling or featured
+              products
+            </p>
           </div>
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />

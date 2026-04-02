@@ -9,11 +9,12 @@ import CheckoutForm from "./CheckoutForm";
 import useCartStore from "@/stores/cartStore";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-const stripe = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<string> => {
+const fetchClientSecret = async (
+  cart: CartItemsType,
+  token: string,
+): Promise<string> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL}/sessions/create-checkout-session`,
@@ -24,48 +25,63 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
-    
+
     if (!response.ok) {
       let errorMessage = "Failed to create checkout session";
       try {
         const errorJson = await response.json();
-        console.error("Payment service error response:", response.status, errorJson);
-        errorMessage = errorJson.error?.message || errorJson.error || errorMessage;
+        console.error(
+          "Payment service error response:",
+          response.status,
+          errorJson,
+        );
+        errorMessage =
+          errorJson.error?.message || errorJson.error || errorMessage;
       } catch {
         const errorText = await response.text();
-        console.error("Payment service error text:", response.status, errorText);
+        console.error(
+          "Payment service error text:",
+          response.status,
+          errorText,
+        );
         errorMessage = errorText || errorMessage;
       }
       throw new Error(errorMessage);
     }
-    
+
     const json = await response.json();
     console.log("Payment service response:", json);
-    
+
     if (json.error) {
-      const errorMessage = typeof json.error === 'object' 
-        ? json.error.message || JSON.stringify(json.error)
-        : String(json.error);
+      const errorMessage =
+        typeof json.error === "object"
+          ? json.error.message || JSON.stringify(json.error)
+          : String(json.error);
       console.error("Payment service returned error object:", json.error);
       console.error("Parsed error message:", errorMessage);
       throw new Error(errorMessage);
     }
-    
+
     // Check for various possible property names
-    const clientSecret = 
-      json.checkoutSessionClientSecret || 
-      json.client_secret || 
+    const clientSecret =
+      json.checkoutSessionClientSecret ||
+      json.client_secret ||
       json.clientSecret ||
       json.sessionClientSecret;
-    
+
     if (!clientSecret) {
-      console.error("No client secret found. Full response:", JSON.stringify(json));
+      console.error(
+        "No client secret found. Full response:",
+        JSON.stringify(json),
+      );
       console.error("Response object keys:", Object.keys(json));
-      throw new Error(`No client secret in response. Available keys: ${Object.keys(json).join(', ')}`);
+      throw new Error(
+        `No client secret in response. Available keys: ${Object.keys(json).join(", ")}`,
+      );
     }
-    
+
     console.log("Successfully obtained client secret");
     return clientSecret;
   } catch (error) {
@@ -89,7 +105,7 @@ const StripePaymentForm = ({
 
   useEffect(() => {
     if (!isLoaded) return;
-    
+
     getToken()
       .then((token) => {
         if (token) {
@@ -156,7 +172,9 @@ const StripePaymentForm = ({
           disabled={isRetrying}
           className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${isRetrying ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-4 h-4 ${isRetrying ? "animate-spin" : ""}`}
+          />
           {isRetrying ? "Retrying..." : "Try Again"}
         </button>
       </div>
@@ -168,7 +186,9 @@ const StripePaymentForm = ({
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
           <p className="text-gray-600 text-sm">Your cart is empty</p>
-          <p className="text-gray-500 text-xs mt-1">Add items to proceed with payment</p>
+          <p className="text-gray-500 text-xs mt-1">
+            Add items to proceed with payment
+          </p>
         </div>
       </div>
     );
@@ -182,7 +202,11 @@ const StripePaymentForm = ({
           try {
             return await fetchClientSecret(cart, token);
           } catch (err) {
-            setError(err instanceof Error ? err.message : "Payment initialization failed");
+            setError(
+              err instanceof Error
+                ? err.message
+                : "Payment initialization failed",
+            );
             throw err;
           }
         },

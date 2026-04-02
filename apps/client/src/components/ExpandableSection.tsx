@@ -10,11 +10,11 @@ interface ExpandableSectionProps {
   icon?: ReactNode;
 }
 
-export default function ExpandableSection({ 
-  title, 
-  children, 
+export default function ExpandableSection({
+  title,
+  children,
   defaultOpen = false,
-  icon 
+  icon,
 }: ExpandableSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -36,11 +36,9 @@ export default function ExpandableSection({
           <ChevronDown className="w-5 h-5 text-gray-500" />
         )}
       </button>
-      
+
       {isOpen && (
-        <div className="p-4 bg-white border-t border-gray-200">
-          {children}
-        </div>
+        <div className="p-4 bg-white border-t border-gray-200">{children}</div>
       )}
     </div>
   );

@@ -66,9 +66,7 @@ const EditUser = () => {
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter user full name.
-                    </FormDescription>
+                    <FormDescription>Enter user full name.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -4,7 +4,14 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { AlertCircle, ShieldX, LogOut, Home } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Page = () => {
   const { signOut } = useAuth();
@@ -24,7 +31,7 @@ const Page = () => {
             You don't have permission to access the admin dashboard
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
@@ -34,7 +41,9 @@ const Page = () => {
                   Admin Access Required
                 </p>
                 <p className="text-sm text-red-700">
-                  This area is restricted to administrators only. If you believe you should have access, please contact your system administrator.
+                  This area is restricted to administrators only. If you believe
+                  you should have access, please contact your system
+                  administrator.
                 </p>
               </div>
             </div>
@@ -48,10 +57,15 @@ const Page = () => {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                   {user.imageUrl ? (
-                    <img src={user.imageUrl} alt={user.fullName || "User"} className="w-full h-full object-cover" />
+                    <img
+                      src={user.imageUrl}
+                      alt={user.fullName || "User"}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <span className="text-sm font-medium text-gray-600">
-                      {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+                      {user.firstName?.charAt(0)}
+                      {user.lastName?.charAt(0)}
                     </span>
                   )}
                 </div>
@@ -69,8 +83,8 @@ const Page = () => {
         </CardContent>
 
         <CardFooter className="flex flex-col gap-3">
-          <Button 
-            onClick={() => signOut()} 
+          <Button
+            onClick={() => signOut()}
             variant="destructive"
             className="w-full"
             size="lg"
@@ -78,13 +92,8 @@ const Page = () => {
             <LogOut className="w-4 h-4 mr-2" />
             Sign Out
           </Button>
-          
-          <Button 
-            asChild
-            variant="outline"
-            className="w-full"
-            size="lg"
-          >
+
+          <Button asChild variant="outline" className="w-full" size="lg">
             <Link href="https://neurashop.neuraltale.com">
               <Home className="w-4 h-4 mr-2" />
               Go to User Store
@@ -93,7 +102,10 @@ const Page = () => {
 
           <p className="text-xs text-center text-gray-500 mt-2">
             Need admin access? Contact{" "}
-            <a href="mailto:support@neuraltale.com" className="text-[#0A7EA4] hover:underline">
+            <a
+              href="mailto:support@neuraltale.com"
+              className="text-[#0A7EA4] hover:underline"
+            >
               support@neuraltale.com
             </a>
           </p>

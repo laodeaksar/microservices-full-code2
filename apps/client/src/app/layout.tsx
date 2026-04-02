@@ -21,10 +21,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Neurashop by Neuraltale - #1 Tech Store in Tanzania | Buy Laptops, Phones & Electronics Online",
+    default:
+      "Neurashop by Neuraltale - #1 Tech Store in Tanzania | Buy Laptops, Phones & Electronics Online",
     template: "%s | Neurashop by Neuraltale - Tanzania Tech Store",
   },
-  description: "Neurashop by Neuraltale is Tanzania's leading online tech store. Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches & electronics. Free delivery in Dar es Salaam. Best prices in Tanzania & East Africa. Shop now!",
+  description:
+    "Neurashop by Neuraltale is Tanzania's leading online tech store. Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches & electronics. Free delivery in Dar es Salaam. Best prices in Tanzania & East Africa. Shop now!",
   keywords: [
     // Brand keywords
     "neuraltale",
@@ -36,7 +38,7 @@ export const metadata: Metadata = {
     "neurashop e-commerce",
     // Product keywords
     "buy laptop Tanzania",
-    "buy smartphone Tanzania", 
+    "buy smartphone Tanzania",
     "buy iPhone Tanzania",
     "buy Samsung Tanzania",
     "buy MacBook Tanzania",
@@ -83,23 +85,23 @@ export const metadata: Metadata = {
   publisher: "Neurashop by Neuraltale",
   category: "E-commerce, Electronics, Technology",
   classification: "Electronics & Technology Store",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://neurashop.neuraltale.com",
+  ),
   alternates: {
-    canonical: '/',
+    canonical: "/",
     languages: {
-      'en': 'https://neurashop.neuraltale.com',
-      'sw': 'https://neurashop.neuraltale.com',
+      en: "https://neurashop.neuraltale.com",
+      sw: "https://neurashop.neuraltale.com",
     },
   },
   icons: {
     icon: [
-      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
+      { url: "/logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo.png", sizes: "any", type: "image/svg+xml" },
     ],
-    apple: [
-      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
-    ],
-    shortcut: '/logo.png',
+    apple: [{ url: "/logo.png", sizes: "any", type: "image/svg+xml" }],
+    shortcut: "/logo.png",
   },
   robots: {
     index: true,
@@ -109,18 +111,20 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
       noimageindex: false,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
+    google: "your-google-verification-code",
+    yandex: "your-yandex-verification-code",
   },
   openGraph: {
-    title: "Neurashop by Neuraltale - Buy Laptops, Phones & Electronics in Tanzania",
-    description: "Tanzania's #1 online tech store. Shop laptops, smartphones, gaming gear, tablets & electronics at best prices. Powered by Neuraltale. Free delivery in Dar es Salaam!",
+    title:
+      "Neurashop by Neuraltale - Buy Laptops, Phones & Electronics in Tanzania",
+    description:
+      "Tanzania's #1 online tech store. Shop laptops, smartphones, gaming gear, tablets & electronics at best prices. Powered by Neuraltale. Free delivery in Dar es Salaam!",
     url: "https://neurashop.neuraltale.com",
     siteName: "Neurashop by Neuraltale",
     type: "website",
@@ -137,28 +141,29 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Neurashop by Neuraltale - Tanzania's #1 Tech Store",
-    description: "Buy laptops, smartphones, gaming gear & electronics online in Tanzania. Best prices, free delivery in Dar es Salaam. Shop now!",
+    description:
+      "Buy laptops, smartphones, gaming gear & electronics online in Tanzania. Best prices, free delivery in Dar es Salaam. Shop now!",
     site: "@neuraltale",
     creator: "@neuraltale",
     images: ["/logo.png"],
   },
   other: {
-    'geo.region': 'TZ',
-    'geo.placename': 'Dar es Salaam, Tanzania',
-    'geo.position': '-6.7924;39.2083',
-    'ICBM': '-6.7924, 39.2083',
-    'language': 'English, Swahili',
-    'target-audience': 'all',
-    'audience': 'all',
-    'coverage': 'Tanzania, East Africa, Africa',
-    'distribution': 'Global',
-    'rating': 'General',
-    'revisit-after': '3 days',
-    'msapplication-TileColor': '#001E3C',
-    'theme-color': '#001E3C',
+    "geo.region": "TZ",
+    "geo.placename": "Dar es Salaam, Tanzania",
+    "geo.position": "-6.7924;39.2083",
+    ICBM: "-6.7924, 39.2083",
+    language: "English, Swahili",
+    "target-audience": "all",
+    audience: "all",
+    coverage: "Tanzania, East Africa, Africa",
+    distribution: "Global",
+    rating: "General",
+    "revisit-after": "3 days",
+    "msapplication-TileColor": "#001E3C",
+    "theme-color": "#001E3C",
   },
-  applicationName: 'Neurashop',
-  referrer: 'origin-when-cross-origin',
+  applicationName: "Neurashop",
+  referrer: "origin-when-cross-origin",
   formatDetection: {
     email: false,
     address: false,
@@ -171,158 +176,161 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const baseUrl = 'https://neurashop.neuraltale.com';
-  
+  const baseUrl = "https://neurashop.neuraltale.com";
+
   // Organization Schema
   const organizationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    '@id': `${baseUrl}/#organization`,
-    name: 'Neuraltale',
-    alternateName: ['Neurashop', 'Neuraltale Tanzania', 'Neurashop Tanzania'],
-    url: 'https://neuraltale.com',
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${baseUrl}/#organization`,
+    name: "Neuraltale",
+    alternateName: ["Neurashop", "Neuraltale Tanzania", "Neurashop Tanzania"],
+    url: "https://neuraltale.com",
     logo: {
-      '@type': 'ImageObject',
+      "@type": "ImageObject",
       url: `${baseUrl}/logo.png`,
       width: 611,
       height: 611,
     },
     image: `${baseUrl}/logo.png`,
-    description: 'Neuraltale is a leading technology company in Tanzania, operating Neurashop - the premier online electronics and tech store serving East Africa.',
-    foundingDate: '2024',
-    foundingLocation: 'Dar es Salaam, Tanzania',
+    description:
+      "Neuraltale is a leading technology company in Tanzania, operating Neurashop - the premier online electronics and tech store serving East Africa.",
+    foundingDate: "2024",
+    foundingLocation: "Dar es Salaam, Tanzania",
     areaServed: {
-      '@type': 'GeoCircle',
+      "@type": "GeoCircle",
       geoMidpoint: {
-        '@type': 'GeoCoordinates',
+        "@type": "GeoCoordinates",
         latitude: -6.7924,
         longitude: 39.2083,
       },
-      geoRadius: '2000 km',
+      geoRadius: "2000 km",
     },
     address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Dar es Salaam',
-      addressLocality: 'Dar es Salaam',
-      addressRegion: 'Dar es Salaam',
-      addressCountry: 'TZ',
+      "@type": "PostalAddress",
+      streetAddress: "Dar es Salaam",
+      addressLocality: "Dar es Salaam",
+      addressRegion: "Dar es Salaam",
+      addressCountry: "TZ",
     },
     contactPoint: [
       {
-        '@type': 'ContactPoint',
-        contactType: 'customer service',
-        availableLanguage: ['English', 'Swahili'],
-        areaServed: 'TZ',
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        availableLanguage: ["English", "Swahili"],
+        areaServed: "TZ",
       },
       {
-        '@type': 'ContactPoint',
-        contactType: 'sales',
-        availableLanguage: ['English', 'Swahili'],
-        areaServed: 'TZ',
+        "@type": "ContactPoint",
+        contactType: "sales",
+        availableLanguage: ["English", "Swahili"],
+        areaServed: "TZ",
       },
     ],
     sameAs: [
-      'https://twitter.com/neuraltale',
-      'https://facebook.com/neuraltale',
-      'https://instagram.com/neuraltale',
-      'https://linkedin.com/company/neuraltale',
+      "https://twitter.com/neuraltale",
+      "https://facebook.com/neuraltale",
+      "https://instagram.com/neuraltale",
+      "https://linkedin.com/company/neuraltale",
     ],
   };
 
   // Online Store Schema
   const storeSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Store',
-    '@id': `${baseUrl}/#store`,
-    name: 'Neurashop by Neuraltale',
-    alternateName: ['Neurashop', 'Neurashop Tanzania', 'Neuraltale Shop'],
-    description: 'Neurashop is Tanzania\'s #1 online tech store. Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches and electronics at best prices. Free delivery in Dar es Salaam.',
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "@id": `${baseUrl}/#store`,
+    name: "Neurashop by Neuraltale",
+    alternateName: ["Neurashop", "Neurashop Tanzania", "Neuraltale Shop"],
+    description:
+      "Neurashop is Tanzania's #1 online tech store. Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches and electronics at best prices. Free delivery in Dar es Salaam.",
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
     image: `${baseUrl}/logo.png`,
-    telephone: '+255',
-    priceRange: 'TZS 50,000 - TZS 10,000,000',
-    currenciesAccepted: 'TZS',
-    paymentAccepted: 'Credit Card, Debit Card, Mobile Money',
-    openingHours: 'Mo-Su 00:00-24:00',
+    telephone: "+255",
+    priceRange: "TZS 50,000 - TZS 10,000,000",
+    currenciesAccepted: "TZS",
+    paymentAccepted: "Credit Card, Debit Card, Mobile Money",
+    openingHours: "Mo-Su 00:00-24:00",
     address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Dar es Salaam',
-      addressLocality: 'Dar es Salaam',
-      addressRegion: 'Dar es Salaam',
-      postalCode: '00000',
-      addressCountry: 'TZ',
+      "@type": "PostalAddress",
+      streetAddress: "Dar es Salaam",
+      addressLocality: "Dar es Salaam",
+      addressRegion: "Dar es Salaam",
+      postalCode: "00000",
+      addressCountry: "TZ",
     },
     geo: {
-      '@type': 'GeoCoordinates',
+      "@type": "GeoCoordinates",
       latitude: -6.7924,
       longitude: 39.2083,
     },
     areaServed: [
-      { '@type': 'Country', name: 'Tanzania' },
-      { '@type': 'Country', name: 'Kenya' },
-      { '@type': 'Country', name: 'Uganda' },
+      { "@type": "Country", name: "Tanzania" },
+      { "@type": "Country", name: "Kenya" },
+      { "@type": "Country", name: "Uganda" },
     ],
     brand: {
-      '@type': 'Brand',
-      name: 'Neuraltale',
+      "@type": "Brand",
+      name: "Neuraltale",
     },
     parentOrganization: {
-      '@id': `${baseUrl}/#organization`,
+      "@id": `${baseUrl}/#organization`,
     },
     hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: 'Electronics & Technology Products',
+      "@type": "OfferCatalog",
+      name: "Electronics & Technology Products",
       itemListElement: [
-        { '@type': 'OfferCatalog', name: 'Laptops' },
-        { '@type': 'OfferCatalog', name: 'Smartphones' },
-        { '@type': 'OfferCatalog', name: 'Tablets' },
-        { '@type': 'OfferCatalog', name: 'Gaming Gear' },
-        { '@type': 'OfferCatalog', name: 'Audio Devices' },
-        { '@type': 'OfferCatalog', name: 'Smartwatches' },
-        { '@type': 'OfferCatalog', name: 'Accessories' },
+        { "@type": "OfferCatalog", name: "Laptops" },
+        { "@type": "OfferCatalog", name: "Smartphones" },
+        { "@type": "OfferCatalog", name: "Tablets" },
+        { "@type": "OfferCatalog", name: "Gaming Gear" },
+        { "@type": "OfferCatalog", name: "Audio Devices" },
+        { "@type": "OfferCatalog", name: "Smartwatches" },
+        { "@type": "OfferCatalog", name: "Accessories" },
       ],
     },
   };
 
   // WebSite Schema with SearchAction
   const websiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${baseUrl}/#website`,
-    name: 'Neurashop by Neuraltale',
-    alternateName: 'Neurashop',
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${baseUrl}/#website`,
+    name: "Neurashop by Neuraltale",
+    alternateName: "Neurashop",
     url: baseUrl,
-    description: 'Buy laptops, smartphones, tablets, gaming gear and electronics online in Tanzania. Best prices, fast delivery.',
+    description:
+      "Buy laptops, smartphones, tablets, gaming gear and electronics online in Tanzania. Best prices, fast delivery.",
     publisher: {
-      '@id': `${baseUrl}/#organization`,
+      "@id": `${baseUrl}/#organization`,
     },
     potentialAction: {
-      '@type': 'SearchAction',
+      "@type": "SearchAction",
       target: {
-        '@type': 'EntryPoint',
+        "@type": "EntryPoint",
         urlTemplate: `${baseUrl}/products?search={search_term_string}`,
       },
-      'query-input': 'required name=search_term_string',
+      "query-input": "required name=search_term_string",
     },
-    inLanguage: ['en', 'sw'],
+    inLanguage: ["en", "sw"],
   };
 
   // BreadcrumbList Schema
   const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: [
       {
-        '@type': 'ListItem',
+        "@type": "ListItem",
         position: 1,
-        name: 'Home',
+        name: "Home",
         item: baseUrl,
       },
       {
-        '@type': 'ListItem',
+        "@type": "ListItem",
         position: 2,
-        name: 'Products',
+        name: "Products",
         item: `${baseUrl}/products`,
       },
     ],
@@ -367,14 +375,12 @@ export default function RootLayout({
           {/* Main page layout: Navbar at top, content in the middle, Footer at bottom */}
           <div className="min-h-screen flex flex-col overflow-x-hidden">
             <Navbar />
-            <main className="flex-1 ">
-              {children}
-            </main>
+            <main className="flex-1 ">{children}</main>
             <Footer />
           </div>
           <BackToTopButton />
-          <ToastContainer 
-            position="bottom-right" 
+          <ToastContainer
+            position="bottom-right"
             toastClassName="!bg-white !text-gray-900 !shadow-lg !border !border-gray-200"
             progressClassName="!bg-[#FDB913]"
           />

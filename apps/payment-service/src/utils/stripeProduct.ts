@@ -3,7 +3,7 @@ import stripe from "./stripe";
 
 /**
  * Creates a product in Stripe with pricing in TZS
- * 
+ *
  * IMPORTANT: The database stores prices as whole TZS (not cents)
  * Example: 1500000 in database = TZS 1,500,000
  * Stripe expects amounts in the smallest currency unit (cents)
@@ -32,11 +32,13 @@ export const getStripeProductPrice = async (productId: number) => {
       product: productId.toString(),
     });
     const unitAmount = res.data[0]?.unit_amount;
-    
+
     if (!unitAmount) {
-      throw new Error(`No price found for product ${productId} in Stripe. Make sure the product exists in Stripe.`);
+      throw new Error(
+        `No price found for product ${productId} in Stripe. Make sure the product exists in Stripe.`,
+      );
     }
-    
+
     return unitAmount;
   } catch (error) {
     console.error(`Error getting price for product ${productId}:`, error);

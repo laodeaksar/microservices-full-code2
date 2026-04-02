@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin,Github } from "lucide-react";
+import {
+  Twitter,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+} from "lucide-react";
 import { useState } from "react";
 
 const Footer = () => {
@@ -30,24 +39,22 @@ const Footer = () => {
                 height={40}
                 className="object-contain mr-2"
               />
-              <span className="text-xl font-bold text-white">
-                Neurashop
-              </span>
+              <span className="text-xl font-bold text-white">Neurashop</span>
             </Link>
             <p className="text-gray-300 mb-4 leading-relaxed text-sm">
               Discover the future of technology and exceptional quality.
             </p>
             <div className="mb-4">
-              <a 
-                href="https://www.neuraltale.com" 
-                target="_blank" 
+              <a
+                href="https://www.neuraltale.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-[#FDB913] hover:text-[#e5a811] font-medium text-sm transition-colors"
               >
                 Visit our company website →
               </a>
             </div>
-            
+
             {/* Newsletter - Integrated */}
             <div className="mt-4 pt-4 border-t border-white/10">
               <h5 className="text-xs font-semibold text-white mb-1.5">
@@ -73,21 +80,51 @@ const Footer = () => {
                 </button>
               </form>
             </div>
-            
+
             <div className="flex space-x-3 mt-4">
-              <a href="https://twitter.com/neuraltale" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300" aria-label="Twitter">
+              <a
+                href="https://twitter.com/neuraltale"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300"
+                aria-label="Twitter"
+              >
                 <Twitter className="w-4 h-4" />
               </a>
-              <a href="https://instagram.com/neuraltaletechnologiestz" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300" aria-label="Instagram">
+              <a
+                href="https://instagram.com/neuraltaletechnologiestz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300"
+                aria-label="Instagram"
+              >
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="https://youtube.com/neuraltale" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300" aria-label="YouTube">
+              <a
+                href="https://youtube.com/neuraltale"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300"
+                aria-label="YouTube"
+              >
                 <Youtube className="w-4 h-4" />
               </a>
-              <a href="https://linkedin.com/company/neuraltale" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300" aria-label="LinkedIn">
+              <a
+                href="https://linkedin.com/company/neuraltale"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300"
+                aria-label="LinkedIn"
+              >
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a href="https://github.com/neuraltaletechnologies" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300" aria-label="GitHub">
+              <a
+                href="https://github.com/neuraltaletechnologies"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white/10 hover:bg-[#FDB913] rounded-full flex items-center justify-center text-white hover:text-[#001E3C] transition-all duration-300"
+                aria-label="GitHub"
+              >
                 <Github className="w-4 h-4" />
               </a>
             </div>
@@ -100,12 +137,54 @@ const Footer = () => {
               Shop
             </h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/products" className="text-gray-300 hover:text-[#FDB913] transition-colors">All Products</Link></li>
-              <li><Link href="/products?category=smartphones" className="text-gray-300 hover:text-[#FDB913] transition-colors">Smartphones</Link></li>
-              <li><Link href="/products?category=laptops" className="text-gray-300 hover:text-[#FDB913] transition-colors">Laptops</Link></li>
-              <li><Link href="/products?category=audio" className="text-gray-300 hover:text-[#FDB913] transition-colors">Audio</Link></li>
-              <li><Link href="/products?category=gaming-laptops" className="text-gray-300 hover:text-[#FDB913] transition-colors">Gaming</Link></li>
-              <li><Link href="/products?category=accessories" className="text-gray-300 hover:text-[#FDB913] transition-colors">Accessories</Link></li>
+              <li>
+                <Link
+                  href="/products"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  All Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?category=smartphones"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Smartphones
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?category=laptops"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Laptops
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?category=audio"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Audio
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?category=gaming-laptops"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Gaming
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?category=accessories"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Accessories
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -116,12 +195,54 @@ const Footer = () => {
               Support
             </h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/help" className="text-gray-300 hover:text-[#FDB913] transition-colors">Help Center</Link></li>
-              <li><Link href="/contact" className="text-gray-300 hover:text-[#FDB913] transition-colors">Contact Us</Link></li>
-              <li><Link href="/delivery" className="text-gray-300 hover:text-[#FDB913] transition-colors">Delivery Info</Link></li>
-              <li><Link href="/returns" className="text-gray-300 hover:text-[#FDB913] transition-colors">Returns</Link></li>
-              <li><Link href="/warranty" className="text-gray-300 hover:text-[#FDB913] transition-colors">Warranty</Link></li>
-              <li><Link href="/track-order" className="text-gray-300 hover:text-[#FDB913] transition-colors">Track Order</Link></li>
+              <li>
+                <Link
+                  href="/help"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/delivery"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Delivery Info
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/returns"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Returns
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/warranty"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Warranty
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/track-order"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Track Order
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -132,12 +253,48 @@ const Footer = () => {
               Company
             </h4>
             <ul className="space-y-2 mb-4 text-sm">
-              <li><a href="https://www.neuraltale.com/about" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#FDB913] transition-colors">About Us</a></li>
-              <li><a href="https://www.neuraltale.com/careers" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#FDB913] transition-colors">Careers</a></li>
-              <li><a href="https://www.neuraltale.com/press" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#FDB913] transition-colors">Press</a></li>
-              <li><a href="https://www.neuraltale.com/blog" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#FDB913] transition-colors">Blog</a></li>
-             </ul>
-            
+              <li>
+                <a
+                  href="https://www.neuraltale.com/about"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.neuraltale.com/careers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Careers
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.neuraltale.com/press"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Press
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.neuraltale.com/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-[#FDB913] transition-colors"
+                >
+                  Blog
+                </a>
+              </li>
+            </ul>
+
             {/* Contact Info */}
             <div className="space-y-2">
               <div className="flex items-center text-gray-300">
@@ -146,16 +303,16 @@ const Footer = () => {
               </div>
               <div className="flex items-center text-gray-300">
                 <Phone className="w-4 h-4 mr-2 text-[#0A7EA4]" />
-                <span className="text-sm">+255 653 520 829  </span>
+                <span className="text-sm">+255 653 520 829 </span>
               </div>
               <div className="flex items-center text-gray-300">
                 <MapPin className="w-4 h-4 mr-2 text-[#0A7EA4]" />
                 <span className="text-sm">Dar-Es-Salaam, TZ</span>
               </div>
               <div className="mt-3">
-                <a 
-                  href="https://www.neuraltale.com/support" 
-                  target="_blank" 
+                <a
+                  href="https://www.neuraltale.com/support"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#FDB913] hover:text-[#e5a811] text-sm font-medium"
                 >
@@ -173,25 +330,44 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-6">
               <p className="text-gray-400 text-sm">
-                © 2025 <span className="text-[#FDB913]">Neuraltale</span>. All rights reserved.
+                © 2025 <span className="text-[#FDB913]">Neuraltale</span>. All
+                rights reserved.
               </p>
               <div className="hidden md:flex items-center space-x-4">
-                <a href="https://www.neuraltale.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <a
+                  href="https://www.neuraltale.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
                   Privacy Policy
                 </a>
-                <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link
+                  href="/terms"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
                   Terms of Service
                 </Link>
-                <Link href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link
+                  href="/cookies"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
                   Cookie Policy
                 </Link>
-                <a href="https://www.neuraltale.com/sitemap-page" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <a
+                  href="https://www.neuraltale.com/sitemap-page"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
                   Sitemap
                 </a>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-400 text-sm">Secure payments powered by</span>
+              <span className="text-gray-400 text-sm">
+                Secure payments powered by
+              </span>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-5 bg-gradient-to-r from-[#0A7EA4] to-[#001E3C] rounded text-white text-xs flex items-center justify-center font-bold">
                   VISA

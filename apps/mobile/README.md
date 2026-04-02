@@ -49,6 +49,7 @@ lib/
 ## Setup
 
 ### Prerequisites
+
 - Flutter 3.0+
 - Dart 3.0+
 
@@ -58,6 +59,7 @@ lib/
 2. Navigate to `apps/mobile/`
 3. Copy `.env.example` to `.env` and update with your backend URLs
 4. Install dependencies:
+
    ```bash
    flutter pub get
    ```

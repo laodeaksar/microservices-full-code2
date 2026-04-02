@@ -114,9 +114,7 @@ export const UserRoleFormSchema = z.object({
     .min(2, { message: "Username must be at least 2 characters!" })
     .max(50)
     .optional(),
-  emailAddress: z
-    .string()
-    .email({ message: "Invalid email address" }),
+  emailAddress: z.string().email({ message: "Invalid email address" }),
   phoneNumber: z
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number format" })

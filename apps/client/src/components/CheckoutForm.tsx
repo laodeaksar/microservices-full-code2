@@ -25,7 +25,7 @@ const CheckoutForm = ({
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       await checkout.updateEmail(deliveryForm.email);
       await checkout.updateShippingAddress({
@@ -57,14 +57,14 @@ const CheckoutForm = ({
 
   return (
     <form className="space-y-6">
-      <PaymentElement 
-        options={{ 
+      <PaymentElement
+        options={{
           layout: "tabs",
-        }} 
+        }}
       />
-      <button 
+      <button
         type="submit"
-        disabled={loading} 
+        disabled={loading}
         onClick={handleClick}
         className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:from-green-800 active:to-green-900 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 text-lg shadow-xl shadow-green-600/30 hover:shadow-2xl hover:shadow-green-600/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-3 group"
       >

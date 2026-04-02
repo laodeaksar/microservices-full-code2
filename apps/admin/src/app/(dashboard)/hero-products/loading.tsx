@@ -10,7 +10,10 @@ export default function Loading() {
       {/* Stats Cards Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-white border border-gray-200 rounded-lg p-4">
+          <div
+            key={i}
+            className="bg-white border border-gray-200 rounded-lg p-4"
+          >
             <div className="pb-3">
               <div className="h-4 w-24 bg-gray-200 rounded"></div>
             </div>
@@ -30,7 +33,10 @@ export default function Loading() {
         </div>
         <div className="p-6 space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg">
+            <div
+              key={i}
+              className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg"
+            >
               {/* Order badge and arrows */}
               <div className="flex flex-col gap-2">
                 <div className="h-6 w-12 bg-gray-200 rounded"></div>
@@ -69,7 +75,10 @@ export default function Loading() {
           {/* Product grid */}
           <div className="space-y-3">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg">
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg"
+              >
                 <div className="w-16 h-16 bg-gray-200 rounded-md"></div>
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-48 bg-gray-200 rounded"></div>

@@ -13,7 +13,7 @@ declare global {
 export const shouldBeUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const auth = getAuth(req);
   const userId = auth.userId;
@@ -30,7 +30,7 @@ export const shouldBeUser = (
 export const shouldBeAdmin = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const auth = getAuth(req);
   const userId = auth.userId;
@@ -43,9 +43,11 @@ export const shouldBeAdmin = (
 
   // Check both publicMetadata and metadata for role (Clerk uses publicMetadata)
   const role = claims.publicMetadata?.role || claims.metadata?.role;
-  
+
   if (role !== "admin") {
-    return res.status(403).json({ message: "Unauthorized! Admin role required." });
+    return res
+      .status(403)
+      .json({ message: "Unauthorized! Admin role required." });
   }
 
   req.userId = auth.userId;

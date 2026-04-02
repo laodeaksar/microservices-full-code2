@@ -59,9 +59,9 @@ export function DataTable<TData, TValue>({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -89,26 +89,32 @@ export function DataTable<TData, TValue>({
   });
 
   console.log(rowSelection);
-  
+
   const selectedCount = Object.keys(rowSelection).length;
-  
+
   return (
     <div className="rounded-md border">
       {selectedCount > 0 && (
         <div className="flex justify-end">
-          <Button 
+          <Button
             variant="destructive"
             size="sm"
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-md m-4"
             onClick={() => {
-              if (confirm(`Are you sure you want to delete ${selectedCount} order${selectedCount > 1 ? "s" : ""}?`)) {
+              if (
+                confirm(
+                  `Are you sure you want to delete ${selectedCount} order${selectedCount > 1 ? "s" : ""}?`,
+                )
+              ) {
                 deleteMutation.mutate();
               }
             }}
             disabled={deleteMutation.isPending}
           >
-            <Trash2 className="w-4 h-4"/>
-            {deleteMutation.isPending ? "Deleting..." : `Delete Order${selectedCount > 1 ? "s" : ""}`}
+            <Trash2 className="w-4 h-4" />
+            {deleteMutation.isPending
+              ? "Deleting..."
+              : `Delete Order${selectedCount > 1 ? "s" : ""}`}
           </Button>
         </div>
       )}
@@ -123,7 +129,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );

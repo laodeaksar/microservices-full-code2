@@ -86,12 +86,13 @@ export function EnhancedDataTable<TData, TValue>({
     globalFilterFn: (row, columnId, filterValue) => {
       const user = row.original as User;
       const searchValue = filterValue.toLowerCase();
-      
+
       // Search in name, email, username
-      const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
+      const fullName =
+        `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
       const email = user.emailAddresses[0]?.emailAddress?.toLowerCase() || "";
       const username = user.username?.toLowerCase() || "";
-      
+
       return (
         fullName.includes(searchValue) ||
         email.includes(searchValue) ||
@@ -126,9 +127,9 @@ export function EnhancedDataTable<TData, TValue>({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -164,16 +165,16 @@ export function EnhancedDataTable<TData, TValue>({
                   banned: shouldBan,
                 },
               }),
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: (_, shouldBan) => {
       toast.success(
         shouldBan
           ? "User(s) deactivated successfully"
-          : "User(s) activated successfully"
+          : "User(s) activated successfully",
       );
       setRowSelection({});
       router.refresh();
@@ -206,9 +207,9 @@ export function EnhancedDataTable<TData, TValue>({
                   role,
                 },
               }),
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -223,9 +224,10 @@ export function EnhancedDataTable<TData, TValue>({
 
   // Export to CSV
   const exportToCSV = () => {
-    const selectedRows = table.getSelectedRowModel().rows.length > 0
-      ? table.getSelectedRowModel().rows
-      : table.getFilteredRowModel().rows;
+    const selectedRows =
+      table.getSelectedRowModel().rows.length > 0
+        ? table.getSelectedRowModel().rows
+        : table.getFilteredRowModel().rows;
 
     const csvData = selectedRows.map((row) => {
       const user = row.original as User;
@@ -246,7 +248,9 @@ export function EnhancedDataTable<TData, TValue>({
     const csv = [
       headers.join(","),
       ...csvData.map((row) =>
-        headers.map((header) => `"${row[header as keyof typeof row]}"`).join(",")
+        headers
+          .map((header) => `"${row[header as keyof typeof row]}"`)
+          .join(","),
       ),
     ].join("\n");
 
@@ -257,12 +261,13 @@ export function EnhancedDataTable<TData, TValue>({
     a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     toast.success(`Exported ${csvData.length} users to CSV`);
   };
 
   const selectedCount = Object.keys(rowSelection).length;
-  const roleFilter = (columnFilters.find((f) => f.id === "role")?.value as UserRole[]) || [];
+  const roleFilter =
+    (columnFilters.find((f) => f.id === "role")?.value as UserRole[]) || [];
 
   return (
     <div className="space-y-4">
@@ -313,7 +318,11 @@ export function EnhancedDataTable<TData, TValue>({
                     const newFilter = checked
                       ? [...roleFilter, config.name]
                       : roleFilter.filter((r) => r !== config.name);
-                    table.getColumn("role")?.setFilterValue(newFilter.length > 0 ? newFilter : undefined);
+                    table
+                      .getColumn("role")
+                      ?.setFilterValue(
+                        newFilter.length > 0 ? newFilter : undefined,
+                      );
                   }}
                 >
                   <div className="flex items-center gap-2">
@@ -364,7 +373,7 @@ export function EnhancedDataTable<TData, TValue>({
               <Ban className="mr-2 h-4 w-4" />
               Deactivate
             </Button>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -390,15 +399,11 @@ export function EnhancedDataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportToCSV}
-            >
+            <Button variant="outline" size="sm" onClick={exportToCSV}>
               <Download className="mr-2 h-4 w-4" />
               Export
             </Button>
-            
+
             <Button
               variant="destructive"
               size="sm"
@@ -425,7 +430,7 @@ export function EnhancedDataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -444,7 +449,7 @@ export function EnhancedDataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

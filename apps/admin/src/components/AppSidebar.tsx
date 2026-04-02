@@ -80,7 +80,13 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <Image src="/logo.png" alt="Neurashop Logo" width={24} height={24} className="object-contain" />
+                <Image
+                  src="/logo.png"
+                  alt="Neurashop Logo"
+                  width={24}
+                  height={24}
+                  className="object-contain"
+                />
                 <span>Neurashop</span>
               </Link>
             </SidebarMenuButton>
@@ -141,7 +147,7 @@ const AppSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-        
+
               <SidebarMenuItem>
                 <Sheet>
                   <SheetTrigger asChild>
@@ -227,12 +233,13 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton className="h-12 hover:bg-gray-100 dark:hover:bg-gray-800">
-              <UserButton 
+              <UserButton
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
-                    userButtonPopoverCard: "shadow-lg"
-                  }
+                    avatarBox:
+                      "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
+                    userButtonPopoverCard: "shadow-lg",
+                  },
                 }}
               >
                 <UserButton.MenuItems>
@@ -248,7 +255,9 @@ const AppSidebar = () => {
                   {isLoaded && user ? user.fullName || "User" : "Loading..."}
                 </span>
                 <span className="text-xs text-muted-foreground truncate w-full">
-                  {isLoaded && user ? user.primaryEmailAddress?.emailAddress : ""}
+                  {isLoaded && user
+                    ? user.primaryEmailAddress?.emailAddress
+                    : ""}
                 </span>
               </div>
             </SidebarMenuButton>

@@ -19,9 +19,9 @@ export const connectOrderDB = async () => {
       family: 4, // Use IPv4, skip trying IPv6
       // Serverless-friendly options
       retryWrites: true,
-      w: 'majority'
+      w: "majority",
     });
-    
+
     isConnected = true;
     console.log("Connected to MongoDB Atlas Serverless");
   } catch (error) {

@@ -27,7 +27,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-purple-600",
     textColor: "text-white",
     buttonColor: "bg-white text-purple-600 hover:bg-purple-50",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
     link: "/products?category=audio",
     size: "small",
     productCount: 48,
@@ -40,7 +41,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-orange-500",
     textColor: "text-white",
     buttonColor: "bg-white text-orange-500 hover:bg-orange-50",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
     link: "/products?category=wearables",
     size: "small",
     productCount: 32,
@@ -53,7 +55,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-green-600",
     textColor: "text-white",
     buttonColor: "bg-white text-green-600 hover:bg-green-50",
-    image: "https://plus.unsplash.com/premium_photo-1680985551022-ad298e8a5f82?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image:
+      "https://plus.unsplash.com/premium_photo-1680985551022-ad298e8a5f82?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/products?category=smartphones",
     size: "small",
     productCount: 65,
@@ -66,7 +69,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-gray-900",
     textColor: "text-white",
     buttonColor: "bg-white text-gray-900 hover:bg-gray-100",
-    image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
     link: "/products?category=gaming",
     size: "large",
     productCount: 24,
@@ -79,7 +83,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-blue-600",
     textColor: "text-white",
     buttonColor: "bg-white text-blue-600 hover:bg-blue-50",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
     link: "/products?category=accessories",
     size: "small",
     productCount: 36,
@@ -92,7 +97,8 @@ const categories: CategoryCard[] = [
     bgColor: "bg-cyan-500",
     textColor: "text-white",
     buttonColor: "bg-white text-cyan-600 hover:bg-cyan-50",
-    image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image:
+      "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/products?category=laptops",
     size: "large",
     productCount: 87,
@@ -114,11 +120,14 @@ const ShopByCategory = () => {
             EXPLORE CATEGORIES
           </div>
           <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Shop By <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB913] to-[#0A7EA4]">Category</span>
+            Shop By{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB913] to-[#0A7EA4]">
+              Category
+            </span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover your perfect tech companion. From premium audio to cutting-edge laptops,
-            Neurashop has everything you need.
+            Discover your perfect tech companion. From premium audio to
+            cutting-edge laptops, Neurashop has everything you need.
           </p>
         </div>
 
@@ -130,7 +139,7 @@ const ShopByCategory = () => {
               href={category.link}
               className={`${category.bgColor} ${category.textColor} rounded-3xl p-6 lg:p-8 relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] min-h-[300px] flex flex-col justify-between`}
               style={{
-                animationDelay: `${index * 100}ms`
+                animationDelay: `${index * 100}ms`,
               }}
             >
               {/* Background Image - Full Cover */}
@@ -173,7 +182,9 @@ const ShopByCategory = () => {
                 </h3>
 
                 {/* Browse Button */}
-                <button className={`${category.buttonColor} px-6 py-3 rounded-xl font-semibold text-sm inline-flex items-center gap-2 transition-all duration-300 w-fit group-hover:gap-4 shadow-lg hover:shadow-xl`}>
+                <button
+                  className={`${category.buttonColor} px-6 py-3 rounded-xl font-semibold text-sm inline-flex items-center gap-2 transition-all duration-300 w-fit group-hover:gap-4 shadow-lg hover:shadow-xl`}
+                >
                   Browse Collection
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>

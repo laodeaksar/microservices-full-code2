@@ -21,12 +21,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-
-const AppBarChart = ({
-  data,
-}: {
-  data: OrderChartType[];
-}) => {
+const AppBarChart = ({ data }: { data: OrderChartType[] }) => {
   const chartData = data || [];
   return (
     <div className="">

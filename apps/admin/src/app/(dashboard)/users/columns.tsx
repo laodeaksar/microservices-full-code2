@@ -49,7 +49,10 @@ export const columns: ColumnDef<User>[] = [
     header: "Avatar",
     cell: ({ row }) => {
       const user = row.original;
-      const hasImage = user.imageUrl && typeof user.imageUrl === 'string' && user.imageUrl.trim() !== "";
+      const hasImage =
+        user.imageUrl &&
+        typeof user.imageUrl === "string" &&
+        user.imageUrl.trim() !== "";
       return (
         <div className="w-9 h-9 relative bg-gray-100 rounded-full flex items-center justify-center">
           {hasImage ? (
@@ -98,15 +101,15 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const user = row.original
-      const status = user.banned ? "banned" : "active"
+      const user = row.original;
+      const status = user.banned ? "banned" : "active";
 
       return (
         <div
           className={cn(
             `p-1 rounded-md w-max text-xs`,
             status === "active" && "bg-green-500/40",
-            status === "banned" && "bg-red-500/40"
+            status === "banned" && "bg-red-500/40",
           )}
         >
           {status as string}

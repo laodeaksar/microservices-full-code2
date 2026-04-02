@@ -13,10 +13,7 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
     const userId = c.get("userId");
 
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
-      return c.json(
-        { error: "Cart is empty or invalid" },
-        { status: 400 }
-      );
+      return c.json({ error: "Cart is empty or invalid" }, { status: 400 });
     }
 
     const lineItems = await Promise.all(
@@ -34,10 +31,15 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
             quantity: item.quantity,
           };
         } catch (error) {
-          console.error(`Failed to get price for product ${item.id} (${item.name}):`, error);
-          throw new Error(`Product "${item.name}" (ID: ${item.id}) is not set up in Stripe. Please contact support.`);
+          console.error(
+            `Failed to get price for product ${item.id} (${item.name}):`,
+            error,
+          );
+          throw new Error(
+            `Product "${item.name}" (ID: ${item.id}) is not set up in Stripe. Please contact support.`,
+          );
         }
-      })
+      }),
     );
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3002";
@@ -53,11 +55,11 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
     return c.json({ checkoutSessionClientSecret: session.client_secret });
   } catch (error) {
     console.error("Error creating checkout session:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to create checkout session";
-    return c.json(
-      { error: { message: errorMessage } },
-      { status: 500 }
-    );
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to create checkout session";
+    return c.json({ error: { message: errorMessage } }, { status: 500 });
   }
 });
 
@@ -67,7 +69,7 @@ sessionRoute.get("/:session_id", async (c) => {
     session_id as string,
     {
       expand: ["line_items"],
-    }
+    },
   );
 
   // console.log(session);

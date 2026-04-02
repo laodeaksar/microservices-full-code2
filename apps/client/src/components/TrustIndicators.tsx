@@ -4,8 +4,6 @@ import { Star, Shield, Truck, RotateCcw } from "lucide-react";
 import Image from "next/image";
 
 const TrustIndicators = () => {
-
-
   const brands = [
     {
       name: "Apple",
@@ -48,20 +46,18 @@ const TrustIndicators = () => {
   return (
     <div className="bg-gradient-to-b from-white to-[#F5E6D3]/30 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-
         {/* Brand Logo Cloud */}
         <div className="text-center mb-6">
           <p className="text-sm font-semibold text-[#001E3C] uppercase tracking-wider">
             Trusted Brands We Partner With
           </p>
         </div>
-        
+
         <div className="relative overflow-hidden">
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#F5E6D3]/30 to-transparent z-10 pointer-events-none"></div>
-          
+
           {/* Scrolling Logo Container */}
           <div className="flex animate-scroll hover:pause-animation">
             {/* First set of logos */}
@@ -82,7 +78,7 @@ const TrustIndicators = () => {
                 </div>
               ))}
             </div>
-            
+
             {/* Duplicate set for seamless loop */}
             <div className="flex gap-12 items-center justify-center min-w-max px-6">
               {brands.map((brand, index) => (

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { ProductType } from '@repo/types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { ProductType } from "@repo/types";
 
 interface WishlistStoreState {
   wishlist: ProductType[];
@@ -17,43 +17,43 @@ const useWishlistStore = create<WishlistStoreState>()(
     (set, get) => ({
       wishlist: [],
       hasHydrated: false,
-      
+
       setHasHydrated: (state) => set({ hasHydrated: state }),
-      
+
       addToWishlist: (product: ProductType) => {
         set((state) => {
           // Check if product already exists
-          if (!state.wishlist.find(p => p.id === product.id)) {
+          if (!state.wishlist.find((p) => p.id === product.id)) {
             return {
-              wishlist: [...state.wishlist, product]
+              wishlist: [...state.wishlist, product],
             };
           }
           return state;
         });
       },
-      
+
       removeFromWishlist: (productId: number) => {
         set((state) => ({
-          wishlist: state.wishlist.filter(p => p.id !== productId)
+          wishlist: state.wishlist.filter((p) => p.id !== productId),
         }));
       },
-      
+
       isInWishlist: (productId: number) => {
-        return get().wishlist.some(p => p.id === productId);
+        return get().wishlist.some((p) => p.id === productId);
       },
-      
+
       clearWishlist: () => {
         set({ wishlist: [] });
       },
     }),
     {
-      name: 'wishlist-storage',
+      name: "wishlist-storage",
       skipHydration: false,
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );
 
 export default useWishlistStore;

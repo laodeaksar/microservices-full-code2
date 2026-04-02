@@ -9,12 +9,12 @@ const FlashDealsSection = () => {
   const [timeLeft, setTimeLeft] = useState({
     hours: 23,
     minutes: 59,
-    seconds: 59
+    seconds: 59,
   });
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev.seconds > 0) {
           return { ...prev, seconds: prev.seconds - 1 };
         } else if (prev.minutes > 0) {
@@ -30,22 +30,28 @@ const FlashDealsSection = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (num: number) => num.toString().padStart(2, '0');
+  const formatTime = (num: number) => num.toString().padStart(2, "0");
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-[#FDB913] via-[#FDB913] to-[#e5a811] py-8 md:py-10">
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23001E3C' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23001E3C' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
       {/* Lightning bolt decorations */}
       <div className="absolute top-2 left-10 text-[#001E3C] opacity-20 animate-pulse">
         <Zap className="w-16 h-16" fill="currentColor" />
       </div>
-      <div className="absolute bottom-2 right-10 text-[#001E3C] opacity-20 animate-pulse" style={{ animationDelay: '0.5s' }}>
+      <div
+        className="absolute bottom-2 right-10 text-[#001E3C] opacity-20 animate-pulse"
+        style={{ animationDelay: "0.5s" }}
+      >
         <Zap className="w-12 h-12" fill="currentColor" />
       </div>
 
@@ -54,7 +60,10 @@ const FlashDealsSection = () => {
           {/* Left side - Title and badge */}
           <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
             <div className="flex items-center gap-3">
-              <div className="bg-[#001E3C] rounded-full p-3 animate-bounce" style={{ animationDuration: '2s' }}>
+              <div
+                className="bg-[#001E3C] rounded-full p-3 animate-bounce"
+                style={{ animationDuration: "2s" }}
+              >
                 <Zap className="w-6 h-6 text-[#FDB913]" fill="currentColor" />
               </div>
               <div>
@@ -74,22 +83,24 @@ const FlashDealsSection = () => {
             <span className="text-[#001E3C] font-semibold mr-2">Ends in:</span>
             <div className="flex gap-2">
               {[
-                { value: timeLeft.hours, label: 'HRS' },
-                { value: timeLeft.minutes, label: 'MIN' },
-                { value: timeLeft.seconds, label: 'SEC' }
+                { value: timeLeft.hours, label: "HRS" },
+                { value: timeLeft.minutes, label: "MIN" },
+                { value: timeLeft.seconds, label: "SEC" },
               ].map((item, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <div className="bg-[#001E3C] text-white font-mono font-bold text-xl md:text-2xl px-3 py-2 rounded-lg min-w-[50px] text-center shadow-lg">
                     {formatTime(item.value)}
                   </div>
-                  <span className="text-[#001E3C] text-xs font-semibold mt-1">{item.label}</span>
+                  <span className="text-[#001E3C] text-xs font-semibold mt-1">
+                    {item.label}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right side - CTA */}
-          <Link 
+          <Link
             href="/products?sale=true"
             className="group flex items-center gap-2 bg-[#001E3C] hover:bg-[#0A7EA4] text-white font-bold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-xl"
           >

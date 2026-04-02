@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Star, X, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Star,
+  X,
+  SlidersHorizontal,
+} from "lucide-react";
 import { FilterState } from "@/types/filters";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
@@ -11,7 +17,11 @@ interface CategoryFilterProps {
   onClose?: () => void;
 }
 
-const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFilterProps) => {
+const CategoryFilter = ({
+  onFilterChange,
+  isSheet = false,
+  onClose,
+}: CategoryFilterProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -25,50 +35,51 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
 
   // Initialize filters from URL params
   const [filters, setFilters] = useState<FilterState>(() => ({
-    brands: searchParams.get('brands')?.split(',').filter(Boolean) || [],
-    rating: Number(searchParams.get('rating')) || 0,
-    priceMin: searchParams.get('priceMin') || "",
-    priceMax: searchParams.get('priceMax') || "",
-    batteryCapacity: searchParams.get('batteryCapacity')?.split(',').filter(Boolean) || [],
+    brands: searchParams.get("brands")?.split(",").filter(Boolean) || [],
+    rating: Number(searchParams.get("rating")) || 0,
+    priceMin: searchParams.get("priceMin") || "",
+    priceMax: searchParams.get("priceMax") || "",
+    batteryCapacity:
+      searchParams.get("batteryCapacity")?.split(",").filter(Boolean) || [],
   }));
 
   // Update URL when filters change
   const updateURL = (newFilters: FilterState) => {
     const params = new URLSearchParams(searchParams);
-    
+
     // Update or remove brands
     if (newFilters.brands.length > 0) {
-      params.set('brands', newFilters.brands.join(','));
+      params.set("brands", newFilters.brands.join(","));
     } else {
-      params.delete('brands');
+      params.delete("brands");
     }
-    
+
     // Update or remove rating
     if (newFilters.rating > 0) {
-      params.set('rating', newFilters.rating.toString());
+      params.set("rating", newFilters.rating.toString());
     } else {
-      params.delete('rating');
+      params.delete("rating");
     }
-    
+
     // Update or remove price range
     if (newFilters.priceMin) {
-      params.set('priceMin', newFilters.priceMin);
+      params.set("priceMin", newFilters.priceMin);
     } else {
-      params.delete('priceMin');
+      params.delete("priceMin");
     }
     if (newFilters.priceMax) {
-      params.set('priceMax', newFilters.priceMax);
+      params.set("priceMax", newFilters.priceMax);
     } else {
-      params.delete('priceMax');
+      params.delete("priceMax");
     }
-    
+
     // Update or remove battery capacity
     if (newFilters.batteryCapacity.length > 0) {
-      params.set('batteryCapacity', newFilters.batteryCapacity.join(','));
+      params.set("batteryCapacity", newFilters.batteryCapacity.join(","));
     } else {
-      params.delete('batteryCapacity');
+      params.delete("batteryCapacity");
     }
-    
+
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -105,7 +116,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     const newBrands = filters.brands.includes(brand)
       ? filters.brands.filter((b) => b !== brand)
       : [...filters.brands, brand];
-    
+
     const newFilters = { ...filters, brands: newBrands };
     setFilters(newFilters);
     updateURL(newFilters);
@@ -133,7 +144,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     const newBattery = filters.batteryCapacity.includes(capacity)
       ? filters.batteryCapacity.filter((b) => b !== capacity)
       : [...filters.batteryCapacity, capacity];
-    
+
     const newFilters = { ...filters, batteryCapacity: newBattery };
     setFilters(newFilters);
     updateURL(newFilters);
@@ -160,9 +171,13 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     filters.batteryCapacity.length;
 
   return (
-    <div className={`${isSheet ? "h-full" : ""} bg-white rounded-lg ${!isSheet ? "border border-gray-200 shadow-sm" : ""}`}>
+    <div
+      className={`${isSheet ? "h-full" : ""} bg-white rounded-lg ${!isSheet ? "border border-gray-200 shadow-sm" : ""}`}
+    >
       {/* Header */}
-      <div className={`flex items-center justify-between ${isSheet ? "p-4 border-b" : "p-6 border-b border-gray-200"}`}>
+      <div
+        className={`flex items-center justify-between ${isSheet ? "p-4 border-b" : "p-6 border-b border-gray-200"}`}
+      >
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="w-5 h-5 text-gray-700" />
           <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
@@ -195,7 +210,9 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
       </div>
 
       {/* Filter Content */}
-      <div className={`${isSheet ? "overflow-y-auto h-[calc(100%-73px)] p-4" : "p-6"} space-y-6`}>
+      <div
+        className={`${isSheet ? "overflow-y-auto h-[calc(100%-73px)] p-4" : "p-6"} space-y-6`}
+      >
         {/* Brands Section */}
         <div className="border-b border-gray-200 pb-6">
           <button
@@ -254,7 +271,9 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs text-gray-600 mb-1">Min (TZS)</label>
+                  <label className="block text-xs text-gray-600 mb-1">
+                    Min (TZS)
+                  </label>
                   <input
                     type="number"
                     placeholder="100,000"
@@ -265,7 +284,9 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                 </div>
                 <span className="text-gray-400 mt-5">-</span>
                 <div className="flex-1">
-                  <label className="block text-xs text-gray-600 mb-1">Max (TZS)</label>
+                  <label className="block text-xs text-gray-600 mb-1">
+                    Max (TZS)
+                  </label>
                   <input
                     type="number"
                     placeholder="5,000,000"
@@ -275,7 +296,9 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                   />
                 </div>
               </div>
-              <p className="text-xs text-gray-500">Enter price in Tanzanian Shillings</p>
+              <p className="text-xs text-gray-500">
+                Enter price in Tanzanian Shillings
+              </p>
             </div>
           )}
         </div>

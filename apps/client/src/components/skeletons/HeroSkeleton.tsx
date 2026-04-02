@@ -4,7 +4,6 @@ export default function HeroSkeleton() {
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[600px] lg:min-h-[700px] py-12 lg:py-0">
-          
           {/* Left Column - Text Content Skeleton */}
           <div className="lg:col-span-5 flex flex-col justify-center space-y-6 lg:space-y-8 order-2 lg:order-1 z-10">
             {/* Category Badge Skeleton */}

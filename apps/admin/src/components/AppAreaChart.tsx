@@ -7,13 +7,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { DailyOrderTrend } from "@repo/types";
 
 const chartConfig = {
@@ -38,7 +32,9 @@ const AppAreaChart = ({ data }: AppAreaChartProps) => {
   if (chartData.length === 0) {
     return (
       <div className="">
-        <h1 className="text-lg font-medium mb-6">Order Trends (Last 30 Days)</h1>
+        <h1 className="text-lg font-medium mb-6">
+          Order Trends (Last 30 Days)
+        </h1>
         <div className="flex items-center justify-center h-[200px] text-muted-foreground">
           No trend data available
         </div>

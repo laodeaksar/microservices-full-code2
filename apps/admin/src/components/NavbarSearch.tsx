@@ -58,7 +58,9 @@ const NavbarSearch = () => {
         const headers = { Authorization: `Bearer ${token}` };
 
         const [productsRes, categoriesRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`, {
+            headers,
+          }),
           fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`),
         ]);
 
@@ -77,7 +79,10 @@ const NavbarSearch = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -89,7 +94,10 @@ const NavbarSearch = () => {
   // Save search to recent
   const saveRecentSearch = (searchQuery: string) => {
     if (!searchQuery.trim()) return;
-    const updated = [searchQuery, ...recentSearches.filter((s) => s !== searchQuery)].slice(0, 5);
+    const updated = [
+      searchQuery,
+      ...recentSearches.filter((s) => s !== searchQuery),
+    ].slice(0, 5);
     setRecentSearches(updated);
     localStorage.setItem("admin-recent-searches", JSON.stringify(updated));
   };
@@ -107,7 +115,9 @@ const NavbarSearch = () => {
       const images = product.images as Record<string, string | string[]>;
       const imageValue = images[firstColor];
       if (imageValue) {
-        return Array.isArray(imageValue) ? imageValue[0] || "/products/placeholder.jpg" : imageValue;
+        return Array.isArray(imageValue)
+          ? imageValue[0] || "/products/placeholder.jpg"
+          : imageValue;
       }
     }
     return "/products/placeholder.jpg";
@@ -259,10 +269,15 @@ const NavbarSearch = () => {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] px-1.5 py-0"
+                          >
                             {result.type}
                           </Badge>
-                          <h4 className="text-sm font-medium truncate">{result.title}</h4>
+                          <h4 className="text-sm font-medium truncate">
+                            {result.title}
+                          </h4>
                         </div>
                         {result.subtitle && (
                           <p className="text-xs text-muted-foreground truncate">
@@ -271,11 +286,14 @@ const NavbarSearch = () => {
                         )}
                         {result.meta && (
                           <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            {Object.entries(result.meta).slice(0, 2).map(([key, value]) => (
-                              <span key={key}>
-                                {key}: <span className="font-medium">{value}</span>
-                              </span>
-                            ))}
+                            {Object.entries(result.meta)
+                              .slice(0, 2)
+                              .map(([key, value]) => (
+                                <span key={key}>
+                                  {key}:{" "}
+                                  <span className="font-medium">{value}</span>
+                                </span>
+                              ))}
                           </div>
                         )}
                       </div>
@@ -293,9 +311,9 @@ const NavbarSearch = () => {
                   <Clock className="h-3 w-3" />
                   Recent Searches
                 </span>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="h-6 text-xs"
                   onClick={clearRecentSearches}
                 >

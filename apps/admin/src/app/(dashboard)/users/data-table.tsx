@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
   });
 
   const { getToken } = useAuth();
-  const router = useRouter()
+  const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -74,14 +74,14 @@ export function DataTable<TData, TValue>({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
-        })
+        }),
       );
     },
     onSuccess: () => {
       toast.success("User(s) deleted successfully");
-      router.refresh()
+      router.refresh();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -113,7 +113,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );

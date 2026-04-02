@@ -23,7 +23,11 @@ const ActionCell = ({ category }: { category: CategoryType }) => {
   const router = useRouter();
 
   const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to delete "${category.name}"? This action cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${category.name}"? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
 
@@ -36,7 +40,7 @@ const ActionCell = ({ category }: { category: CategoryType }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (res.ok) {

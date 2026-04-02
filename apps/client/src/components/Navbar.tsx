@@ -7,12 +7,7 @@ import { User, Menu, X, ChevronDown } from "lucide-react";
 import ShoppingCartIcon from "./ShoppingCartIcon";
 import WishlistIcon from "./WishlistIcon";
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -24,10 +19,13 @@ const Navbar = () => {
       href: "/products?category=Laptops",
       subcategories: [
         { name: "Gaming Laptops", href: "/products?category=Gaming-Laptops" },
-        { name: "Business Laptops", href: "/products?category=Business-Laptops" },
+        {
+          name: "Business Laptops",
+          href: "/products?category=Business-Laptops",
+        },
         { name: "Ultrabooks", href: "/products?category=Ultrabooks" },
         { name: "MacBooks", href: "/products?category=MacBooks" },
-      ]
+      ],
     },
     {
       name: "Desktops",
@@ -37,7 +35,7 @@ const Navbar = () => {
         { name: "Workstations", href: "/products?category=Workstations" },
         { name: "All-in-One PCs", href: "/products?category=All-in-One-PCs" },
         { name: "Mini PCs", href: "/products?category=Mini-PCs" },
-      ]
+      ],
     },
     {
       name: "Computer Monitors",
@@ -46,8 +44,11 @@ const Navbar = () => {
         { name: "Gaming Monitors", href: "/products?category=Gaming-Monitors" },
         { name: "4K Monitors", href: "/products?category=4K-Monitors" },
         { name: "Ultrawide", href: "/products?category=Ultrawide-Monitors" },
-        { name: "Professional", href: "/products?category=Professional-Monitors" },
-      ]
+        {
+          name: "Professional",
+          href: "/products?category=Professional-Monitors",
+        },
+      ],
     },
     {
       name: "Storage",
@@ -55,9 +56,12 @@ const Navbar = () => {
       subcategories: [
         { name: "SSDs", href: "/products?category=SSDs" },
         { name: "Hard Drives", href: "/products?category=Hard-Drives" },
-        { name: "External Storage", href: "/products?category=External-Storage" },
+        {
+          name: "External Storage",
+          href: "/products?category=External-Storage",
+        },
         { name: "NAS", href: "/products?category=NAS" },
-      ]
+      ],
     },
     {
       name: "Components",
@@ -67,7 +71,7 @@ const Navbar = () => {
         { name: "Graphics Cards", href: "/products?category=Graphics-Cards" },
         { name: "Motherboards", href: "/products?category=Motherboards" },
         { name: "RAM", href: "/products?category=RAM" },
-      ]
+      ],
     },
     {
       name: "Peripherals",
@@ -77,7 +81,7 @@ const Navbar = () => {
         { name: "Mice", href: "/products?category=Mice" },
         { name: "Headsets", href: "/products?category=Headsets" },
         { name: "Webcams", href: "/products?category=Webcams" },
-      ]
+      ],
     },
     {
       name: "Networking",
@@ -87,7 +91,7 @@ const Navbar = () => {
         { name: "WiFi Adapters", href: "/products?category=WiFi-Adapters" },
         { name: "Switches", href: "/products?category=Switches" },
         { name: "Access Points", href: "/products?category=Access-Points" },
-      ]
+      ],
     },
     {
       name: "Gadgets",
@@ -97,7 +101,7 @@ const Navbar = () => {
         { name: "Tablets", href: "/products?category=Tablets" },
         { name: "Smartwatches", href: "/products?category=Smartwatches" },
         { name: "Audio", href: "/products?category=Audio" },
-      ]
+      ],
     },
     {
       name: "Gaming",
@@ -106,25 +110,35 @@ const Navbar = () => {
         { name: "Gaming Chairs", href: "/products?category=Gaming-Chairs" },
         { name: "Controllers", href: "/products?category=Controllers" },
         { name: "VR Headsets", href: "/products?category=VR-Headsets" },
-        { name: "Gaming Accessories", href: "/products?category=Gaming-Accessories" },
-      ]
+        {
+          name: "Gaming Accessories",
+          href: "/products?category=Gaming-Accessories",
+        },
+      ],
     },
     {
       name: "Software & Digital",
       href: "/products?category=Software-&-Digital",
       subcategories: [
-        { name: "Operating Systems", href: "/products?category=Operating-systems" },
+        {
+          name: "Operating Systems",
+          href: "/products?category=Operating-systems",
+        },
         { name: "Productivity", href: "/products?category=Productivity" },
         { name: "Security", href: "/products?category=Security" },
         { name: "Games", href: "/products?category=Games" },
-      ]
+      ],
     },
   ];
 
   const navigationItems = [
     { name: "All Products", href: "/products" },
     { name: "Deals", href: "/products?sort=price-asc" },
-    { name: "Services", href: "https://www.neuraltale.com/services", external: true },
+    {
+      name: "Services",
+      href: "https://www.neuraltale.com/services",
+      external: true,
+    },
   ];
 
   return (
@@ -135,10 +149,10 @@ const Navbar = () => {
             {/* Logo */}
             <Link href="/" className="flex items-center group flex-shrink-0">
               <div className="flex items-center space-x-1.5 sm:space-x-2">
-                <Image 
-                  src="/logo.png" 
-                  alt="Neurashop Logo" 
-                  width={32} 
+                <Image
+                  src="/logo.png"
+                  alt="Neurashop Logo"
+                  width={32}
                   height={32}
                   className="object-contain sm:w-9 sm:h-9"
                 />
@@ -152,21 +166,20 @@ const Navbar = () => {
             <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               {/* Categories Dropdown */}
               <div className="relative group">
-                <button 
-                  className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 group text-sm xl:text-base"
-                >
+                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 group text-sm xl:text-base">
                   <span>Categories</span>
                   <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
                 </button>
-                
+
                 {/* Mega Menu Dropdown */}
-                <div 
-                  className="absolute top-full left-0 w-screen max-w-5xl xl:max-w-6xl bg-white shadow-xl border border-gray-200 rounded-lg mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
-                >
+                <div className="absolute top-full left-0 w-screen max-w-5xl xl:max-w-6xl bg-white shadow-xl border border-gray-200 rounded-lg mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="grid grid-cols-4 xl:grid-cols-5 gap-4 xl:gap-6 p-4 xl:p-6">
                     {categories.map((category) => (
-                      <div key={category.name} className="space-y-2 xl:space-y-3">
+                      <div
+                        key={category.name}
+                        className="space-y-2 xl:space-y-3"
+                      >
                         <Link
                           href={category.href}
                           className="font-semibold text-sm xl:text-base text-gray-900 hover:text-[#0A7EA4] transition-colors duration-200 block"
@@ -188,22 +201,34 @@ const Navbar = () => {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Featured Categories Footer */}
                   <div className="bg-gray-50 px-4 xl:px-6 py-3 xl:py-4 border-t border-gray-200 rounded-b-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-4 xl:space-x-6">
-                        <Link href="/products?featured=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                        <Link
+                          href="/products?featured=true"
+                          className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]"
+                        >
                           Featured Products
                         </Link>
-                        <Link href="/products?new=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                        <Link
+                          href="/products?new=true"
+                          className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]"
+                        >
                           New Arrivals
                         </Link>
-                        <Link href="/products?sale=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                        <Link
+                          href="/products?sale=true"
+                          className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]"
+                        >
                           On Sale
                         </Link>
                       </div>
-                      <Link href="/products" className="text-xs xl:text-sm font-medium text-gray-600 hover:text-gray-900">
+                      <Link
+                        href="/products"
+                        className="text-xs xl:text-sm font-medium text-gray-600 hover:text-gray-900"
+                      >
                         View All →
                       </Link>
                     </div>
@@ -212,7 +237,7 @@ const Navbar = () => {
               </div>
 
               {/* Other Navigation Items */}
-              {navigationItems.map((item) => (
+              {navigationItems.map((item) =>
                 item.external ? (
                   <a
                     key={item.name}
@@ -233,8 +258,8 @@ const Navbar = () => {
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
                   </Link>
-                )
-              ))}
+                ),
+              )}
             </div>
 
             {/* Desktop Search & Actions */}
@@ -258,11 +283,12 @@ const Navbar = () => {
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <UserButton 
+                  <UserButton
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
-                      }
+                        avatarBox:
+                          "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
+                      },
                     }}
                   >
                     <UserButton.MenuItems>
@@ -285,7 +311,7 @@ const Navbar = () => {
               <div className="flex items-center">
                 <SignedOut>
                   <SignInButton>
-                    <button 
+                    <button
                       className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200 p-1"
                       aria-label="Sign in"
                     >
@@ -294,11 +320,12 @@ const Navbar = () => {
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <UserButton 
+                  <UserButton
                     appearance={{
                       elements: {
-                        avatarBox: "w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
-                      }
+                        avatarBox:
+                          "w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
+                      },
                     }}
                   >
                     <UserButton.MenuItems>
@@ -333,10 +360,12 @@ const Navbar = () => {
                 <div className="px-2 sm:px-3 py-2">
                   <SearchBar />
                 </div>
-                
+
                 {/* Mobile Categories */}
                 <div className="border-t border-gray-100 mt-2 pt-2">
-                  <h3 className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wider">Categories</h3>
+                  <h3 className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                    Categories
+                  </h3>
                   <div className="space-y-1">
                     {categories.map((category) => (
                       <div key={category.name} className="space-y-1">
@@ -363,10 +392,10 @@ const Navbar = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Mobile Navigation */}
                 <div className="border-t border-gray-100 mt-2 pt-2">
-                  {navigationItems.map((item) => (
+                  {navigationItems.map((item) =>
                     item.external ? (
                       <a
                         key={item.name}
@@ -387,10 +416,10 @@ const Navbar = () => {
                       >
                         {item.name}
                       </Link>
-                    )
-                  ))}
+                    ),
+                  )}
                 </div>
-                
+
                 {/* Additional Company Links */}
                 <div className="border-t border-gray-100 mt-2 pt-2 pb-2">
                   <a

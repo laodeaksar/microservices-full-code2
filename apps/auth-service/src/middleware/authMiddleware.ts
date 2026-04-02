@@ -13,7 +13,7 @@ declare global {
 export const shouldBeUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const auth = getAuth(req);
   const userId = auth.userId;
@@ -30,7 +30,7 @@ export const shouldBeUser = (
 export const shouldBeAdmin = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const auth = getAuth(req);
   const userId = auth.userId;
@@ -42,15 +42,17 @@ export const shouldBeAdmin = (
   const claims = auth.sessionClaims as CustomJwtSessionClaims;
   const userRole = claims.publicMetadata?.role || claims.metadata?.role;
 
-  console.log('Auth Service - Admin Check:', {
+  console.log("Auth Service - Admin Check:", {
     userId,
     userRole,
     hasPublicMetadata: !!claims.publicMetadata,
-    hasMetadata: !!claims.metadata
+    hasMetadata: !!claims.metadata,
   });
 
   if (userRole !== "admin") {
-    return res.status(403).send({ message: "Unauthorized! Admin access required." });
+    return res
+      .status(403)
+      .send({ message: "Unauthorized! Admin access required." });
   }
 
   req.userId = auth.userId;

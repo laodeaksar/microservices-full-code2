@@ -10,9 +10,10 @@ const BackToTopButton = () => {
   useEffect(() => {
     const toggleVisibility = () => {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = (scrollTop / docHeight) * 100;
-      
+
       setScrollProgress(progress);
       setIsVisible(scrollTop > 400);
     };
@@ -24,7 +25,7 @@ const BackToTopButton = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
   };
 
@@ -32,8 +33,8 @@ const BackToTopButton = () => {
     <button
       onClick={scrollToTop}
       className={`fixed bottom-6 right-6 z-50 group transition-all duration-300 ${
-        isVisible 
-          ? "opacity-100 translate-y-0" 
+        isVisible
+          ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none"
       }`}
       aria-label="Back to top"
@@ -61,7 +62,7 @@ const BackToTopButton = () => {
           strokeLinecap="round"
         />
       </svg>
-      
+
       {/* Button content */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-10 h-10 bg-[#FDB913] rounded-full flex items-center justify-center shadow-lg group-hover:bg-[#001E3C] transition-colors duration-300">

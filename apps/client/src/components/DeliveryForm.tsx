@@ -1,6 +1,15 @@
 import { DeliveryFormInputs, deliveryFormSchema } from "@repo/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, ArrowLeft, Save, MapPin, Trash2, Star, ChevronDown, Check } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Save,
+  MapPin,
+  Trash2,
+  Star,
+  ChevronDown,
+  Check,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
@@ -70,7 +79,7 @@ const DeliveryForm = ({
         isDefault: setAsDefault,
       });
     }
-    
+
     setDeliveryForm(data);
     router.push("/cart?step=3", { scroll: false });
   };
@@ -116,12 +125,16 @@ const DeliveryForm = ({
           >
             <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-[#0A7EA4]" />
-              <span className="font-medium text-gray-900">Use Saved Address</span>
+              <span className="font-medium text-gray-900">
+                Use Saved Address
+              </span>
               <span className="text-xs bg-[#0A7EA4] text-white px-2 py-0.5 rounded-full">
                 {userAddresses.length}
               </span>
             </div>
-            <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${showSavedAddresses ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-5 h-5 text-gray-500 transition-transform ${showSavedAddresses ? "rotate-180" : ""}`}
+            />
           </button>
 
           {showSavedAddresses && (
@@ -139,7 +152,9 @@ const DeliveryForm = ({
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-gray-900">{addr.label}</span>
+                        <span className="font-semibold text-gray-900">
+                          {addr.label}
+                        </span>
                         {addr.isDefault && (
                           <span className="text-xs bg-[#FDB913] text-[#001E3C] px-2 py-0.5 rounded-full font-medium">
                             Default
@@ -150,7 +165,9 @@ const DeliveryForm = ({
                         )}
                       </div>
                       <p className="text-sm text-gray-600">{addr.name}</p>
-                      <p className="text-sm text-gray-500">{addr.address}, {addr.city}</p>
+                      <p className="text-sm text-gray-500">
+                        {addr.address}, {addr.city}
+                      </p>
                       <p className="text-xs text-gray-400 mt-1">{addr.phone}</p>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -188,7 +205,9 @@ const DeliveryForm = ({
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-500">or enter new address</span>
+            <span className="px-4 bg-white text-gray-500">
+              or enter new address
+            </span>
           </div>
         </div>
       )}
@@ -244,7 +263,10 @@ const DeliveryForm = ({
           )}
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="address" className="text-xs text-gray-500 font-medium">
+          <label
+            htmlFor="address"
+            className="text-xs text-gray-500 font-medium"
+          >
             Street Address
           </label>
           <input
@@ -293,7 +315,10 @@ const DeliveryForm = ({
             {showSaveOption && (
               <div className="pl-8 space-y-3 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex flex-col gap-1">
-                  <label htmlFor="addressLabel" className="text-xs text-gray-500 font-medium">
+                  <label
+                    htmlFor="addressLabel"
+                    className="text-xs text-gray-500 font-medium"
+                  >
                     Address Label (e.g., Home, Office, etc.)
                   </label>
                   <input

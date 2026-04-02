@@ -55,7 +55,11 @@ function ActionCell({ user }: { user: User }) {
           Copy user ID
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(user.emailAddresses[0]?.emailAddress || "")}
+          onClick={() =>
+            navigator.clipboard.writeText(
+              user.emailAddresses[0]?.emailAddress || "",
+            )
+          }
         >
           Copy email
         </DropdownMenuItem>
@@ -70,10 +74,7 @@ function ActionCell({ user }: { user: User }) {
               Edit user
             </DropdownMenuItem>
           </SheetTrigger>
-          <AddUserSheet
-            user={user}
-            onSuccess={() => setEditSheetOpen(false)}
-          />
+          <AddUserSheet user={user} onSuccess={() => setEditSheetOpen(false)} />
         </Sheet>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -123,9 +124,11 @@ export const enhancedColumns: ColumnDef<User>[] = [
         user.imageUrl &&
         typeof user.imageUrl === "string" &&
         user.imageUrl.trim() !== "";
-      const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || 
-                      user.username?.[0]?.toUpperCase() || "?";
-      
+      const initials =
+        `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() ||
+        user.username?.[0]?.toUpperCase() ||
+        "?";
+
       return (
         <div className="w-10 h-10 relative bg-gradient-to-br from-[#001E3C]/20 to-[#0A7EA4]/20 rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
           {hasImage ? (
@@ -161,7 +164,7 @@ export const enhancedColumns: ColumnDef<User>[] = [
       const user = row.original;
       const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
       const displayName = fullName || user.username || "Unknown User";
-      
+
       return (
         <div className="flex flex-col">
           <span className="font-medium">{displayName}</span>
@@ -188,12 +191,8 @@ export const enhancedColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const user = row.original;
       const email = user.emailAddresses[0]?.emailAddress || "No email";
-      
-      return (
-        <div className="text-sm">
-          {email}
-        </div>
-      );
+
+      return <div className="text-sm">{email}</div>;
     },
   },
   {
@@ -213,13 +212,10 @@ export const enhancedColumns: ColumnDef<User>[] = [
       const user = row.original;
       const role = getUserRole(user);
       const config = ROLE_CONFIGS[role];
-      
+
       return (
         <Badge
-          className={cn(
-            "text-white font-medium",
-            getRoleBadgeColor(role)
-          )}
+          className={cn("text-white font-medium", getRoleBadgeColor(role))}
         >
           {config?.label || role}
         </Badge>
@@ -236,7 +232,7 @@ export const enhancedColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const user = row.original;
       const isActive = !user.banned && !user.locked;
-      
+
       return (
         <div className="flex items-center space-x-2">
           <Switch
@@ -251,7 +247,9 @@ export const enhancedColumns: ColumnDef<User>[] = [
             variant="outline"
             className={cn(
               "font-medium",
-              isActive ? "text-green-600 border-green-600" : "text-red-600 border-red-600"
+              isActive
+                ? "text-green-600 border-green-600"
+                : "text-red-600 border-red-600",
             )}
           >
             {user.locked ? "Locked" : user.banned ? "Inactive" : "Active"}
@@ -278,10 +276,12 @@ export const enhancedColumns: ColumnDef<User>[] = [
       if (!user.lastSignInAt) {
         return <span className="text-sm text-gray-400">Never</span>;
       }
-      
+
       return (
         <div className="text-sm text-gray-600">
-          {formatDistanceToNow(new Date(user.lastSignInAt), { addSuffix: true })}
+          {formatDistanceToNow(new Date(user.lastSignInAt), {
+            addSuffix: true,
+          })}
         </div>
       );
     },
@@ -301,7 +301,7 @@ export const enhancedColumns: ColumnDef<User>[] = [
     },
     cell: ({ row }) => {
       const user = row.original;
-      
+
       return (
         <div className="text-sm text-gray-600">
           {formatDistanceToNow(new Date(user.createdAt), { addSuffix: true })}

@@ -10,7 +10,10 @@ interface SimilarProductsProps {
   currentProductId: string;
 }
 
-export default function SimilarProducts({ categorySlug, currentProductId }: SimilarProductsProps) {
+export default function SimilarProducts({
+  categorySlug,
+  currentProductId,
+}: SimilarProductsProps) {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -18,20 +21,22 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
   useEffect(() => {
     const fetchSimilarProducts = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || 'http://localhost:8000'}/products?category=${categorySlug}&limit=8`;
+        const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || "http://localhost:8000"}/products?category=${categorySlug}&limit=8`;
         const res = await fetch(url);
-        
+
         if (!res.ok) {
-          console.error('Failed to fetch similar products');
+          console.error("Failed to fetch similar products");
           return;
         }
 
         const data: ProductType[] = await res.json();
         // Filter out current product (compare as strings since id comes from URL)
-        const filtered = data.filter(p => p.id.toString() !== currentProductId);
+        const filtered = data.filter(
+          (p) => p.id.toString() !== currentProductId,
+        );
         setProducts(filtered);
       } catch (error) {
-        console.error('Error fetching similar products:', error);
+        console.error("Error fetching similar products:", error);
       } finally {
         setLoading(false);
       }
@@ -40,18 +45,22 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
     fetchSimilarProducts();
   }, [categorySlug, currentProductId]);
 
-  const handleScroll = (direction: 'left' | 'right') => {
-    const container = document.getElementById('similar-products-container');
+  const handleScroll = (direction: "left" | "right") => {
+    const container = document.getElementById("similar-products-container");
     if (!container) return;
 
     const scrollAmount = 320; // Approximate width of one product card + gap
-    const newPosition = direction === 'left' 
-      ? Math.max(0, scrollPosition - scrollAmount)
-      : Math.min(container.scrollWidth - container.clientWidth, scrollPosition + scrollAmount);
+    const newPosition =
+      direction === "left"
+        ? Math.max(0, scrollPosition - scrollAmount)
+        : Math.min(
+            container.scrollWidth - container.clientWidth,
+            scrollPosition + scrollAmount,
+          );
 
     container.scrollTo({
       left: newPosition,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
     setScrollPosition(newPosition);
   };
@@ -61,7 +70,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
       <div className="animate-pulse">
         <div className="h-8 bg-gray-200 rounded w-48 mb-6"></div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => (
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-80 bg-gray-200 rounded-lg"></div>
           ))}
         </div>
@@ -79,11 +88,11 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
     <div className="border-t border-gray-200 pt-12">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Similar products</h2>
-        
+
         {showNavigation && (
           <div className="flex gap-2">
             <button
-              onClick={() => handleScroll('left')}
+              onClick={() => handleScroll("left")}
               disabled={scrollPosition === 0}
               className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               aria-label="Scroll left"
@@ -91,7 +100,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
             <button
-              onClick={() => handleScroll('right')}
+              onClick={() => handleScroll("right")}
               className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               aria-label="Scroll right"
             >
@@ -101,7 +110,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
         )}
       </div>
 
-      <div 
+      <div
         id="similar-products-container"
         className="overflow-x-auto hide-scrollbar"
       >
@@ -109,7 +118,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
           {products.map((product) => (
             <div key={product.id} className="w-72 flex-shrink-0">
               <ProductCard product={product} />
-              
+
               {/* Additional Product Info */}
               <div className="mt-2 px-2">
                 <p className="text-sm text-gray-600">Neurashop</p>
@@ -119,9 +128,10 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
                   </p>
                 )}
                 <p className="text-sm text-gray-900 font-medium mt-1">
-                  From {new Intl.NumberFormat('en-TZ', {
-                    style: 'currency',
-                    currency: 'TZS',
+                  From{" "}
+                  {new Intl.NumberFormat("en-TZ", {
+                    style: "currency",
+                    currency: "TZS",
                     minimumFractionDigits: 0,
                   }).format(product.price)}
                 </p>

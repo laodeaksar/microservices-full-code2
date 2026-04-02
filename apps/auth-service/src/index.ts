@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(clerkMiddleware());
@@ -53,7 +53,7 @@ const PORT = Number(process.env.PORT) || 8003;
 
 const start = async () => {
   try {
-    app.listen(PORT, '0.0.0.0', () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Auth service is running on port ${PORT}`);
     });
   } catch (error) {

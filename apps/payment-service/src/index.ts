@@ -61,11 +61,11 @@ const start = async () => {
       {
         fetch: app.fetch,
         port: PORT,
-        hostname: '0.0.0.0',
+        hostname: "0.0.0.0",
       },
       (info) => {
         console.log(`Payment service is running on port ${PORT}`);
-      }
+      },
     );
   } catch (error) {
     console.error("Failed to start payment service:", error);

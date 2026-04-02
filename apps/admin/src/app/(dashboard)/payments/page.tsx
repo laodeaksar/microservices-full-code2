@@ -15,43 +15,45 @@ async function getStripeData() {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: "2025-08-27.basil",
     });
-    const [balance, charges, paymentIntents, checkoutSessions] = await Promise.all([
-      // Get account balance
-      stripe.balance.retrieve(),
-      
-      // Get recent charges (last 10)
-      stripe.charges.list({ limit: 10 }),
-      
-      // Get recent payment intents (last 10)
-      stripe.paymentIntents.list({ limit: 10 }),
-      
-      // Get recent checkout sessions (last 10)
-      stripe.checkout.sessions.list({ limit: 10 }),
-    ]);
+    const [balance, charges, paymentIntents, checkoutSessions] =
+      await Promise.all([
+        // Get account balance
+        stripe.balance.retrieve(),
+
+        // Get recent charges (last 10)
+        stripe.charges.list({ limit: 10 }),
+
+        // Get recent payment intents (last 10)
+        stripe.paymentIntents.list({ limit: 10 }),
+
+        // Get recent checkout sessions (last 10)
+        stripe.checkout.sessions.list({ limit: 10 }),
+      ]);
 
     return {
       balance: {
-        available: balance.available.map(b => ({
+        available: balance.available.map((b) => ({
           amount: b.amount / 100,
           currency: b.currency.toUpperCase(),
         })),
-        pending: balance.pending.map(b => ({
+        pending: balance.pending.map((b) => ({
           amount: b.amount / 100,
           currency: b.currency.toUpperCase(),
         })),
       },
-      charges: charges.data.map(charge => ({
+      charges: charges.data.map((charge) => ({
         id: charge.id,
         amount: charge.amount / 100,
         currency: charge.currency.toUpperCase(),
         status: charge.status,
         description: charge.description || "No description",
-        customerEmail: charge.billing_details?.email || charge.receipt_email || "N/A",
+        customerEmail:
+          charge.billing_details?.email || charge.receipt_email || "N/A",
         created: new Date(charge.created * 1000).toISOString(),
         paid: charge.paid,
         refunded: charge.refunded,
       })),
-      paymentIntents: paymentIntents.data.map(pi => ({
+      paymentIntents: paymentIntents.data.map((pi) => ({
         id: pi.id,
         amount: pi.amount / 100,
         currency: pi.currency.toUpperCase(),
@@ -59,7 +61,7 @@ async function getStripeData() {
         description: pi.description || "No description",
         created: new Date(pi.created * 1000).toISOString(),
       })),
-      checkoutSessions: checkoutSessions.data.map(session => ({
+      checkoutSessions: checkoutSessions.data.map((session) => ({
         id: session.id,
         amountTotal: (session.amount_total || 0) / 100,
         currency: session.currency?.toUpperCase() || "USD",
@@ -77,7 +79,7 @@ async function getStripeData() {
 
 export default async function StripePaymentsPage() {
   const { userId } = await auth();
-  
+
   if (!userId) {
     redirect("/sign-in");
   }

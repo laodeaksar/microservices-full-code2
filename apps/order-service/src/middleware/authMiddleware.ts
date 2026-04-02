@@ -10,7 +10,7 @@ declare module "fastify" {
 
 export const shouldBeUser = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const { userId } = Clerk.getAuth(request);
   if (!userId) {
@@ -22,7 +22,7 @@ export const shouldBeUser = async (
 
 export const shouldBeAdmin = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const auth = Clerk.getAuth(request);
   if (!auth.userId) {

@@ -10,64 +10,71 @@ interface ImageGalleryProps {
   selectedColor: string;
 }
 
-export default function ImageGallery({ product, selectedColor }: ImageGalleryProps) {
+export default function ImageGallery({
+  product,
+  selectedColor,
+}: ImageGalleryProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedThumbnail, setSelectedThumbnail] = useState(0);
 
   // Handle both old structure {main, gallery} and new structure {color: url}
   const getProductImages = () => {
     const images = product.images as any;
-    
+
     // Check if it's the old structure with 'main' and 'gallery'
-    if (images && typeof images === 'object' && 'main' in images) {
+    if (images && typeof images === "object" && "main" in images) {
       const mainImage = images.main || "/products/1g.png";
       const galleryImages = Array.isArray(images.gallery) ? images.gallery : [];
-      
+
       return [
         { url: mainImage, label: "Main View", isMain: true },
         ...galleryImages.map((url: string, index: number) => ({
           url: url || "/products/1g.png",
           label: `View ${index + 2}`,
-          isMain: false
-        }))
+          isMain: false,
+        })),
       ];
     }
-    
+
     // New structure: color-keyed images (can be string or array)
-    if (images && typeof images === 'object') {
+    if (images && typeof images === "object") {
       // Get images for the selected color
       let selectedColorImages: string[] = [];
       const colorData = images[selectedColor];
-      
-      if (typeof colorData === 'string') {
+
+      if (typeof colorData === "string") {
         selectedColorImages = [colorData];
       } else if (Array.isArray(colorData)) {
-        selectedColorImages = colorData.filter((url: string) => url && url.trim() !== '');
+        selectedColorImages = colorData.filter(
+          (url: string) => url && url.trim() !== "",
+        );
       }
-      
+
       // If no images for selected color, try first available color
       if (selectedColorImages.length === 0) {
         const firstColor = Object.keys(images)[0];
         if (firstColor) {
           const firstColorData = images[firstColor];
-          if (typeof firstColorData === 'string') {
+          if (typeof firstColorData === "string") {
             selectedColorImages = [firstColorData];
           } else if (Array.isArray(firstColorData)) {
-            selectedColorImages = firstColorData.filter((url: string) => url && url.trim() !== '');
+            selectedColorImages = firstColorData.filter(
+              (url: string) => url && url.trim() !== "",
+            );
           }
         }
       }
-      
+
       // Build image array from selected color images
       if (selectedColorImages.length > 0) {
         return selectedColorImages.map((url: string, index: number) => ({
           url: url,
           label: index === 0 ? "Main View" : `View ${index + 1}`,
-          isMain: index === 0
+          isMain: index === 0,
         }));
       }
     }
-    
+
     // Fallback: no images available
     return [{ url: "/products/1g.png", label: "Product", isMain: true }];
   };
@@ -75,13 +82,21 @@ export default function ImageGallery({ product, selectedColor }: ImageGalleryPro
   const allImages = getProductImages();
 
   const handlePrevious = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
-    setSelectedThumbnail((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? allImages.length - 1 : prev - 1,
+    );
+    setSelectedThumbnail((prev) =>
+      prev === 0 ? allImages.length - 1 : prev - 1,
+    );
   };
 
   const handleNext = () => {
-    setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
-    setSelectedThumbnail((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+    setCurrentImageIndex((prev) =>
+      prev === allImages.length - 1 ? 0 : prev + 1,
+    );
+    setSelectedThumbnail((prev) =>
+      prev === allImages.length - 1 ? 0 : prev + 1,
+    );
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -119,8 +134,8 @@ export default function ImageGallery({ product, selectedColor }: ImageGalleryPro
       <div className="order-1 lg:order-2 flex-1">
         <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden">
           <Image
-            src={allImages[currentImageIndex]?.url || '/products/1g.png'}
-            alt={`${product.name} - ${allImages[currentImageIndex]?.label || 'Product view'}`}
+            src={allImages[currentImageIndex]?.url || "/products/1g.png"}
+            alt={`${product.name} - ${allImages[currentImageIndex]?.label || "Product view"}`}
             fill
             className="object-contain p-8"
             priority

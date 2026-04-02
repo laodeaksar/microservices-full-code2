@@ -20,13 +20,12 @@ const Navbar = () => {
     <nav className="p-4 flex items-center justify-between sticky top-0 bg-background z-10 gap-4">
       {/* LEFT */}
       <SidebarTrigger />
-      
+
       {/* CENTER - Search */}
       <NavbarSearch />
-      
+
       {/* RIGHT */}
       <div className="flex items-center gap-4">
-    
         {/* THEME MENU */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -49,11 +48,12 @@ const Navbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         {/* USER MENU - Clerk Managed */}
-        <UserButton 
+        <UserButton
           appearance={{
             elements: {
-              avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
-            }
+              avatarBox:
+                "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
+            },
           }}
         >
           <UserButton.MenuItems>

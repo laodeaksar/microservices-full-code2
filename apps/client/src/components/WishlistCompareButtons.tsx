@@ -10,8 +10,11 @@ interface WishlistCompareButtonsProps {
   product: ProductType;
 }
 
-export default function WishlistCompareButtons({ product }: WishlistCompareButtonsProps) {
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+export default function WishlistCompareButtons({
+  product,
+}: WishlistCompareButtonsProps) {
+  const { addToWishlist, removeFromWishlist, isInWishlist } =
+    useWishlistStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Check wishlist status after hydration
@@ -33,7 +36,7 @@ export default function WishlistCompareButtons({ product }: WishlistCompareButto
   };
 
   return (
-    <button 
+    <button
       onClick={handleWishlist}
       className={`w-full flex items-center justify-center gap-2 px-6 py-3 border-2 rounded-lg font-semibold transition-all ${
         isWishlisted

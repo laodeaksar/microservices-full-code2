@@ -38,7 +38,10 @@ export default function PageSkeleton() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center text-center space-y-3">
+              <div
+                key={i}
+                className="flex flex-col items-center text-center space-y-3"
+              >
                 <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
                 <div className="h-5 bg-gray-200 rounded w-24"></div>
                 <div className="h-4 bg-gray-200 rounded w-32"></div>

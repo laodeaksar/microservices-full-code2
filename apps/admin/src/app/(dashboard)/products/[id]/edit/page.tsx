@@ -19,7 +19,7 @@ async function getProduct(id: string) {
       `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${id}`,
       {
         cache: "no-store",
-      }
+      },
     );
 
     if (!res.ok) {
