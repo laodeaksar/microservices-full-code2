@@ -115,6 +115,7 @@ const nextConfig: NextConfig = {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
   },
+  transpilePackages: ["@repo/ui"],
 };
 
 export default nextConfig;
