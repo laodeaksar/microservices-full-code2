@@ -9,15 +9,16 @@
     "build": "echo 'No build needed for order-service'",
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
-"test": "vitest run",
+    "test": "vitest run",
     "test:watch": "vitest",
-"test:integration": "vitest run src/__tests__/order-api.test.ts"
+    "test:integration": "vitest run src/__tests__/order-api.test.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@clerk/fastify": "^2.6.29",
+    "@fastify/rate-limit": "^10.3.0",
     "@repo/order-db": "workspace:*",
     "date-fns": "^4.1.0",
     "dotenv": "^17.4.0",
@@ -28,6 +29,7 @@
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.19.37",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
   }
 }

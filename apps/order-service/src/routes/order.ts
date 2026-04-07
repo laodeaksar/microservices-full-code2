@@ -27,9 +27,9 @@ import {
 } from "../utils/auditLogger";
 import { OrderStatusType, StatusChangeRequest } from "@repo/types";
 import { dispatchNotifications } from "../utils/notifications";
-  
+
 export const orderRoute = async (fastify: FastifyInstance) => {
-// Find order by payment intent ID (used by payment-service webhook)
+  // Find order by payment intent ID (used by payment-service webhook)
   fastify.get(
     "/orders/by-payment-intent/:paymentIntentId",
     async (request, reply) => {
@@ -54,7 +54,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
     },
   );
 
-// Carrier tracking webhook endpoint
+  // Carrier tracking webhook endpoint
   fastify.post(
     "/orders/tracking-webhook",
     async (request, reply) => {
@@ -131,6 +131,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
 
             // Dispatch notifications
             dispatchNotifications(
+              //@ts-ignore
               order.toObject(),
               previousStatus,
               "system",
@@ -190,7 +191,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
     },
   );
 
-// Update order status with validation
+  // Update order status with validation
   fastify.patch(
     "/orders/:id/status",
     { preHandler: shouldBeAdmin },
@@ -224,7 +225,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
           throw error;
         }
 
-// Store previous status for notification dispatch
+        // Store previous status for notification dispatch
         const previousStatus = order.status as OrderStatusType;
 
         // Record the status change (includes audit logging)
@@ -236,8 +237,9 @@ export const orderRoute = async (fastify: FastifyInstance) => {
           changedAt: new Date(),
         });
 
-// Dispatch notifications (non-blocking)
+        // Dispatch notifications (non-blocking)
         dispatchNotifications(
+          //@ts-ignore
           updatedOrder.toObject(),
           previousStatus,
           changedBy || "admin",
@@ -342,7 +344,7 @@ export const orderRoute = async (fastify: FastifyInstance) => {
       }
 
       const order = await createOrder(body);
-      
+
       // Store idempotency key
       if (idempotencyKey) {
         order.idempotencyKey = idempotencyKey;

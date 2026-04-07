@@ -1,10 +1,12 @@
 import { Order } from "@repo/order-db";
-import { OrderType } from "@repo/types";
+import { OrderStatusType, OrderType } from "@repo/types";
 import { sendOrderEmail } from "./email";
+import { validateTransition } from "./stateMachine";
+import { recordStatusChange } from "./auditLogger";
 
 export const createOrder = async (orderData: Partial<OrderType>) => {
   // const newOrder = new Order(order);
-// Set default status if not provided
+  // Set default status if not provided
   const status = (orderData.status as OrderStatusType) || "pending";
 
   // Create the order document

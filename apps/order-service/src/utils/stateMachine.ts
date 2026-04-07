@@ -84,7 +84,7 @@ export class InvalidTransitionError extends Error {
   ) {
     super(
       message ||
-        `Invalid transition from "${from}" to "${to}"`,
+      `Invalid transition from "${from}" to "${to}"`,
     );
     this.name = "InvalidTransitionError";
   }

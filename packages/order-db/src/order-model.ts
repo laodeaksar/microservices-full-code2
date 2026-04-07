@@ -3,21 +3,21 @@ const { Schema } = mongoose;
 
 // export const OrderStatus = ["success", "failed"] as const;
 export const OrderStatus = [
-    "pending",
-     "payment_pending",
-     "payment_processing",                                        "payment_confirmed",
-      "payment_failed",                                            "confirmed",
-     "processing",
-     "partially_shipped",                                        "shipped",                                                   "out_for_delivery",
-       "delivered",
-      "cancelled",
-      "refunded",                                                 "partially_refunded",
-   "delivery_exception",
-     "return_requested",
-     "return_in_progress",
-     "return_completed",
-   ] as const;
-    
+  "pending",
+  "payment_pending",
+  "payment_processing", "payment_confirmed",
+  "payment_failed", "confirmed",
+  "processing",
+  "partially_shipped", "shipped", "out_for_delivery",
+  "delivered",
+  "cancelled",
+  "refunded", "partially_refunded",
+  "delivery_exception",
+  "return_requested",
+  "return_in_progress",
+  "return_completed",
+] as const;
+
 const OrderSchema = new Schema(
   {
     userId: { type: String, required: true, index: true },
@@ -26,13 +26,15 @@ const OrderSchema = new Schema(
     status: { type: String, required: true, enum: OrderStatus, default: "pending" },
 
     // Payment details
-    paymentIntentId: { type: String },                            paymentMethod: { type: String },                              paymentCompletedAt: { type: Date },                                                                                         // Shipping details                                       
-    shippingAddress: {                                            fullName: { type: String },                                 line1: { type: String },                                        line2: { type: String },                                      city: { type: String },                                      state: { type: String },                                     postalCode: { type: String },
-     country: { type: String },
-     phone: { type: String },                                     },                                                             estimatedDeliveryDate: { type: Date },
-     actualDeliveryDate: { type: Date },
+    paymentIntentId: { type: String }, paymentMethod: { type: String }, paymentCompletedAt: { type: Date },                                                                                         // Shipping details                                       
+    shippingAddress: {
+      fullName: { type: String }, line1: { type: String }, line2: { type: String }, city: { type: String }, state: { type: String }, postalCode: { type: String },
+      country: { type: String },
+      phone: { type: String },
+    }, estimatedDeliveryDate: { type: Date },
+    actualDeliveryDate: { type: Date },
 
-     // Shipment tracking
+    // Shipment tracking
     shipments: [
       {
         trackingNumber: { type: String },
@@ -103,11 +105,8 @@ const OrderSchema = new Schema(
       sms: { type: Boolean, default: false },
       push: { type: Boolean, default: true },
     },
+    idempotencyKey: { type: String, unique: true, sparse: true },
   },
-      required: true,
-    },
-  },
-  idempotencyKey: { type: String, unique: true, sparse: true }, 
   { timestamps: true },
 );
 

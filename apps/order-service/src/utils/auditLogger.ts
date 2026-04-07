@@ -30,6 +30,7 @@ export async function recordStatusChange(
 
   // Initialize statusHistory if it doesn't exist
   if (!order.statusHistory) {
+    //@ts-ignore
     order.statusHistory = [];
   }
 

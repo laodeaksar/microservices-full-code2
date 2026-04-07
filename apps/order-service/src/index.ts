@@ -1,16 +1,17 @@
 import Fastify from "fastify";
-import Clerk from "@clerk/fastify";
+import { clerkPlugin } from "@clerk/fastify";
 import dotenv from "dotenv";
 import { shouldBeUser } from "./middleware/authMiddleware.js";
 import { connectOrderDB } from "@repo/order-db";
 import { orderRoute } from "./routes/order.js";
 import FastifyRateLimit from "@fastify/rate-limit";
+import { processExpiredPendingOrders } from "./utils/autoCancel";
 
 dotenv.config();
 
 const fastify = Fastify();
 
-fastify.register(Clerk.clerkPlugin);
+fastify.register(clerkPlugin);
 fastify.register(FastifyRateLimit, {
   max: 100,
   timeWindow: "1 minute",
@@ -79,7 +80,7 @@ const start = async () => {
     await connectOrderDB();
     console.log("Database connection established");
 
-// Start auto-cancel job (runs every 5 minutes)
+    // Start auto-cancel job (runs every 5 minutes)
     const AUTO_CANCEL_INTERVAL = 5 * 60 * 1000; // 5 minutes
     const PAYMENT_TIMEOUT_MINUTES = 30;
 

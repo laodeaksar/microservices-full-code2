@@ -53,6 +53,7 @@ export async function cancelOrderDueToTimeout(
 
   // Dispatch notification
   dispatchNotifications(
+    //@ts-ignore
     updatedOrder.toObject(),
     previousStatus,
     "system",

@@ -291,7 +291,7 @@ export async function dispatchNotifications(
     sms: false,
     push: true,
   };
-
+ 
   const notifications: Promise<void>[] = [];
 
   if (trigger.email && userPrefs.email) {
