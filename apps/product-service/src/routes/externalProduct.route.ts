@@ -1,10 +1,11 @@
-import { Router, Request, Response } from "express";
+/** import { Router, Request, Response } from "express";
 import {
   searchExternalProducts,
   getExternalProductDetails,
 } from "../utils/externalProductApi";
 import { shouldBeAdmin } from "../middleware/authMiddleware";
 import { prisma } from "@repo/product-db";
+import rateLimiters from "@repo/rate-limiter";
 
 const router: Router = Router();
 
@@ -16,7 +17,7 @@ const router: Router = Router();
  *
  * Admin only - used to import product details into our database.
  */
-router.get("/search", shouldBeAdmin, async (req: Request, res: Response) => {
+/**router.get("/search",rateLimiters.externalApi, shouldBeAdmin, async (req: Request, res: Response) => {
   try {
     const query = req.query.q as string;
 
@@ -70,7 +71,7 @@ router.get("/search", shouldBeAdmin, async (req: Request, res: Response) => {
  * Check if a product from an external API has already been imported.
  * Returns: { exists: boolean, existingProduct?: Product }
  */
-router.get(
+/**router.get(
   "/check-duplicate",
   shouldBeAdmin,
   async (req: Request, res: Response) => {
@@ -156,7 +157,7 @@ router.get(
  *   businessData: { price, stockQuantity, discount, isPublished, categorySlug }
  * }
  */
-router.post("/import", shouldBeAdmin, async (req: Request, res: Response) => {
+/**router.post("/import", shouldBeAdmin, async (req: Request, res: Response) => {
   try {
     const { externalProduct, businessData } = req.body;
 
@@ -294,7 +295,7 @@ router.post("/import", shouldBeAdmin, async (req: Request, res: Response) => {
  * Get detailed product info from a specific external API.
  * Used after search to get full product details before import.
  */
-router.get(
+/**router.get(
   "/details/:source/:productId",
   shouldBeAdmin,
   async (req: Request, res: Response) => {
@@ -331,5 +332,24 @@ router.get(
     }
   },
 );
+
+export default router;
+*/
+
+import { Router } from "express";
+import { rateLimiters } from "@repo/rate-limiter";
+import {
+  searchExternalProduct,
+  importExternalProduct,
+  getExternalProductDetails,
+} from "../controllers/externalProduct.controller.js";
+import { shouldBeAdmin } from "../middleware/authMiddleware.js";
+
+const router: Router = Router();
+
+// External API proxy - protects third-party quotas
+router.get("/search", rateLimiters.externalApi, shouldBeAdmin, searchExternalProduct);
+router.post("/import", rateLimiters.externalApi, shouldBeAdmin, importExternalProduct);
+router.get("/details/:source/:id", rateLimiters.externalApi, shouldBeAdmin, getExternalProductDetails);
 
 export default router;

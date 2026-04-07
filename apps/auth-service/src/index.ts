@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
 import { shouldBeAdmin } from "./middleware/authMiddleware.js";
 import userRoute from "./routes/user.route";
+import rateLimiters, { createRateLimiter } from "@repo/rate-limiter";
 
 dotenv.config();
 
@@ -25,12 +26,40 @@ app.use(
 app.use(express.json());
 app.use(clerkMiddleware());
 
+// ============================================================
+// Trust Proxy
+// ============================================================
+app.set("trust proxy", true);
+
+// ============================================================
+// Rate Limiting - Auth endpoints require strict limits
+// ============================================================
+
+// Auth endpoints - strict rate limiting to prevent brute force
+app.use(
+  "/users/auth",
+  createRateLimiter({
+    preset: "authEndpoints",
+    customOptions: {
+      keyGenerator: (req) => `ip:${req.ip}`, // IP-only for auth
+      message: {
+        error: "Too Many Authentication Attempts",
+        message: "Too many authentication attempts. Please wait 15 minutes before trying again.",
+      },
+    },
+  })
+);
+
+// General user endpoints - moderate limits
+app.use("/users", rateLimiters.authenticated, shouldBeAdmin, userRoute);
+
 // Add request logging for debugging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
+// Health endpoint
 app.get("/health", (req: Request, res: Response) => {
   return res.status(200).json({
     status: "ok",
@@ -39,9 +68,7 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
-// Apply admin middleware to all user routes
-app.use("/users", shouldBeAdmin, userRoute);
-
+// Error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
   return res

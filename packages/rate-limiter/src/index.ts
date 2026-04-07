@@ -241,3 +241,4 @@ export const rateLimiters = {
 };
 
 export default rateLimiters;
+export { createFallbackStore, createResilientRateLimiter } from "./fallback";

@@ -7,6 +7,7 @@ import {
   deleteImage,
   deleteImages,
 } from "../controllers/upload.controller";
+import rateLimiters from "@repo/rate-limiter";
 
 const router: Router = express.Router();
 
@@ -30,11 +31,12 @@ const upload = multer({
 });
 
 // Upload single image
-router.post("/upload", shouldBeAdmin, upload.single("image"), uploadImage);
+router.post("/single", rateLimiters.fileUploads, shouldBeAdmin, upload.single("image"), uploadImage);
 
 // Upload multiple images
 router.post(
-  "/upload-multiple",
+  "/multiple",
+  rateLimiters.fileUploads,
   shouldBeAdmin,
   upload.array("images", 10),
   uploadImages,

@@ -11,6 +11,7 @@ import categoryRouter from "./routes/category.route";
 import heroRouter from "./routes/hero.route";
 import uploadRouter from "./routes/upload.route";
 import externalProductRouter from "./routes/externalProduct.route";
+import rateLimiters from "@repo/rate-limiter";
 
 const app = express();
 
@@ -35,6 +36,19 @@ app.use(
 app.use(express.json());
 app.use(clerkMiddleware());
 
+// ============================================================
+// Trust Proxy - Essential for accurate IP detection behind CDNs
+// ============================================================
+app.set("trust proxy", true);
+
+// ============================================================
+// Rate Limiting - Apply BEFORE routes
+// ============================================================
+
+// Global rate limiter (catch-all, most permissive)
+app.use(rateLimiters.publicReadRelaxed);
+
+// Health endpoint - no rate limiting (handled by skip function)
 app.get("/health", (req: Request, res: Response) => {
   return res.status(200).json({
     status: "ok",
@@ -43,16 +57,19 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
+// Test endpoint with user auth
 app.get("/test", shouldBeUser, (req, res) => {
   res.json({ message: "Product service authenticated", userId: req.userId });
 });
 
-app.use("/products", productRouter);
-app.use("/categories", categoryRouter);
-app.use("/hero", heroRouter);
-app.use("/upload", uploadRouter);
-app.use("/external-products", externalProductRouter);
+// Apply specific rate limiters to route groups
+app.use("/products", rateLimiters.publicRead, productRouter);
+app.use("/categories", rateLimiters.publicReadRelaxed, categoryRouter);
+app.use("/hero", rateLimiters.publicReadRelaxed, heroRouter);
+app.use("/upload", rateLimiters.fileUploads, uploadRouter);
+app.use("/external-products", rateLimiters.externalApi, externalProductRouter);
 
+// Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
   return res
