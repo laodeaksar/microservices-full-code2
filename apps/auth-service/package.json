@@ -15,9 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/express": "^1.7.77",
+    "@repo/rate-limiter": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
+    "express-rate-limit": "^7.5.1",
+    "ioredis": "^5.10.1",
+    "rate-limit-redis": "^4.3.1",
     "tsx": "^4.21.0"
   },
   "devDependencies": {
