@@ -16,8 +16,179 @@ import {
   DashboardStats,
 } from "@repo/types";
 import { createOrder } from "../utils/order";
+import {
+  validateTransition,
+  InvalidTransitionError,
+  getStatusLabel,
+} from "../utils/stateMachine";
+import {
+  recordStatusChange,
+  getStatusHistory,
+} from "../utils/auditLogger";
+import { OrderStatusType, StatusChangeRequest } from "@repo/types";
 
 export const orderRoute = async (fastify: FastifyInstance) => {
+  // Get single order by ID
+  fastify.get(
+    "/orders/:id",
+    { preHandler: shouldBeAdmin },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
+        const order = await Order.findById(id);
+        if (!order) {
+          return reply.status(404).send({
+            error: "Order not found",
+            orderId: id,
+          });
+        }
+        return reply.send(order);
+      } catch (error) {
+        return reply.status(500).send({
+          error: "Failed to fetch order",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
+// Update order status with validation
+  fastify.patch(
+    "/orders/:id/status",
+    { preHandler: shouldBeAdmin },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
+        const body = request.body as StatusChangeRequest;
+        const { status: newStatus, reason, changedBy } = body;
+
+        // Fetch the current order
+        const order = await Order.findById(id);
+        if (!order) {
+          return reply.status(404).send({
+            error: "Order not found",
+            orderId: id,
+          });
+        }
+
+        // Validate the transition
+        try {
+          validateTransition(order.status as OrderStatusType, newStatus);
+        } catch (error) {
+          if (error instanceof InvalidTransitionError) {
+            return reply.status(400).send({
+              error: "Invalid status transition",
+              message: error.message,
+              currentStatus: order.status,
+              requestedStatus: newStatus,
+            });
+          }
+          throw error;
+        }
+
+// Store previous status for notification dispatch
+        const previousStatus = order.status as OrderStatusType;
+
+        // Record the status change (includes audit logging)
+        const updatedOrder = await recordStatusChange(id, {
+          from: previousStatus,
+          to: newStatus,
+          reason,
+          changedBy: changedBy || "admin",
+          changedAt: new Date(),
+        });
+
+// Dispatch notifications (non-blocking)
+        dispatchNotifications(
+          updatedOrder.toObject(),
+          previousStatus,
+          changedBy || "admin",
+        ).catch((err) =>
+          console.error("Notification dispatch failed:", err),
+        );
+
+        return reply.send({
+          success: true,
+          order: updatedOrder,
+          previousStatus,
+          newStatus,
+          label: getStatusLabel(newStatus),
+        });
+      } catch (error) {
+        if (error instanceof InvalidTransitionError) {
+          return reply.status(400).send({
+            error: "Invalid status transition",
+            message: error.message,
+          });
+        }
+        return reply.status(500).send({
+          error: "Failed to update order status",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
+  // Get order tracking information
+  fastify.get(
+    "/orders/:id/tracking",
+    { preHandler: shouldBeUser },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
+        const order = await Order.findById(id).select(
+          "shipments status estimatedDeliveryDate actualDeliveryDate userId",
+        );
+
+        if (!order) {
+          return reply.status(404).send({
+            error: "Order not found",
+            orderId: id,
+          });
+        }
+
+        // Verify user owns this order
+        if (order.userId !== request.userId) {
+          return reply.status(403).send({
+            error: "Unauthorized",
+            message: "You can only view your own orders",
+          });
+        }
+
+        return reply.send({
+          status: order.status,
+          label: getStatusLabel(order.status as OrderStatusType),
+          shipments: order.shipments,
+          estimatedDeliveryDate: order.estimatedDeliveryDate,
+          actualDeliveryDate: order.actualDeliveryDate,
+        });
+      } catch (error) {
+        return reply.status(500).send({
+          error: "Failed to fetch tracking info",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
+  // Get order status history
+  fastify.get(
+    "/orders/:id/history",
+    { preHandler: shouldBeAdmin },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
+        const history = await getStatusHistory(id);
+        return reply.send({ history });
+      } catch (error) {
+        return reply.status(500).send({
+          error: "Failed to fetch order history",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
   // Internal order creation endpoint (used by payment-service webhook).
   fastify.post("/orders", async (request, reply) => {
     try {

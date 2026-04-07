@@ -61,6 +61,29 @@ app.post("/send-order-email", async (req, res) => {
   }
 });
 
+// Send notification email endpoint (unified)
+app.post("/send-notification", async (req, res) => {
+  try {
+    const { email, subject, text, orderId, orderStatus } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    await sendMail({
+      email,
+      subject,
+      text,
+      html: generateNotificationHtml(orderId, orderStatus, text),
+    });
+
+    res.json({ success: true, message: "Notification email sent" });
+  } catch (error) {
+    console.error("Failed to send notification email:", error);
+    res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
+
 const PORT = process.env.PORT || 8004;
 
 app.listen(PORT, "0.0.0.0", () => {

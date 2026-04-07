@@ -15,16 +15,19 @@ const sendMail = async ({
   email,
   subject,
   text,
+  html
 }: {
   email: string;
   subject: string;
   text: string;
+  html?: string
 }) => {
   const res = await transporter.sendMail({
     from: '"Aksar La\'ode" <akhsarodhe@gmail.com>',
     to: email,
     subject,
     text,
+    html
   });
 
   console.log("MESSAGE SENT:", res);
