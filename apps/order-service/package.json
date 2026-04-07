@@ -10,7 +10,8 @@
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
 "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+"test:integration": "vitest run src/__tests__/order-api.test.ts"
   },
   "keywords": [],
   "author": "",

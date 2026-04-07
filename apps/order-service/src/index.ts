@@ -4,12 +4,17 @@ import dotenv from "dotenv";
 import { shouldBeUser } from "./middleware/authMiddleware.js";
 import { connectOrderDB } from "@repo/order-db";
 import { orderRoute } from "./routes/order.js";
+import FastifyRateLimit from "@fastify/rate-limit";
 
 dotenv.config();
 
 const fastify = Fastify();
 
 fastify.register(Clerk.clerkPlugin);
+fastify.register(FastifyRateLimit, {
+  max: 100,
+  timeWindow: "1 minute",
+});
 
 fastify.get("/health", (request, reply) => {
   return reply.status(200).send({
@@ -43,6 +48,16 @@ fastify.get("/test", { preHandler: shouldBeUser }, (request, reply) => {
 
 fastify.register(orderRoute);
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  // Graceful shutdown
+  process.exit(1);
+});
+
 const PORT = Number(process.env.PORT) || 8001;
 
 const start = async () => {
@@ -63,6 +78,30 @@ const start = async () => {
 
     await connectOrderDB();
     console.log("Database connection established");
+
+// Start auto-cancel job (runs every 5 minutes)
+    const AUTO_CANCEL_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    const PAYMENT_TIMEOUT_MINUTES = 30;
+
+    setInterval(async () => {
+      try {
+        const cancelled = await processExpiredPendingOrders(
+          PAYMENT_TIMEOUT_MINUTES,
+        );
+        if (cancelled > 0) {
+          console.log(
+            `Auto-cancelled ${cancelled} expired pending orders`,
+          );
+        }
+      } catch (error) {
+        console.error("Auto-cancel job failed:", error);
+      }
+    }, AUTO_CANCEL_INTERVAL);
+
+    console.log(
+      `Auto-cancel job started (checking every ${AUTO_CANCEL_INTERVAL / 1000}s, timeout: ${PAYMENT_TIMEOUT_MINUTES}m)`,
+    );
+
     await fastify.listen({ port: PORT, host: "0.0.0.0" });
     console.log(`Order service is running on port ${PORT}`);
   } catch (err) {

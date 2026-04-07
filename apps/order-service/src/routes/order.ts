@@ -26,8 +26,146 @@ import {
   getStatusHistory,
 } from "../utils/auditLogger";
 import { OrderStatusType, StatusChangeRequest } from "@repo/types";
-
+import { dispatchNotifications } from "../utils/notifications";
+  
 export const orderRoute = async (fastify: FastifyInstance) => {
+// Find order by payment intent ID (used by payment-service webhook)
+  fastify.get(
+    "/orders/by-payment-intent/:paymentIntentId",
+    async (request, reply) => {
+      try {
+        const { paymentIntentId } = request.params as {
+          paymentIntentId: string;
+        };
+        const order = await Order.findOne({ paymentIntentId });
+        if (!order) {
+          return reply.status(404).send({
+            error: "Order not found",
+            paymentIntentId,
+          });
+        }
+        return reply.send(order);
+      } catch (error) {
+        return reply.status(500).send({
+          error: "Failed to fetch order",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
+// Carrier tracking webhook endpoint
+  fastify.post(
+    "/orders/tracking-webhook",
+    async (request, reply) => {
+      try {
+        const body = request.body as {
+          trackingNumber: string;
+          carrier: string;
+          status: string;
+          deliveredAt?: string;
+          estimatedDeliveryDate?: string;
+        };
+
+        const { trackingNumber, carrier, status, deliveredAt, estimatedDeliveryDate } = body;
+
+        // Find order by tracking number
+        const order = await Order.findOne({
+          "shipments.trackingNumber": trackingNumber,
+        });
+
+        if (!order) {
+          return reply.status(404).send({
+            error: "Order not found",
+            trackingNumber,
+          });
+        }
+
+        const previousStatus = order.status as OrderStatusType;
+
+        // Update the shipment status
+        const shipment = order.shipments.find(
+          (s: any) => s.trackingNumber === trackingNumber,
+        );
+
+        if (shipment) {
+          shipment.status = status;
+          if (deliveredAt) {
+            shipment.deliveredAt = new Date(deliveredAt);
+          }
+        }
+
+        // Map carrier status to our order status
+        const statusMapping: Record<string, OrderStatusType> = {
+          "in_transit": "shipped",
+          "out_for_delivery": "out_for_delivery",
+          "delivered": "delivered",
+          "exception": "delivery_exception",
+          "returned": "return_requested",
+        };
+
+        const newOrderStatus = statusMapping[status];
+
+        if (newOrderStatus && newOrderStatus !== previousStatus) {
+          // Validate and record the transition
+          try {
+            validateTransition(previousStatus, newOrderStatus);
+
+            order.status = newOrderStatus;
+
+            if (newOrderStatus === "delivered") {
+              order.actualDeliveryDate = deliveredAt
+                ? new Date(deliveredAt)
+                : new Date();
+            }
+
+            order.statusHistory.push({
+              from: previousStatus,
+              to: newOrderStatus,
+              reason: `Carrier update: ${status}`,
+              changedBy: "system",
+              changedAt: new Date(),
+            });
+
+            await order.save();
+
+            // Dispatch notifications
+            dispatchNotifications(
+              order.toObject(),
+              previousStatus,
+              "system",
+            ).catch((err) =>
+              console.error("Notification dispatch failed:", err),
+            );
+          } catch (error) {
+            if (error instanceof InvalidTransitionError) {
+              console.log(
+                `Skipping invalid transition: ${previousStatus} -> ${newOrderStatus}`,
+              );
+            } else {
+              throw error;
+            }
+          }
+        } else {
+          // Just save shipment update without status change
+          await order.save();
+        }
+
+        return reply.send({
+          success: true,
+          orderId: order._id,
+          trackingNumber,
+          status,
+        });
+      } catch (error) {
+        return reply.status(500).send({
+          error: "Failed to process tracking update",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  );
+
   // Get single order by ID
   fastify.get(
     "/orders/:id",
@@ -192,7 +330,25 @@ export const orderRoute = async (fastify: FastifyInstance) => {
   // Internal order creation endpoint (used by payment-service webhook).
   fastify.post("/orders", async (request, reply) => {
     try {
-      const order = await createOrder(request.body as any);
+      const body = request.body as any;
+      const idempotencyKey = body.idempotencyKey;
+
+      // Check for duplicate request
+      if (idempotencyKey) {
+        const existingOrder = await Order.findOne({ idempotencyKey });
+        if (existingOrder) {
+          return reply.status(200).send(existingOrder);
+        }
+      }
+
+      const order = await createOrder(body);
+      
+      // Store idempotency key
+      if (idempotencyKey) {
+        order.idempotencyKey = idempotencyKey;
+        await order.save();
+      }
+
       return reply.status(201).send(order);
     } catch (error) {
       return reply.status(400).send({

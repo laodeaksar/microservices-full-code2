@@ -107,6 +107,7 @@ const OrderSchema = new Schema(
       required: true,
     },
   },
+  idempotencyKey: { type: String, unique: true, sparse: true }, 
   { timestamps: true },
 );
 
